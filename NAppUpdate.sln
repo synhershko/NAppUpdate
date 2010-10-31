@@ -1,13 +1,15 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAppUpdate.Tests", "src\NAppUpdate.Tests\NAppUpdate.Tests.csproj", "{2742ABE7-977D-4989-B12A-992A50B28E2F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAppUpdate.Updater", "src\NAppUpdate.Updater\NAppUpdate.Updater.csproj", "{7D4D18D4-DBD2-4ADC-9D82-397D6C5E9F40}"
-EndProject
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{BDD7694F-9B8D-45B1-B75E-3901BC6F04DD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{69829CE6-2507-4208-83A0-4AFF3773DC69}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{78F44777-F4E4-4154-A396-80DAD1E47065}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAppUpdate.Tests", "src\NAppUpdate.Tests\NAppUpdate.Tests.csproj", "{2742ABE7-977D-4989-B12A-992A50B28E2F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAppUpdate.Updater", "src\NAppUpdate.Updater\NAppUpdate.Updater.csproj", "{7D4D18D4-DBD2-4ADC-9D82-397D6C5E9F40}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFSampleApp", "Samples\WPFSampleApp\WPFSampleApp.csproj", "{D4321517-F941-4B1C-A9F7-9F63F5B86EE8}"
 EndProject
@@ -15,8 +17,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAppUpdate.Framework", "src
 	ProjectSection(ProjectDependencies) = postProject
 		{7D4D18D4-DBD2-4ADC-9D82-397D6C5E9F40} = {7D4D18D4-DBD2-4ADC-9D82-397D6C5E9F40}
 	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{78F44777-F4E4-4154-A396-80DAD1E47065}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsSampleApp", "Samples\WinFormsSampleApp\WinFormsSampleApp.csproj", "{935426A8-2F13-449E-A808-A3BD07AA3570}"
 EndProject
@@ -51,9 +51,9 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{2742ABE7-977D-4989-B12A-992A50B28E2F} = {69829CE6-2507-4208-83A0-4AFF3773DC69}
 		{7D4D18D4-DBD2-4ADC-9D82-397D6C5E9F40} = {BDD7694F-9B8D-45B1-B75E-3901BC6F04DD}
 		{5C07EBDF-D43F-4BE9-B560-D7A443C0EDCE} = {BDD7694F-9B8D-45B1-B75E-3901BC6F04DD}
+		{2742ABE7-977D-4989-B12A-992A50B28E2F} = {69829CE6-2507-4208-83A0-4AFF3773DC69}
 		{D4321517-F941-4B1C-A9F7-9F63F5B86EE8} = {78F44777-F4E4-4154-A396-80DAD1E47065}
 		{935426A8-2F13-449E-A808-A3BD07AA3570} = {78F44777-F4E4-4154-A396-80DAD1E47065}
 	EndGlobalSection
