@@ -71,6 +71,7 @@
     <Compile Include="Conditions\UpdateConditionAliasAttribute.cs" />
     <Compile Include="FeedReaders\IUpdateFeedReader.cs" />
     <Compile Include="FeedReaders\NauXmlFeedReader.cs" />
+    <Compile Include="Logger\ILogger.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

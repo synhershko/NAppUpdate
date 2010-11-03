@@ -9,6 +9,7 @@ using NAppUpdate.Framework.Conditions;
 using NAppUpdate.Framework.FeedReaders;
 using NAppUpdate.Framework.Sources;
 using NAppUpdate.Framework.Tasks;
+using NAppUpdate.Framework.Logger;
 
 namespace NAppUpdate.Framework
 {
@@ -44,6 +45,7 @@ namespace NAppUpdate.Framework
             RollbackRequired,
         }
 
+        public ILogger Logger { set; private get; }
         public string TempFolder { get; set; }
         public string UpdateProcessName { get; set; }
         internal readonly string ApplicationPath;
