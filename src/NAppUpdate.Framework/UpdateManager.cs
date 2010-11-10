@@ -27,6 +27,14 @@ namespace NAppUpdate.Framework
             UpdateProcessName = "NAppUpdateProcess";
             ApplicationPath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
             BackupFolder = Path.Combine(Path.GetDirectoryName(ApplicationPath), "Backup");
+
+            if (Logger != null)
+            {
+                Logger.Debug("Created a new instance of UpdateManager");
+                Logger.Debug(string.Format("TempFolder: {0}", TempFolder));
+                Logger.Debug(string.Format("ApplicationPath: {0}", ApplicationPath));
+                Logger.Debug(string.Format("BackupFolder: {0}", BackupFolder));
+            }
         }
 
         public static UpdateManager Instance
@@ -56,7 +64,11 @@ namespace NAppUpdate.Framework
             set
             {
                 if (this.State == UpdateProcessState.NotChecked || this.State == UpdateProcessState.Checked)
+                {
                     _BackupFolder = Path.IsPathRooted(value) ? value : Path.Combine(this.TempFolder, value);
+                    if (Logger != null)
+                        Logger.Debug(string.Format("BackupFolder changed to: {0}", _BackupFolder));
+                }
                 else
                     throw new ArgumentException("BackupFolder can only be specified before update has started");
             }
@@ -98,6 +110,9 @@ namespace NAppUpdate.Framework
             if (source == null)
                 throw new ArgumentException("An update source was not specified");
 
+            if (Logger != null)
+                Logger.Debug("Checking for updates...");
+
             lock (UpdatesToApply)
             {
                 UpdatesToApply.Clear();
@@ -116,7 +131,15 @@ namespace NAppUpdate.Framework
             if (callback != null) callback.BeginInvoke(UpdatesToApply.Count, null, null);
 
             if (UpdatesToApply.Count > 0)
+            {
+                if (Logger != null)
+                    Logger.Debug(string.Format("{0} Updates found.", UpdatesToApply.Count.ToString()));
+
                 return true;
+            }
+
+            if (Logger != null)
+                Logger.Debug("NO Updates found.");
 
             return false;
         }
@@ -282,6 +305,9 @@ namespace NAppUpdate.Framework
 
                 State = UpdateProcessState.AppliedSuccessfully;
                 UpdatesToApply.Clear();
+
+                if (Logger != null)
+                    Logger.Info("Updated Applied Sucessfully");
             }
 
             return true;
