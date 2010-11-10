@@ -45,7 +45,7 @@ namespace NAppUpdate.Framework
             RollbackRequired,
         }
 
-        public ILogger Logger { set; private get; }
+        public ILogger Logger { private get; set; }
         public string TempFolder { get; set; }
         public string UpdateProcessName { get; set; }
         internal readonly string ApplicationPath;
