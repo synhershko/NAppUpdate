@@ -1,9 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Reflection;
 using System.Windows;
 using NAppUpdate.Framework;
-using Path=System.IO.Path;
-using System.IO;
 
 namespace NAppUpdate.SampleApp
 {
@@ -31,8 +30,15 @@ namespace NAppUpdate.SampleApp
             updManager.CheckForUpdateAsync(new NAppUpdate.Framework.Sources.MemorySource(File.ReadAllText("sampleappupdatefeed.xml"))
                 , updatesCount =>
                 {
+                    Action showUpdateAction = () => new UpdateWindow(UpdateManager.Instance).Show();
+
                     if (updatesCount > 0)
-                        new UpdateWindow(updManager).Show();
+                    {
+                        if (Dispatcher.CheckAccess())
+                            showUpdateAction();
+                        else
+                            Dispatcher.Invoke(showUpdateAction);
+                    }
                 });
         }
     }
