@@ -1,16 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:appcast="http://www.adobe.com/xml-namespaces/appcast/1.0">
-  <channel>
-    <title>SampleApp Update Feed</title>
-    <link>http://github.com/leetreveil/Zune-Social-Tagger/downloads</link>
-    <description>Sample application that demonstrates the autoupdate capabilities</description>
-    <item>
-      <title>SampleApp</title>
-      <link>http://github.com/leetreveil/Zune-Social-Tagger/downloads</link>
-      <description>.WMA Support and other minor bug fixes</description>
-      <pubDate>Sunday, 27 December 2009 00:35:00 GMT</pubDate>
-      <appcast:version>1.2</appcast:version>
-      <enclosure url="file:///C:/Users/Lee/Desktop/My Dropbox/Projects/WPF Auto Update/docs/SampleApp1.2.zip" length="17574" type="application/octet-stream" />
-    </item>
-  </channel>
-</rss>
+<Feed>
+  <Tasks>
+    <FileUpdateTask hotswap="true" updateTo="http://SomeSite.com/Files/NewVersion.txt" localPath="CurrentVersion.txt">
+      <Description>Fixes a bug where versions should be odd numbers.</Description>
+      <Conditions>
+        <FileChecksumCondition checksumType="sha256" checksum="6B00EF281C30E6F2004B9C062345DF9ADB3C513710515EDD96F15483CA33D2E0" />
+      </Conditions>
+    </FileUpdateTask>
+  </Tasks>
+</Feed>

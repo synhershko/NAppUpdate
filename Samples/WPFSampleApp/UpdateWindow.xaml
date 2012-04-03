@@ -9,23 +9,11 @@
                 An update for SampleApp is available. It is reccomended that you install it as soon as possible.
             </TextBlock>
 
-            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                <TextBlock FontSize="20" Text="SampleApp v"/>
-                <TextBlock FontSize="20" Text="{Binding Update.Version}"/>
+            <StackPanel VerticalAlignment="Bottom">
+                <Button Content="Install When I Exit" Height="40" Click="InstallOnExit_Click"/>
+                <Button Content="Install Now" Height="40" Click="InstallNow_Click" />
             </StackPanel>
-            <Line Margin="0,10,0,0"/>
-
-
-        <StackPanel VerticalAlignment="Bottom">
-            <Button Content="Install When I Exit" Height="40"/>
-            <Button Content="Install Now" Height="40" Click="InstallNow_Click" />
-        </StackPanel>
-
-
-            <ProgressBar Value="{Binding DownloadProgress, Mode=OneWay}" Margin="0,20,0,0" Height="20"/>
-            <TextBlock Text="Downloading..."/>
             
         </StackPanel>
     </Grid>
-
 </Window>

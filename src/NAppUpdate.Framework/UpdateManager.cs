@@ -1,6 +1,6 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System;
 using System.Threading;
 using NAppUpdate.Framework.FeedReaders;
 using NAppUpdate.Framework.Sources;
@@ -8,16 +8,23 @@ using NAppUpdate.Framework.Tasks;
 
 namespace NAppUpdate.Framework
 {
-	/// <summary>
-	/// An UpdateManager class is a singleton class handling the update process from start to end for a consumer application
-	/// </summary>
+    /// <summary>
+    /// An UpdateManager class is a singleton class handling the update process from start to end for a consumer application
+    /// </summary>
     public sealed class UpdateManager
     {
         #region Singleton Stuff
 
-		/// <summary>
-		/// Defaut ctor
-		/// </summary>
+        // Explicit static constructor to tell C# compiler
+        // not to mark type as beforefieldinit
+        // See http://csharpindepth.com/Articles/General/Singleton.aspx
+        static UpdateManager()
+        {
+        }
+
+        /// <summary>
+        /// Defaut ctor
+        /// </summary>
         private UpdateManager()
         {
             State = UpdateProcessState.NotChecked;
@@ -28,20 +35,20 @@ namespace NAppUpdate.Framework
             BackupFolder = Path.Combine(Path.GetDirectoryName(ApplicationPath) ?? string.Empty, "Backup");
         }
 
-		/// <summary>
-		/// The singleton update manager instance to used by consumer applications
-		/// </summary>
+        /// <summary>
+        /// The singleton update manager instance to used by consumer applications
+        /// </summary>
         public static UpdateManager Instance
         {
             get { return instance; }
         }
-		private static readonly UpdateManager instance = new UpdateManager();
+        private static readonly UpdateManager instance = new UpdateManager();
 
         #endregion
 
-		/// <summary>
-		/// State of the update process
-		/// </summary>
+        /// <summary>
+        /// State of the update process
+        /// </summary>
         public enum UpdateProcessState
         {
             NotChecked,
@@ -55,9 +62,9 @@ namespace NAppUpdate.Framework
         public string UpdateProcessName { get; set; }
         internal readonly string ApplicationPath;
 
-		/// <summary>
-		/// Path to the backup folder used by this update process
-		/// </summary>
+        /// <summary>
+        /// Path to the backup folder used by this update process
+        /// </summary>
         public string BackupFolder
         {
             set
@@ -75,13 +82,13 @@ namespace NAppUpdate.Framework
                 return _backupFolder;
             }
         }
-		private string _backupFolder;
+        private string _backupFolder;
 
         internal string BaseUrl { get; set; }
         internal IList<IUpdateTask> UpdatesToApply { get; private set; }
-		public int UpdatesAvailable { get { return UpdatesToApply == null ? 0 : UpdatesToApply.Count; } }
+        public int UpdatesAvailable { get { return UpdatesToApply == null ? 0 : UpdatesToApply.Count; } }
         public UpdateProcessState State { get; private set; }
-		public string LatestError { get; set; }
+        public string LatestError { get; set; }
 
         public IUpdateSource UpdateSource { get; set; }
         public IUpdateFeedReader UpdateFeedReader { get; set; }
@@ -92,34 +99,34 @@ namespace NAppUpdate.Framework
 
         #region Step 1 - Check for updates
 
-		/// <summary>
-		/// Check for update synchronously, using the default update source
-		/// </summary>
-		/// <returns>true if successful and updates exist</returns>
+        /// <summary>
+        /// Check for update synchronously, using the default update source
+        /// </summary>
+        /// <returns>true if successful and updates exist</returns>
         public bool CheckForUpdates()
         {
             return CheckForUpdates(UpdateSource, null);
         }
 
-		/// <summary>
-		/// Check for updates synchronously
-		/// </summary>
-		/// <param name="source">An update source to use</param>
-		/// <returns>true if successful and updates exist</returns>
+        /// <summary>
+        /// Check for updates synchronously
+        /// </summary>
+        /// <param name="source">An update source to use</param>
+        /// <returns>true if successful and updates exist</returns>
         public bool CheckForUpdates(IUpdateSource source)
         {
             return CheckForUpdates(source ?? UpdateSource, null);
         }
 
-		/// <summary>
-		/// Check for updates synchronouly
-		/// </summary>
-		/// <param name="source">Updates source to use</param>
-		/// <param name="callback">Callback function to call when done</param>
-		/// <returns>true if successful and updates exist</returns>
+        /// <summary>
+        /// Check for updates synchronouly
+        /// </summary>
+        /// <param name="source">Updates source to use</param>
+        /// <param name="callback">Callback function to call when done</param>
+        /// <returns>true if successful and updates exist</returns>
         private bool CheckForUpdates(IUpdateSource source, Action<int> callback)
         {
-        	LatestError = null;
+            LatestError = null;
 
             if (UpdateFeedReader == null)
                 throw new ArgumentException("An update feed reader is required; please set one before checking for updates");
@@ -150,63 +157,63 @@ namespace NAppUpdate.Framework
             return false;
         }
 
-		/// <summary>
-		/// Check for updates asynchronously
-		/// </summary>
-		/// <param name="callback">Callback function to call when done</param>
+        /// <summary>
+        /// Check for updates asynchronously
+        /// </summary>
+        /// <param name="callback">Callback function to call when done</param>
         public void CheckForUpdateAsync(Action<int> callback)
         {
             CheckForUpdateAsync(UpdateSource, callback);
         }
 
-		/// <summary>
-		/// Check for updates asynchronously
-		/// </summary>
-		/// <param name="source">Update source to use</param>
-		/// <param name="callback">Callback function to call when done</param>
+        /// <summary>
+        /// Check for updates asynchronously
+        /// </summary>
+        /// <param name="source">Update source to use</param>
+        /// <param name="callback">Callback function to call when done</param>
         public void CheckForUpdateAsync(IUpdateSource source, Action<int> callback)
         {
-        	if (IsWorking) return;
+            if (IsWorking) return;
 
-        	_updatesThread = new Thread(delegate()
-        	                            	{
-												try
-												{
-													CheckForUpdates(source, callback);
-												}
-												catch (Exception ex)
-												{
-													// TODO: Better error handling
-													LatestError = ex.ToString();
-													callback.BeginInvoke(-1, null, null);
-												}
-        	                            	}) {IsBackground = true};
-        	_updatesThread.Start();
+            _updatesThread = new Thread(delegate()
+                                            {
+                                                try
+                                                {
+                                                    CheckForUpdates(source, callback);
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    // TODO: Better error handling
+                                                    LatestError = ex.ToString();
+                                                    callback.BeginInvoke(-1, null, null);
+                                                }
+                                            }) { IsBackground = true };
+            _updatesThread.Start();
         }
 
         #endregion
 
         #region Step 2 - Prepare to execute update tasks
 
-		/// <summary>
-		/// Prepare updates synchronously
-		/// </summary>
-		/// <returns>true if successful</returns>
+        /// <summary>
+        /// Prepare updates synchronously
+        /// </summary>
+        /// <returns>true if successful</returns>
         public bool PrepareUpdates()
         {
             return PrepareUpdates(null);
         }
 
-		/// <summary>
-		/// Prepare updates synchronously, calling the provided callback when done
-		/// </summary>
-		/// <param name="callback">A callback function to execute when done</param>
-		/// <returns>true if successful</returns>
+        /// <summary>
+        /// Prepare updates synchronously, calling the provided callback when done
+        /// </summary>
+        /// <param name="callback">A callback function to execute when done</param>
+        /// <returns>true if successful</returns>
         private bool PrepareUpdates(Action<bool> callback)
         {
             // TODO: Support progress updates
 
-			LatestError = null;
+            LatestError = null;
 
             lock (UpdatesToApply)
             {
@@ -219,13 +226,13 @@ namespace NAppUpdate.Framework
                 if (!Directory.Exists(TempFolder))
                     Directory.CreateDirectory(TempFolder);
 
-				foreach (var t in UpdatesToApply)
-				{
-					if (ShouldStop || !t.Prepare(UpdateSource))
-						return false;
-				}
+                foreach (var t in UpdatesToApply)
+                {
+                    if (ShouldStop || !t.Prepare(UpdateSource))
+                        return false;
+                }
 
-            	State = UpdateProcessState.Prepared;
+                State = UpdateProcessState.Prepared;
             }
 
             if (ShouldStop) return false;
@@ -234,29 +241,29 @@ namespace NAppUpdate.Framework
             return true;
         }
 
-		/// <summary>
-		/// Prepare updates asynchronously
-		/// </summary>
-		/// <param name="callback">callback function to call when done</param>
+        /// <summary>
+        /// Prepare updates asynchronously
+        /// </summary>
+        /// <param name="callback">callback function to call when done</param>
         public void PrepareUpdatesAsync(Action<bool> callback)
         {
-        	if (IsWorking) return;
+            if (IsWorking) return;
 
-        	_updatesThread = new Thread(delegate()
-        	                            	{
-        	                            		try
-        	                            		{
-        	                            			PrepareUpdates(callback);
-        	                            		}
-        	                            		catch (Exception ex)
-        	                            		{
-													// TODO: Better error handling
-        	                            			LatestError = ex.ToString();
-        	                            			callback.BeginInvoke(false, null, null);
-        	                            		}
-        	                            	}) {IsBackground = true};
+            _updatesThread = new Thread(delegate()
+                                            {
+                                                try
+                                                {
+                                                    PrepareUpdates(callback);
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    // TODO: Better error handling
+                                                    LatestError = ex.ToString();
+                                                    callback.BeginInvoke(false, null, null);
+                                                }
+                                            }) { IsBackground = true };
 
-        	_updatesThread.Start();
+            _updatesThread.Start();
         }
 
         #endregion
@@ -272,86 +279,86 @@ namespace NAppUpdate.Framework
             return ApplyUpdates(true);
         }
 
-    	/// <summary>
-    	/// Starts the updater executable and sends update data to it
-    	/// </summary>
-		/// <param name="relaunchApplication">true if relaunching the caller application is required; false otherwise</param>
-    	/// <returns>True if successful (unless a restart was required</returns>
-    	public bool ApplyUpdates(bool relaunchApplication)
+        /// <summary>
+        /// Starts the updater executable and sends update data to it
+        /// </summary>
+        /// <param name="relaunchApplication">true if relaunching the caller application is required; false otherwise</param>
+        /// <returns>True if successful (unless a restart was required</returns>
+        public bool ApplyUpdates(bool relaunchApplication)
         {
             lock (UpdatesToApply)
             {
-				LatestError = null;
-            	bool revertToDefaultBackupPath = true;
+                LatestError = null;
+                bool revertToDefaultBackupPath = true;
 
                 // Make sure the current backup folder is accessible for writing from this process
                 string backupParentPath = Path.GetDirectoryName(BackupFolder) ?? string.Empty;
                 if (Directory.Exists(backupParentPath) && Utils.PermissionsCheck.HaveWritePermissionsForFolder(backupParentPath))
-				{
-					// Remove old backup folder, in case this same folder was used previously,
-					// and it wasn't removed for some reason
-					try
-					{
-						if (Directory.Exists(BackupFolder))
-							Directory.Delete(BackupFolder, true);
-						revertToDefaultBackupPath = false;
-					}
-					catch (UnauthorizedAccessException)
-					{
-					}
+                {
+                    // Remove old backup folder, in case this same folder was used previously,
+                    // and it wasn't removed for some reason
+                    try
+                    {
+                        if (Directory.Exists(BackupFolder))
+                            Directory.Delete(BackupFolder, true);
+                        revertToDefaultBackupPath = false;
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                    }
 
-					// Attempt to (re-)create the backup folder
-					try
-					{
-						Directory.CreateDirectory(BackupFolder);
+                    // Attempt to (re-)create the backup folder
+                    try
+                    {
+                        Directory.CreateDirectory(BackupFolder);
 
                         if (!Utils.PermissionsCheck.HaveWritePermissionsForFolder(BackupFolder))
                             revertToDefaultBackupPath = true;
-					}
-					catch (UnauthorizedAccessException)
-					{
-						// We're having permissions issues with this folder, so we'll attempt
-						// using a backup in a default location
-						revertToDefaultBackupPath = true;
-					}
-				}
-				
-				if (revertToDefaultBackupPath)
-				{
-					_backupFolder = Path.Combine(
-						Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-						UpdateProcessName + "UpdateBackups");
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        // We're having permissions issues with this folder, so we'll attempt
+                        // using a backup in a default location
+                        revertToDefaultBackupPath = true;
+                    }
+                }
 
-					try
-					{
-						Directory.CreateDirectory(BackupFolder);
-					}
-					catch (UnauthorizedAccessException ex)
-					{
-						// We can't backup, so we abort
-						LatestError = ex.ToString();
-						return false;
-					}
-				}
+                if (revertToDefaultBackupPath)
+                {
+                    _backupFolder = Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                        UpdateProcessName + "UpdateBackups");
 
-            	var executeOnAppRestart = new Dictionary<string, object>();
+                    try
+                    {
+                        Directory.CreateDirectory(BackupFolder);
+                    }
+                    catch (UnauthorizedAccessException ex)
+                    {
+                        // We can't backup, so we abort
+                        LatestError = ex.ToString();
+                        return false;
+                    }
+                }
+
+                var executeOnAppRestart = new Dictionary<string, object>();
                 State = UpdateProcessState.RollbackRequired;
                 foreach (var task in UpdatesToApply)
                 {
-					// First, execute the task
+                    // First, execute the task
                     if (!task.Execute())
                     {
                         // TODO: notify about task execution failure using exceptions
-                    	continue;
+                        continue;
                     }
 
-					// Add any pending cold updates to the list
-                	var en = task.GetColdUpdates();
-					while (en.MoveNext())
-					{
-						// Last write wins
-						executeOnAppRestart[en.Current.Key] = en.Current.Value;
-					}
+                    // Add any pending cold updates to the list
+                    var en = task.GetColdUpdates();
+                    while (en.MoveNext())
+                    {
+                        // Last write wins
+                        executeOnAppRestart[en.Current.Key] = en.Current.Value;
+                    }
                 }
 
                 // If an application restart is required
@@ -359,15 +366,15 @@ namespace NAppUpdate.Framework
                 {
                     // Add some environment variables to the dictionary object which will be passed to the updater
                     executeOnAppRestart["ENV:AppPath"] = ApplicationPath;
-					executeOnAppRestart["ENV:WorkingDirectory"] = Environment.CurrentDirectory;
+                    executeOnAppRestart["ENV:WorkingDirectory"] = Environment.CurrentDirectory;
                     executeOnAppRestart["ENV:TempFolder"] = TempFolder;
                     executeOnAppRestart["ENV:BackupFolder"] = BackupFolder;
                     executeOnAppRestart["ENV:RelaunchApplication"] = relaunchApplication;
 
-					if (!Directory.Exists(TempFolder))
-						Directory.CreateDirectory(TempFolder);
+                    if (!Directory.Exists(TempFolder))
+                        Directory.CreateDirectory(TempFolder);
 
-					// Naming it updater.exe seem to trigger the UAC, and we don't want that
+                    // Naming it updater.exe seem to trigger the UAC, and we don't want that
                     var updStarter = new UpdateStarter(Path.Combine(TempFolder, "foo.exe"), executeOnAppRestart, UpdateProcessName);
                     bool createdNew;
                     using (var _ = new Mutex(true, UpdateProcessName, out createdNew))
@@ -388,9 +395,9 @@ namespace NAppUpdate.Framework
 
         #endregion
 
-		/// <summary>
-		/// Rollback executed updates in case of an update failure
-		/// </summary>
+        /// <summary>
+        /// Rollback executed updates in case of an update failure
+        /// </summary>
         public void RollbackUpdates()
         {
             lock (UpdatesToApply)
@@ -404,27 +411,27 @@ namespace NAppUpdate.Framework
             }
         }
 
-		/// <summary>
-		/// Abort update process, cancelling whatever background process currently taking place without waiting for it to complete
-		/// </summary>
+        /// <summary>
+        /// Abort update process, cancelling whatever background process currently taking place without waiting for it to complete
+        /// </summary>
         public void Abort()
         {
             Abort(false);
         }
 
-		/// <summary>
-		/// Abort update process, cancelling whatever background process currently taking place
-		/// </summary>
-		/// <param name="waitForTermination">If true, blocks the calling thread until the current process terminates</param>
-		public void Abort(bool waitForTermination)
-		{
-			ShouldStop = true;
-			if (waitForTermination && _updatesThread != null && _updatesThread.IsAlive)
-			{
-				_updatesThread.Join(); // TODO perhaps we should support timeout here instead of per process
-				_updatesThread = null;
-			}
-		}
+        /// <summary>
+        /// Abort update process, cancelling whatever background process currently taking place
+        /// </summary>
+        /// <param name="waitForTermination">If true, blocks the calling thread until the current process terminates</param>
+        public void Abort(bool waitForTermination)
+        {
+            ShouldStop = true;
+            if (waitForTermination && _updatesThread != null && _updatesThread.IsAlive)
+            {
+                _updatesThread.Join(); // TODO perhaps we should support timeout here instead of per process
+                _updatesThread = null;
+            }
+        }
 
         /// <summary>
         /// Delete the temp folder as a whole and fail silently

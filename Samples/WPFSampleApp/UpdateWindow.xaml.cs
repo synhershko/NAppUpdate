@@ -1,4 +1,4 @@
-using System.ComponentModel;
+using System;
 using System.Windows;
 using NAppUpdate.Framework;
 
@@ -7,50 +7,36 @@ namespace NAppUpdate.SampleApp
     /// <summary>
     /// Interaction logic for UpdateWindow.xaml
     /// </summary>
-    public partial class UpdateWindow : Window, INotifyPropertyChanged
+    public partial class UpdateWindow : Window
     {
-        private readonly UpdateManager _updateManager;
-        private int _downloadProgress;
-
-        public UpdateWindow(UpdateManager updateManager)
+        public UpdateWindow()
         {
-            _updateManager = updateManager;
             InitializeComponent();
-
-            this.DataContext = this;
-        }
-
-        public int DownloadProgress
-        {
-            get { return _downloadProgress; }
-            set
-            {
-                _downloadProgress = value;
-                InvokePropertyChanged("DownloadProgress");
-            }
         }
 
         private void InstallNow_Click(object sender, RoutedEventArgs e)
         {
-            _updateManager.PrepareUpdatesAsync(finished =>
-                                                   {
-                                                       if (finished)
-                                                           _updateManager.ApplyUpdates();
-                                                       else
-                                                           _updateManager.CleanUp();
-                                                   });
-                                                /*progressPercent =>
-                                                   {
-                                                       this.DownloadProgress = progressPercent;
-                                                   }*/
+            UpdateManager updateManager = UpdateManager.Instance;
+
+            updateManager.PrepareUpdatesAsync(finished =>
+            {
+                if (finished)
+                    updateManager.ApplyUpdates();
+                else
+                    updateManager.CleanUp();
+
+                Action close = () => Close();
+
+                if (Dispatcher.CheckAccess())
+                    close();
+                else
+                    Dispatcher.Invoke(close);
+            });
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void InvokePropertyChanged(string propertyName)
+        private void InstallOnExit_Click(object sender, RoutedEventArgs e)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            this.Close();
         }
     }
 }

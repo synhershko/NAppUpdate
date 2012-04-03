@@ -3,6 +3,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="MainWindow" Height="300" Width="300" Loaded="Window_Loaded">
     <Grid>
-        <TextBlock FontSize="14" Text="{Binding AppVersion}"/>
+        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"  FontSize="24" Text="{Binding AppVersion}"/>
     </Grid>
 </Window>
