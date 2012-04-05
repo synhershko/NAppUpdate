@@ -88,7 +88,10 @@ namespace NAppUpdate.Framework
                            		FileName = _updaterPath,
                            		Arguments = string.Format(@"""{0}""", _syncProcessName),
                            	};
-            	try
+				//If we can't write to the destination folder, then lets try elevating priviledges.
+				if (!Utils.PermissionsCheck.HaveWritePermissionsForFolder(Environment.CurrentDirectory)) { info.Verb = "runas"; }
+            	
+				try
                 {
                     Process.Start(info);
                 }

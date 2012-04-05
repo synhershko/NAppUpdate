@@ -78,7 +78,7 @@ namespace NAppUpdate.Framework
 		private string _backupFolder;
 
         internal string BaseUrl { get; set; }
-        internal IList<IUpdateTask> UpdatesToApply { get; private set; }
+        public IList<IUpdateTask> UpdatesToApply { get; private set; }
 		public int UpdatesAvailable { get { return UpdatesToApply == null ? 0 : UpdatesToApply.Count; } }
         public UpdateProcessState State { get; private set; }
 		public string LatestError { get; set; }
@@ -367,8 +367,8 @@ namespace NAppUpdate.Framework
 					if (!Directory.Exists(TempFolder))
 						Directory.CreateDirectory(TempFolder);
 
-					// Naming it updater.exe seem to trigger the UAC, and we don't want that
-                    var updStarter = new UpdateStarter(Path.Combine(TempFolder, "foo.exe"), executeOnAppRestart, UpdateProcessName);
+					// Naming it updater.exe seem to trigger the UAC, and we don't want that, so let the developer decide
+                    var updStarter = new UpdateStarter(Path.Combine(TempFolder, String.Format("{0}.exe", Utils.SafeUACFilename.GetFilename(UpdateProcessName))), executeOnAppRestart, UpdateProcessName);
                     bool createdNew;
                     using (var _ = new Mutex(true, UpdateProcessName, out createdNew))
                     {

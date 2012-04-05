@@ -40,7 +40,7 @@ namespace NAppUpdate.Framework.FeedReaders
 
             if (root.Attributes["BaseUrl"] != null && !string.IsNullOrEmpty(root.Attributes["BaseUrl"].Value))
                 UpdateManager.Instance.BaseUrl = root.Attributes["BaseUrl"].Value;
-
+			
             // Temporary collection of attributes, used to aggregate them all with their values
             // to reduce Reflection calls
             Dictionary<string, string> attributes = new Dictionary<string, string>();

@@ -95,6 +95,8 @@
     <Compile Include="Utils\FileSystem.cs" />
     <Compile Include="Utils\PermissionsCheck.cs" />
     <Compile Include="Utils\Reflection.cs" />
+    <Compile Include="Utils\ReplaceEx.cs" />
+    <Compile Include="Utils\SafeUACFilename.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">
