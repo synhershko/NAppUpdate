@@ -28,8 +28,10 @@ namespace NAppUpdate.Framework.Sources
 
         public string GetUpdatesFeed()
         {
-            string data;
+            string data = null;
 
+            try
+            {
         	var request = WebRequest.Create(FeedUrl);
 			request.Method = "GET";
             request.Proxy = Proxy;
@@ -42,6 +44,15 @@ namespace NAppUpdate.Framework.Sources
 				}
 			}
 
+            }
+            catch (WebException e)
+            {
+                Console.WriteLine ("WebException: " + e.Message);
+            }
+            catch (UriFormatException e)
+            {
+                Console.WriteLine ("UriFormatWebException: " + e.Message);
+            }
         	return data;
         }
 

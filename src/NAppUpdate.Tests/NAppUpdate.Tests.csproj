@@ -72,6 +72,7 @@
     <Compile Include="UtilTests\PermissionsCheckTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FeedReaders\AppcastReaderTests.cs" />
+    <Compile Include="UtilTests\SafeUACFilenameTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NAppUpdate.Framework\NAppUpdate.Framework.csproj">

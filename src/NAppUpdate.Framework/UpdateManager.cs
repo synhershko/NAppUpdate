@@ -54,6 +54,12 @@ namespace NAppUpdate.Framework
 
         public string TempFolder { get; set; }
         public string UpdateProcessName { get; set; }
+        public System.IO.Stream IconStream
+        {
+            get { 
+                return System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("NAppUpdate.Framework.updateicon.ico"); 
+            }
+        }
 		
 		/// <summary>
 		/// The name for the executable file to extract and run cold updates with. Default is foo.exe. You can change
@@ -62,7 +68,7 @@ namespace NAppUpdate.Framework
 		/// </summary>
 		public string UpdateExecutableName { get; set; }
         
-		internal readonly string ApplicationPath;
+        internal readonly string ApplicationPath;
 
 		/// <summary>
 		/// Path to the backup folder used by this update process
@@ -87,7 +93,7 @@ namespace NAppUpdate.Framework
 		private string _backupFolder;
 
         internal string BaseUrl { get; set; }
-        internal IList<IUpdateTask> UpdatesToApply { get; private set; }
+        public IList<IUpdateTask> UpdatesToApply { get; private set; }
 		public int UpdatesAvailable { get { return UpdatesToApply == null ? 0 : UpdatesToApply.Count; } }
         public UpdateProcessState State { get; private set; }
 		public string LatestError { get; set; }
@@ -107,7 +113,7 @@ namespace NAppUpdate.Framework
 		/// <returns>true if successful and updates exist</returns>
         public bool CheckForUpdates()
         {
-            return CheckForUpdates(UpdateSource, null);
+            return CheckForUpdates_Internal(UpdateSource, null, null);
         }
 
 		/// <summary>
@@ -117,16 +123,40 @@ namespace NAppUpdate.Framework
 		/// <returns>true if successful and updates exist</returns>
         public bool CheckForUpdates(IUpdateSource source)
         {
-            return CheckForUpdates(source ?? UpdateSource, null);
+            return CheckForUpdates_Internal(source ?? UpdateSource, null, null);
         }
 
 		/// <summary>
+		/// Check for updates synchronouly, for a callback that simply checks the 
+        /// number of updates available.
+		/// </summary>
+		/// <param name="source">Updates source to use</param>
+		/// <param name="callback">Callback function to call when done</param>
+		/// <returns>true if successful and updates exist</returns>
+        public bool CheckForUpdates(IUpdateSource source, Action<int> callback)
+        {
+            return CheckForUpdates_Internal(source, callback, null);
+        }
+
+        /// <summary>
+		/// Check for updates synchronouly, for a callback that processes the list
+        /// update tasks.
+		/// </summary>
+		/// <param name="source">Updates source to use</param>
+		/// <param name="callback">Callback function to call when done</param>
+		/// <returns>true if successful and updates exist</returns>
+        public bool CheckForUpdates(IUpdateSource source, Action<IList<IUpdateTask>> callback)
+        {
+            return CheckForUpdates_Internal(source, null, callback);
+        }
+
+        /// <summary>
 		/// Check for updates synchronouly
 		/// </summary>
 		/// <param name="source">Updates source to use</param>
 		/// <param name="callback">Callback function to call when done</param>
 		/// <returns>true if successful and updates exist</returns>
-        private bool CheckForUpdates(IUpdateSource source, Action<int> callback)
+        private bool CheckForUpdates_Internal(IUpdateSource source, Action<int> countCallback, Action<IList<IUpdateTask>> listCallback)
         {
         	LatestError = null;
 
@@ -151,7 +181,8 @@ namespace NAppUpdate.Framework
             if (ShouldStop) return false;
 
             State = UpdateProcessState.Checked;
-            if (callback != null) callback.BeginInvoke(UpdatesToApply.Count, null, null);
+            if (countCallback != null) countCallback.BeginInvoke(UpdatesToApply.Count, null, null);
+            if (listCallback != null) listCallback.BeginInvoke(UpdatesToApply, null, null);
 
             if (UpdatesToApply.Count > 0)
                 return true;
@@ -165,7 +196,25 @@ namespace NAppUpdate.Framework
 		/// <param name="callback">Callback function to call when done</param>
         public void CheckForUpdateAsync(Action<int> callback)
         {
-            CheckForUpdateAsync(UpdateSource, callback);
+            CheckForUpdateAsync_Internal(UpdateSource, callback, null);
+        }
+
+		/// <summary>
+		/// Check for updates asynchronously
+		/// </summary>
+		/// <param name="callback">Callback function to call when done</param>
+        public void CheckForUpdateAsync(IUpdateSource source, Action<int> callback)
+        {
+            CheckForUpdateAsync_Internal(source, callback, null);
+        }
+
+		/// <summary>
+		/// Check for updates asynchronously
+		/// </summary>
+		/// <param name="callback">Callback function to call when done</param>
+        public void CheckForUpdateAsync(Action<IList<IUpdateTask>> callback)
+        {
+            CheckForUpdateAsync_Internal(UpdateSource, null, callback);
         }
 
 		/// <summary>
@@ -173,7 +222,17 @@ namespace NAppUpdate.Framework
 		/// </summary>
 		/// <param name="source">Update source to use</param>
 		/// <param name="callback">Callback function to call when done</param>
-        public void CheckForUpdateAsync(IUpdateSource source, Action<int> callback)
+        public void CheckForUpdateAsync(IUpdateSource source, Action<IList<IUpdateTask>> callback)
+        {
+            CheckForUpdateAsync_Internal(source, null, callback);
+        }
+
+		/// <summary>
+		/// Check for updates asynchronously
+		/// </summary>
+		/// <param name="source">Update source to use</param>
+		/// <param name="callback">Callback function to call when done</param>
+        private void CheckForUpdateAsync_Internal(IUpdateSource source, Action<int> countCallback, Action<IList<IUpdateTask>> listCallback)
         {
         	if (IsWorking) return;
 
@@ -181,13 +240,16 @@ namespace NAppUpdate.Framework
         	                            	{
 												try
 												{
-													CheckForUpdates(source, callback);
+                                                    CheckForUpdates_Internal(source, countCallback, listCallback);
 												}
 												catch (Exception ex)
 												{
 													// TODO: Better error handling
 													LatestError = ex.ToString();
-													callback.BeginInvoke(-1, null, null);
+                                                    if (countCallback != null) 
+                                                        countCallback.BeginInvoke(-1, null, null);
+                                                    if (listCallback != null)
+                                                        listCallback.BeginInvoke(null, null, null);
 												}
         	                            	}) {IsBackground = true};
         	_updatesThread.Start();
@@ -288,6 +350,18 @@ namespace NAppUpdate.Framework
     	/// <returns>True if successful (unless a restart was required</returns>
     	public bool ApplyUpdates(bool relaunchApplication)
         {
+            return ApplyUpdates(relaunchApplication, false, false);
+        }
+
+       	/// <summary>
+    	/// Starts the updater executable and sends update data to it
+    	/// </summary>
+		/// <param name="relaunchApplication">true if relaunching the caller application is required; false otherwise</param>
+        /// <param name="updaterDoLogging">true if the updater writes to a log file; false otherwise</param>
+        /// <param name="updaterShowConsole">true if the updater shows the console window; false otherwise</param>
+    	/// <returns>True if successful (unless a restart was required</returns>
+    	public bool ApplyUpdates(bool relaunchApplication, bool updaterDoLogging, bool updaterShowConsole)
+        {
             lock (UpdatesToApply)
             {
 				LatestError = null;
@@ -348,6 +422,7 @@ namespace NAppUpdate.Framework
 					}
 				}
 
+                bool runPrivileged = false;
             	var executeOnAppRestart = new Dictionary<string, object>();
                 State = UpdateProcessState.RollbackRequired;
                 foreach (var task in UpdatesToApply)
@@ -358,6 +433,9 @@ namespace NAppUpdate.Framework
                         // TODO: notify about task execution failure using exceptions
                     	continue;
                     }
+
+                    // run updater privileged if required
+                    runPrivileged = runPrivileged || task.MustRunPrivileged();
 
 					// Add any pending cold updates to the list
                 	var en = task.GetColdUpdates();
@@ -381,7 +459,9 @@ namespace NAppUpdate.Framework
 					if (!Directory.Exists(TempFolder))
 						Directory.CreateDirectory(TempFolder);
 
-					var updStarter = new UpdateStarter(Path.Combine(TempFolder, UpdateExecutableName), executeOnAppRestart, UpdateProcessName);
+					var updStarter = new UpdateStarter(Path.Combine(TempFolder, UpdateExecutableName),
+                                                executeOnAppRestart, UpdateProcessName, runPrivileged);
+                    updStarter.SetOptions(updaterDoLogging, updaterShowConsole);
                     bool createdNew;
                     using (var _ = new Mutex(true, UpdateProcessName, out createdNew))
                     {

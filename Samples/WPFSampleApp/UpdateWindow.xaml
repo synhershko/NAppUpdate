@@ -1,31 +1,76 @@
 ﻿<Window x:Class="NAppUpdate.SampleApp.UpdateWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="SampleApp Update" Height="270" Width="400" ResizeMode="NoResize" Topmost="True">
-    <Grid>
-        <StackPanel>
-            
-            <TextBlock TextWrapping="Wrap">
-                An update for SampleApp is available. It is reccomended that you install it as soon as possible.
-            </TextBlock>
+    Title="SampleApp Update" Height="350" Width="400" ResizeMode="CanResize" Topmost="True">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                <TextBlock FontSize="20" Text="SampleApp v"/>
-                <TextBlock FontSize="20" Text="{Binding Update.Version}"/>
+        <TextBlock Grid.Row="0" TextWrapping="Wrap">
+            An update is available. It is reccomended that you install it as soon as possible.
+        </TextBlock>
+
+        <Grid Row="1" Margin="0,6,0,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Current version:  "/>
+            <TextBlock Grid.Row="0" Grid.Column="1" FontSize="12" FontWeight="Bold" Text="{Binding CurrentVersion}"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="New version: "/>
+            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" >
+                <TextBlock FontSize="12" FontWeight="Bold" Text="{Binding UpdateVersion}"/>
+                <TextBlock Text="    " /> <!-- just need some space -->
+                <TextBlock Text="{Binding UpdateDate}" />
             </StackPanel>
-            <Line Margin="0,10,0,0"/>
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Description: "/>
+            <TextBlock Grid.Row="2" Grid.Column="1" FontSize="12" Text="{Binding UpdateDescription}" TextWrapping="Wrap" />
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="Size of update: "/>
+            <TextBlock Grid.Row="3" Grid.Column="1" FontSize="12" Text="{Binding UpdateSize}"/>
+        </Grid>
 
+        <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" >
+            <ListView x:Name="grdUpdates" ItemsSource="{Binding TaskListInfo}" SelectionMode="Single">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="File "     DisplayMemberBinding="{Binding FileName}" />
+                        <GridViewColumn Header="Version "  DisplayMemberBinding="{Binding FileVersion}" />
+                        <GridViewColumn Header="Date "     DisplayMemberBinding="{Binding FileDate}" />
+                        <GridViewColumn Header="Size "     DisplayMemberBinding="{Binding FileSize}" />
+                        <GridViewColumn Header="Checksum " DisplayMemberBinding="{Binding FileChecksum}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </ScrollViewer>
 
-        <StackPanel VerticalAlignment="Bottom">
-            <Button Content="Install When I Exit" Height="40"/>
-            <Button Content="Install Now" Height="40" Click="InstallNow_Click" />
-        </StackPanel>
+        <Line Grid.Row="4" Margin="0,10,0,0"/>
 
+        <Grid Grid.Row="5" VerticalAlignment="Bottom">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="43" />
+                <RowDefinition Height="43" />
+            </Grid.RowDefinitions>
+            <!-- show buttons first -->
+            <Button      Grid.Row="0" Height="30" Margin="3,10,3,3" x:Name="btnInstallAtExit" Content="Install When I Exit" Click="InstallAtExit_Click" />
+            <Button      Grid.Row="1" Height="30" Margin="3,3,3,10" x:Name="btnInstallNow" Content="Install Now" Click="InstallNow_Click" />
+            <!-- hide these until a button is pressed -->
+            <ProgressBar Grid.Row="0" Height="30" Margin="3,10,3,3" x:Name="prgDownload" Value="{Binding DownloadProgress}" Visibility="Collapsed"/>
+            <TextBlock   Grid.Row="1" Height="30" Margin="3,3,3,10" x:Name="lblDownload" Text="Downloading..." Visibility="Collapsed" />
+        </Grid>
 
-            <ProgressBar Value="{Binding DownloadProgress, Mode=OneWay}" Margin="0,20,0,0" Height="20"/>
-            <TextBlock Text="Downloading..."/>
-            
-        </StackPanel>
     </Grid>
 
 </Window>

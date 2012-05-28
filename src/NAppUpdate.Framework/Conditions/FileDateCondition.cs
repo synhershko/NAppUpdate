@@ -8,7 +8,7 @@ namespace NAppUpdate.Framework.Conditions
     {
         public FileDateCondition()
         {
-            Timestap = DateTime.MinValue;
+            Timestamp = DateTime.MinValue;
         }
 
         [NauField("localPath",
@@ -17,7 +17,7 @@ namespace NAppUpdate.Framework.Conditions
         public string LocalPath { get; set; }
 
         [NauField("timestamp", "Date-time to compare with", true)]
-        public DateTime Timestap { get; set; }
+        public DateTime Timestamp { get; set; }
 
         [NauField("what", "Comparison action to perform. Accepted values: newer, is, older. Default: older.", false)]
         public string ComparisonType { get; set; }
@@ -26,7 +26,7 @@ namespace NAppUpdate.Framework.Conditions
 
         public bool IsMet(Tasks.IUpdateTask task)
         {
-            if (Timestap == DateTime.MinValue)
+            if (Timestamp == DateTime.MinValue)
                 return true;
 
             string localPath = !string.IsNullOrEmpty(LocalPath)
@@ -39,11 +39,11 @@ namespace NAppUpdate.Framework.Conditions
             switch (ComparisonType)
             {
                 case "newer":
-                    return localFileDateTime > Timestap;
+                    return localFileDateTime > Timestamp;
                 case "is":
-                    return localFileDateTime.Equals(Timestap);
+                    return localFileDateTime.Equals(Timestamp);
                 default:
-                    return localFileDateTime < Timestap; // == what="older"
+                    return localFileDateTime < Timestamp; // == what="older"
             }
         }
 

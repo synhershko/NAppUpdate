@@ -58,8 +58,19 @@ namespace NAppUpdate.Framework.Utils
 				else if (pi.PropertyType == typeof(DateTime))
 				{
 					DateTime dt = DateTime.MaxValue;
+                    long filetime = long.MaxValue;
 					if (DateTime.TryParse(attValue, out dt))
 						pi.SetValue(fieldsHolder, dt, null);
+                    else if (long.TryParse(attValue, out filetime))
+                    {
+                        try
+                        {
+                            // use local time, not UTC
+                            dt = DateTime.FromFileTime(filetime);
+                            pi.SetValue(fieldsHolder, dt, null);
+                        }
+                        catch { }
+                    }
 				}
 				// TODO: type: Uri
                 else if (pi.PropertyType.IsEnum)

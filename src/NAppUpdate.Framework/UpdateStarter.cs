@@ -55,12 +55,23 @@ namespace NAppUpdate.Framework
         private readonly Dictionary<string, object> _updateData;
         private readonly string _syncProcessName;
 
+        private readonly bool _runPrivileged;
+        private bool _updaterDoLogging;
+        private bool _updaterShowConsole;
+
         public UpdateStarter(string pathWhereUpdateExeShouldBeCreated,
-            Dictionary<string, object> updateData, string syncProcessName)
+            Dictionary<string, object> updateData, string syncProcessName, bool runPrivileged)
         {
             _updaterPath = pathWhereUpdateExeShouldBeCreated;
             _updateData = updateData;
             _syncProcessName = syncProcessName;
+            _runPrivileged = runPrivileged;
+        }
+
+        public void SetOptions(bool updaterDoLogging, bool updaterShowConsole)
+        {
+            _updaterDoLogging = updaterDoLogging;
+            _updaterShowConsole = updaterShowConsole;
         }
 
         public bool Start()
@@ -86,9 +97,20 @@ namespace NAppUpdate.Framework
                            		UseShellExecute = true,
                            		WorkingDirectory = Environment.CurrentDirectory,
                            		FileName = _updaterPath,
-                           		Arguments = string.Format(@"""{0}""", _syncProcessName),
+                           		Arguments = string.Format(@"""{0}"" {1} {2}", _syncProcessName,
+                                _updaterShowConsole ? "-showConsole" : "",
+                                _updaterDoLogging ? "-log" : ""),
                            	};
-            	try
+                if (!_updaterShowConsole)
+                {
+                    info.WindowStyle = ProcessWindowStyle.Hidden;
+                    info.CreateNoWindow = true;
+                }
+
+				//If we can't write to the destination folder, then lets try elevating priviledges.
+				if (!Utils.PermissionsCheck.HaveWritePermissionsForFolder(Environment.CurrentDirectory) || _runPrivileged) { info.Verb = "runas"; }
+            	
+				try
                 {
                     Process.Start(info);
                 }

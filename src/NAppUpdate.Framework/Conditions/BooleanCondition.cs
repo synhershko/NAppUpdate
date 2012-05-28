@@ -39,7 +39,7 @@ namespace NAppUpdate.Framework.Conditions
         }
         #endregion
 
-        private class ConditionItem
+        public class ConditionItem
         {
             public ConditionItem(IUpdateCondition cnd, ConditionType typ)
             {
@@ -56,7 +56,7 @@ namespace NAppUpdate.Framework.Conditions
             Attributes = new Dictionary<string, string>();
         }
 
-        private LinkedList<ConditionItem> ChildConditions { get; set; }
+        public LinkedList<ConditionItem> ChildConditions { get; set; }
         public int ChildConditionsCount { get { if (ChildConditions != null) return ChildConditions.Count; return 0; } }
 
         public void AddCondition(IUpdateCondition cnd)
@@ -87,11 +87,13 @@ namespace NAppUpdate.Framework.Conditions
             if (ChildConditions == null)
                 return true;
 
+            // perform the update if Passed == true
+            // otherwise, do not perform the update
             bool Passed = true, firstRun = true;
             foreach (ConditionItem item in ChildConditions)
             {
                 // If after the first iteration, accept as fulfilled if we are at an OR clause and the conditions
-                // before this checked OK
+                // before this checked OK (i.e. update needed)
                 if (!firstRun)
                 {
                     if (Passed && (item._ConditionType & ConditionType.OR) > 0)

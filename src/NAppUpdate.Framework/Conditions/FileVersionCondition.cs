@@ -34,7 +34,7 @@ namespace NAppUpdate.Framework.Conditions
 			
 			string versionString = versionInfo.FileVersion.Replace(", ", ".");
             Version localVersion = new Version(versionString);
-            Version updateVersion = new Version(Version);
+            Version updateVersion = Version != null ? new Version(Version) : new Version();
 
             switch (ComparisonType)
             {

@@ -99,6 +99,11 @@ namespace NAppUpdate.Framework.Tasks
             return true;
         }
 
+        public bool MustRunPrivileged() {
+            // This may be changed if required, I don't use this task...
+            return false;
+        }
+
         #endregion
     }
 }

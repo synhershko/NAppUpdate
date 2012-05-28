@@ -99,11 +99,14 @@ namespace NAppUpdate.Framework.Tasks
                     File.Move(tempFile, destinationFile);
                 	tempFile = null;
                 }
-                catch (Exception ex)
+                catch //(Exception ex)
                 {
-                    // TODO: Don't rethrow, but rather revert and make this a cold update?
-                    throw new UpdateProcessFailedException("Couldn't move hot-swap file into position", ex);
-                }
+					// TODO: Don't rethrow, but rather revert and make this a cold update?
+					//throw new UpdateProcessFailedException("Couldn't move hot-swap file into position", ex);
+
+					// Seems to work quite nicely as an alternative to the exception
+					CanHotSwap = false;
+				}
             }
             return true;
         }
@@ -127,6 +130,14 @@ namespace NAppUpdate.Framework.Tasks
             return true;
         }
 
+        public bool MustRunPrivileged() {
+            if (File.Exists(destinationFile)) {
+                return !Utils.PermissionsCheck.HaveWritePermissionsForFileOrFolder(destinationFile);
+            } else {
+                return false;
+            }
+        }
+        
         #endregion
     }
 }
