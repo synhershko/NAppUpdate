@@ -87,7 +87,11 @@ namespace NAppUpdate.Framework.Tasks
 
             // Create a backup copy if target exists
             if (File.Exists(destinationFile))
+            {
+                if (!Directory.Exists(Path.GetDirectoryName(Path.Combine(UpdateManager.Instance.BackupFolder, LocalPath))))
+                    Utils.FileSystem.CreateDirectoryStructure(Path.GetDirectoryName(Path.Combine(UpdateManager.Instance.BackupFolder, LocalPath)), false);
                 File.Copy(destinationFile, Path.Combine(UpdateManager.Instance.BackupFolder, LocalPath));
+            }
 
             // Only enable execution if the apply attribute was set to hot-swap
             if (CanHotSwap)
