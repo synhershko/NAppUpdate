@@ -26,7 +26,7 @@ namespace NAppUpdate.Framework
 			UpdateProcessName = "NAppUpdateProcess";
 			UpdateExecutableName = "foo.exe"; // Naming it updater.exe seem to trigger the UAC, and we don't want that
 			ApplicationPath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
-			BackupFolder = Path.Combine(Path.GetDirectoryName(ApplicationPath) ?? string.Empty, "Backup");
+            BackupFolder = Path.Combine(Path.GetDirectoryName(ApplicationPath) ?? string.Empty, "Backup" + DateTime.Now.Ticks);
 		}
 
 		/// <summary>
@@ -353,7 +353,7 @@ namespace NAppUpdate.Framework
 				{
 					_backupFolder = Path.Combine(
 						Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-						UpdateProcessName + "UpdateBackups");
+						UpdateProcessName + "UpdateBackups" + DateTime.Now.Ticks);
 
 					try
 					{

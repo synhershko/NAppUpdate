@@ -90,7 +90,7 @@ namespace NAppUpdate.Framework.Tasks
             {
                 if (!Directory.Exists(Path.GetDirectoryName(Path.Combine(UpdateManager.Instance.BackupFolder, LocalPath))))
                     Utils.FileSystem.CreateDirectoryStructure(Path.GetDirectoryName(Path.Combine(UpdateManager.Instance.BackupFolder, LocalPath)), false);
-                File.Copy(destinationFile, Path.Combine(UpdateManager.Instance.BackupFolder, LocalPath));
+                File.Copy(destinationFile, Path.Combine(UpdateManager.Instance.BackupFolder, LocalPath), true);
             }
 
             // Only enable execution if the apply attribute was set to hot-swap
