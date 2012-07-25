@@ -153,8 +153,8 @@ namespace NAppUpdate.Updater
 					           		WorkingDirectory = appDir,
 					           		FileName = appPath,
 					           	};
-
-					var p = NauIpc.LaunchProcessAndSendDto(dto, info, syncProcessName);
+					
+					var p = NauIpc.LaunchProcessAndSendDto(dto, info, syncProcessName, false);
 					if (p == null)
 						throw new UpdateProcessFailedException("Unable to relaunch application");
 				}

@@ -56,7 +56,7 @@ namespace NAppUpdate.Tests.Core
 				Arguments = string.Format(@"""{0}"" -showConsole", dto.Configs.UpdateProcessName),
 			};
 
-			var p = NauIpc.LaunchProcessAndSendDto(dto, info, dto.Configs.UpdateProcessName);
+			var p = NauIpc.LaunchProcessAndSendDto(dto, info, dto.Configs.UpdateProcessName, false);
 			Assert.IsNotNull(p);
 			p.WaitForExit();
 

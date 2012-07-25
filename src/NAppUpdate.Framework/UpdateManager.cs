@@ -101,8 +101,9 @@ namespace NAppUpdate.Framework
 			currentStatus.TaskDescription = task.Description;
 			currentStatus.TaskId = UpdatesToApply.IndexOf(task) + 1;
 
-			var taskPerc = 100 / UpdatesToApply.Count;
-			currentStatus.Percentage = (currentStatus.Percentage * taskPerc / 100) + (currentStatus.TaskId - 1) * taskPerc;
+			//This was an assumed int, which meant we never reached 100% with an odd number of tasks
+			float taskPerc = 100F / UpdatesToApply.Count;
+			currentStatus.Percentage = (int)Math.Round((currentStatus.Percentage * taskPerc / 100) + (currentStatus.TaskId - 1) * taskPerc);
 
 			ReportProgress(currentStatus);
 		}
@@ -478,7 +479,7 @@ namespace NAppUpdate.Framework
 						bool createdNew;
 						using (new Mutex(true, Config.UpdateProcessName + "Mutex", out createdNew))
 						{
-							if (NauIpc.LaunchProcessAndSendDto(dto, info, Config.UpdateProcessName) == null)
+							if (NauIpc.LaunchProcessAndSendDto(dto, info, Config.UpdateProcessName, true) == null)
 								throw new UpdateProcessFailedException("Could not launch cold update process");
 
 							Environment.Exit(0);
