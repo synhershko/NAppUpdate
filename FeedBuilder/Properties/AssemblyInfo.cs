@@ -1,26 +1,24 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("WinFormsSampleApp")]
+
+// Review the values of the assembly attributes
+
+[assembly: AssemblyTitle("FeedBuilder")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("WinFormsSampleApp")]
-[assembly: AssemblyCopyright("Copyright ©  2010")]
+[assembly: AssemblyProduct("FeedBuilder")]
+[assembly: AssemblyCopyright("Copyright © 2012")]
+
 [assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
 
-// Setting ComVisible to false makes the types in this assembly not visible 
-// to COM components.  If you need to access a type in this assembly from 
-// COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
+//The following GUID is for the ID of the typelib if this project is exposed to COM
 
-// The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("13b957e0-9107-4881-8d21-d3cd7d90f057")]
-
+[assembly: Guid("d3c89ac0-b290-45e8-ad0c-d9374f1d682d")]
 // Version information for an assembly consists of the following four values:
 //
 //      Major Version
@@ -30,6 +28,7 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.0.*")]
+// <Assembly: AssemblyVersion("1.0.*")> 
+
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]

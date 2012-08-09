@@ -53,7 +53,9 @@ namespace NAppUpdate.Framework
 			get { return instance; }
 		}
 		private static readonly UpdateManager instance = new UpdateManager();
+// ReSharper disable NotAccessedField.Local
 		private static Mutex _shutdownMutex;
+// ReSharper restore NotAccessedField.Local
 
 		#endregion
 
@@ -355,18 +357,20 @@ namespace NAppUpdate.Framework
 					// Set current directory the the application directory
 					// this prevents the updater from writing to e.g. c:\windows\system32
 					// if the process is started by autorun on windows logon.
+// ReSharper disable AssignNullToNotNullAttribute
 					Environment.CurrentDirectory = Path.GetDirectoryName(ApplicationPath);
+// ReSharper restore AssignNullToNotNullAttribute
 
 					// Make sure the current backup folder is accessible for writing from this process
 					string backupParentPath = Path.GetDirectoryName(Config.BackupFolder) ?? string.Empty;
-					if (Directory.Exists(backupParentPath) && Utils.PermissionsCheck.HaveWritePermissionsForFolder(backupParentPath))
+					if (Directory.Exists(backupParentPath) && PermissionsCheck.HaveWritePermissionsForFolder(backupParentPath))
 					{
 						// Remove old backup folder, in case this same folder was used previously,
 						// and it wasn't removed for some reason
 						try
 						{
 							if (Directory.Exists(Config.BackupFolder))
-								Utils.FileSystem.DeleteDirectory(Config.BackupFolder);
+								FileSystem.DeleteDirectory(Config.BackupFolder);
 							revertToDefaultBackupPath = false;
 						}
 						catch (UnauthorizedAccessException)
@@ -378,7 +382,7 @@ namespace NAppUpdate.Framework
 						{
 							Directory.CreateDirectory(Config.BackupFolder);
 
-							if (!Utils.PermissionsCheck.HaveWritePermissionsForFolder(Config.BackupFolder))
+							if (!PermissionsCheck.HaveWritePermissionsForFolder(Config.BackupFolder))
 								revertToDefaultBackupPath = true;
 						}
 						catch (UnauthorizedAccessException)
@@ -498,13 +502,11 @@ namespace NAppUpdate.Framework
 			lock (UpdatesToApply)
 			{
 				var dto = NauIpc.ReadDto(Config.UpdateProcessName) as NauIpc.NauDto;
-				if (dto != null)
-				{
-					Config = dto.Configs;
-					UpdatesToApply = dto.Tasks;
-					Logger = new Logger(dto.LogItems);
-					State = UpdateProcessState.AfterRestart;
-				}
+				if (dto == null) return;
+				Config = dto.Configs;
+				UpdatesToApply = dto.Tasks;
+				Logger = new Logger(dto.LogItems);
+				State = UpdateProcessState.AfterRestart;
 			}
 		}
 
@@ -558,14 +560,14 @@ namespace NAppUpdate.Framework
 				try
 				{
 					if (Directory.Exists(Config.TempFolder))
-						Utils.FileSystem.DeleteDirectory(Config.TempFolder);
+						FileSystem.DeleteDirectory(Config.TempFolder);
 				}
 				catch { }
 
 				try
 				{
 					if (Directory.Exists(Config.BackupFolder))
-						Utils.FileSystem.DeleteDirectory(Config.BackupFolder);
+						FileSystem.DeleteDirectory(Config.BackupFolder);
 				}
 				catch { }
 
