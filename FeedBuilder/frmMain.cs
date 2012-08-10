@@ -10,7 +10,7 @@ using FeedBuilder.Properties;
 
 namespace FeedBuilder
 {
-	public partial class frmMain : Form
+	partial class frmMain : Form
 	{
 		public frmMain()
 		{
@@ -22,15 +22,8 @@ namespace FeedBuilder
 		private const string DialogFilter = "Feed configuration files (*.config)|*.config|All files (*.*)|*.*";
 		private const string DefaultFileName = "FeedBuilder.config";
 		private OpenFileDialog _openDialog;
-
-		#endregion
-
 		private ArgumentsParser _argParser;
-
-		#region " Properties"
-
-		public string FileName { get; set; }
-		public bool ShowGui { get; set; }
+		private string FileName { get; set; }
 
 		#endregion
 
