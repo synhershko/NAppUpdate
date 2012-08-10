@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using NAppUpdate.Framework.Common;
@@ -8,7 +9,7 @@ namespace NAppUpdate.Framework.Utils
 	public sealed class FileDownloader
 	{
 		private readonly Uri _uri;
-		private readonly int _bufferSize = 1024;
+		private const int _bufferSize = 1024;
 		public IWebProxy Proxy { get; set; }
 
 		public FileDownloader()
@@ -54,7 +55,7 @@ namespace NAppUpdate.Framework.Utils
 					long downloadSize = response.ContentLength;
 					long totalBytes = 0;
 					var buffer = new byte[_bufferSize];
-					int reportInterval = 1;
+					const int reportInterval = 1;
 					DateTime stamp = DateTime.Now.Subtract(new TimeSpan(0, 0, reportInterval));
 					int bytesRead;
 					do
@@ -63,12 +64,9 @@ namespace NAppUpdate.Framework.Utils
 						totalBytes += bytesRead;
 						tempFile.Write(buffer, 0, bytesRead);
 
-						if (onProgress != null && DateTime.Now.Subtract(stamp).TotalSeconds >= reportInterval)
-						{
-							ReportProgress(onProgress, totalBytes, downloadSize);
-							stamp = DateTime.Now;
-						}
-
+						if (onProgress == null || !(DateTime.Now.Subtract(stamp).TotalSeconds >= reportInterval)) continue;
+						ReportProgress(onProgress, totalBytes, downloadSize);
+						stamp = DateTime.Now;
 					} while (bytesRead > 0 && !UpdateManager.Instance.ShouldStop);
 
 					ReportProgress(onProgress, totalBytes, downloadSize);
@@ -96,7 +94,7 @@ namespace NAppUpdate.Framework.Utils
 			if (size < 1000000000) return String.Format("{0:F1} MB", (size / 1000000));
 			if (size < 1000000000000) return String.Format("{0:F1} GB", (size / 1000000000));
 			if (size < 1000000000000000) return String.Format("{0:F1} TB", (size / 1000000000000));
-			return size.ToString();
+			return size.ToString(CultureInfo.InvariantCulture);
 		}
 
 		/*

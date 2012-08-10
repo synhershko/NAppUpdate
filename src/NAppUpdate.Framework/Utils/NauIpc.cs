@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Microsoft.Win32.SafeHandles;
 using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -67,12 +68,26 @@ namespace NAppUpdate.Framework.Utils
 			return string.Format("\\\\.\\pipe\\{0}", syncProcessName);
 		}
 
+		private class State
+		{
+			public readonly EventWaitHandle eventWaitHandle;
+			public int result { get; set; }
+			public SafeFileHandle clientPipeHandle { get; set; }
+
+			public State()
+			{
+				eventWaitHandle = new ManualResetEvent(false);
+			}
+		}
+
 		internal static uint BUFFER_SIZE = 4096;
 
 		public static Process LaunchProcessAndSendDto(NauDto dto, ProcessStartInfo processStartInfo, string syncProcessName)
 		{
 			Process p;
-			using (var clientPipeHandle = CreateNamedPipe(
+			State state = new State();
+
+			using (state.clientPipeHandle = CreateNamedPipe(
 				   GetPipeName(syncProcessName),
 				   WRITE_ONLY | FILE_FLAG_OVERLAPPED,
 				   0,
@@ -83,8 +98,7 @@ namespace NAppUpdate.Framework.Utils
 				   IntPtr.Zero))
 			{
 				//failed to create named pipe
-				if (clientPipeHandle.IsInvalid)
-					return null;
+				if (state.clientPipeHandle.IsInvalid) return null;
 
 				try
 				{
@@ -96,34 +110,34 @@ namespace NAppUpdate.Framework.Utils
 					return null;
 				}
 
-				while (true)
-				{
-					var success = 0;
-					try
-					{
-						success = ConnectNamedPipe(
-						   clientPipeHandle,
-						   IntPtr.Zero);
-					}
-					catch { }
+				ThreadPool.QueueUserWorkItem(ConnectPipe, state);
+				//A rather arbitary five seconds, perhaps better to be user configurable at some point?
+				state.eventWaitHandle.WaitOne(10000);
 
-					//failed to connect client pipe
-					if (success == 0)
-						// TODO Log error
-						break;
-
-					//client connection successfull
-					using (var fStream = new FileStream(clientPipeHandle, FileAccess.Write, (int)BUFFER_SIZE, true))
-					{
-						new BinaryFormatter().Serialize(fStream, dto);
-						fStream.Flush();
-						fStream.Close();
-					}
+				//failed to connect client pipe
+				if (state.result == 0) return null;
+				//client connection successfull
+				using (var fStream = new FileStream(state.clientPipeHandle, FileAccess.Write, (int)BUFFER_SIZE, true)) {
+					new BinaryFormatter().Serialize(fStream, dto);
+					fStream.Flush();
+					fStream.Close();
 				}
 			}
 
 			return p;
 		}
+
+		internal static void ConnectPipe(object stateObject)
+		{
+			if (stateObject == null) return;
+			State state = (State)stateObject;
+
+			try {
+				state.result = ConnectNamedPipe(state.clientPipeHandle, IntPtr.Zero);
+			} catch { }
+			state.eventWaitHandle.Set(); // signal we're done
+		}
+
 
 		internal static object ReadDto(string syncProcessName)
 		{
@@ -162,19 +176,17 @@ namespace NAppUpdate.Framework.Utils
 
 			// And also all other referenced DLLs (opt-in only)
 			var assemblyPath = Path.GetDirectoryName(assemblyLocation) ?? string.Empty;
-			if (UpdateManager.Instance.Config.DependenciesForColdUpdate != null)
+			if (UpdateManager.Instance.Config.DependenciesForColdUpdate == null) return;
+			// TODO Maybe we can back this up with typeof(UpdateStarter).Assembly.GetReferencedAssemblies()
+
+			foreach (var dep in UpdateManager.Instance.Config.DependenciesForColdUpdate)
 			{
-				// TODO Maybe we can back this up with typeof(UpdateStarter).Assembly.GetReferencedAssemblies()
+				string fullPath = Path.Combine(assemblyPath, dep);
+				if (!File.Exists(fullPath)) continue;
 
-				foreach (var dep in UpdateManager.Instance.Config.DependenciesForColdUpdate)
-				{
-					string fullPath = Path.Combine(assemblyPath, dep);
-					if (!File.Exists(fullPath)) continue;
-
-					var dest = Path.Combine(updaterPath, dep);
-					FileSystem.CreateDirectoryStructure(dest);
-					File.Copy(fullPath, Path.Combine(updaterPath, dep), true);
-				}
+				var dest = Path.Combine(updaterPath, dep);
+				FileSystem.CreateDirectoryStructure(dest);
+				File.Copy(fullPath, Path.Combine(updaterPath, dep), true);
 			}
 		}
 	}

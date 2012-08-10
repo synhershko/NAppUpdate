@@ -47,7 +47,10 @@ namespace NAppUpdate.Framework.Sources
 
 		public bool GetData(string url, string baseUrl, Action<UpdateProgressInfo> onProgress, ref string tempLocation)
 		{
-			FileDownloader fd = null;
+			FileDownloader fd;
+			// A baseUrl of http://testserver/somefolder with a file linklibrary.dll was resulting in a webrequest to http://testserver/linklibrary
+			// The trailing slash is required for the Uri parser to resolve correctly.
+			if (!baseUrl.EndsWith("/")) baseUrl += "/";
 			if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
 				fd = new FileDownloader(url);
 			else if (Uri.IsWellFormedUriString(baseUrl, UriKind.Absolute))
