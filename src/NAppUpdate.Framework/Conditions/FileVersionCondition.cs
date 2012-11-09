@@ -34,6 +34,9 @@ namespace NAppUpdate.Framework.Conditions
 			if (versionInfo.FileVersion == null) return true; // perform the update if no version info is found
 			
 			string versionString = versionInfo.FileVersion.Replace(", ", ".");
+			while(versionString.EndsWith(".*"))
+				versionString = versionString.Substring(0, versionString.Length - 2); // Strip ".*" from version numbers
+
             Version localVersion = new Version(versionString);
             Version updateVersion = Version != null ? new Version(Version) : new Version();
 
