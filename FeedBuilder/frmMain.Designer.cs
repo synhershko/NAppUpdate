@@ -93,13 +93,13 @@ namespace FeedBuilder
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 75F));
             this.tlpMain.Controls.Add(this.lstFiles, 0, 1);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpMain.Location = new System.Drawing.Point(0, 205);
+            this.tlpMain.Location = new System.Drawing.Point(0, 189);
             this.tlpMain.Name = "tlpMain";
             this.tlpMain.RowCount = 3;
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 12F));
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 11F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 3F));
-            this.tlpMain.Size = new System.Drawing.Size(580, 181);
+            this.tlpMain.Size = new System.Drawing.Size(723, 166);
             this.tlpMain.TabIndex = 1;
             // 
             // lstFiles
@@ -113,10 +113,10 @@ namespace FeedBuilder
             this.colHash});
             this.tlpMain.SetColumnSpan(this.lstFiles, 3);
             this.lstFiles.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lstFiles.Location = new System.Drawing.Point(0, 12);
+            this.lstFiles.Location = new System.Drawing.Point(0, 11);
             this.lstFiles.Margin = new System.Windows.Forms.Padding(0);
             this.lstFiles.Name = "lstFiles";
-            this.lstFiles.Size = new System.Drawing.Size(580, 166);
+            this.lstFiles.Size = new System.Drawing.Size(723, 152);
             this.lstFiles.SmallImageList = this.imgFiles;
             this.lstFiles.TabIndex = 0;
             this.lstFiles.UseCompatibleStateImageBehavior = false;
@@ -191,7 +191,7 @@ namespace FeedBuilder
             this.btnOpenOutputs});
             this.tsMain.Location = new System.Drawing.Point(0, 0);
             this.tsMain.Name = "tsMain";
-            this.tsMain.Size = new System.Drawing.Size(580, 25);
+            this.tsMain.Size = new System.Drawing.Size(723, 25);
             this.tsMain.Stretch = true;
             this.tsMain.TabIndex = 2;
             this.tsMain.Text = "Commands";
@@ -232,7 +232,7 @@ namespace FeedBuilder
             this.btnSaveAs.Image = ((System.Drawing.Image)(resources.GetObject("btnSaveAs.Image")));
             this.btnSaveAs.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnSaveAs.Name = "btnSaveAs";
-            this.btnSaveAs.Size = new System.Drawing.Size(48, 22);
+            this.btnSaveAs.Size = new System.Drawing.Size(52, 22);
             this.btnSaveAs.Text = "SaveAs";
             this.btnSaveAs.Click += new System.EventHandler(this.btnSaveAs_Click);
             // 
@@ -247,7 +247,7 @@ namespace FeedBuilder
             this.btnRefresh.Image = ((System.Drawing.Image)(resources.GetObject("btnRefresh.Image")));
             this.btnRefresh.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(50, 22);
+            this.btnRefresh.Size = new System.Drawing.Size(55, 22);
             this.btnRefresh.Text = "Refresh";
             this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
@@ -258,7 +258,7 @@ namespace FeedBuilder
             this.btnBuild.Image = ((System.Drawing.Image)(resources.GetObject("btnBuild.Image")));
             this.btnBuild.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnBuild.Name = "btnBuild";
-            this.btnBuild.Size = new System.Drawing.Size(38, 22);
+            this.btnBuild.Size = new System.Drawing.Size(40, 22);
             this.btnBuild.Text = "Build";
             this.btnBuild.Click += new System.EventHandler(this.cmdBuild_Click);
             // 
@@ -280,11 +280,11 @@ namespace FeedBuilder
             // 
             this.ToolStripContainer1.ContentPanel.Controls.Add(this.tlpMain);
             this.ToolStripContainer1.ContentPanel.Controls.Add(this.grpSettings);
-            this.ToolStripContainer1.ContentPanel.Size = new System.Drawing.Size(580, 386);
+            this.ToolStripContainer1.ContentPanel.Size = new System.Drawing.Size(723, 355);
             this.ToolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ToolStripContainer1.Location = new System.Drawing.Point(12, 8);
+            this.ToolStripContainer1.Location = new System.Drawing.Point(12, 7);
             this.ToolStripContainer1.Name = "ToolStripContainer1";
-            this.ToolStripContainer1.Size = new System.Drawing.Size(580, 411);
+            this.ToolStripContainer1.Size = new System.Drawing.Size(723, 380);
             this.ToolStripContainer1.TabIndex = 3;
             this.ToolStripContainer1.Text = "ToolStripContainer1";
             // 
@@ -316,8 +316,8 @@ namespace FeedBuilder
             this.grpSettings.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpSettings.Location = new System.Drawing.Point(0, 0);
             this.grpSettings.Name = "grpSettings";
-            this.grpSettings.Padding = new System.Windows.Forms.Padding(12, 8, 12, 8);
-            this.grpSettings.Size = new System.Drawing.Size(580, 205);
+            this.grpSettings.Padding = new System.Windows.Forms.Padding(12, 7, 12, 7);
+            this.grpSettings.Size = new System.Drawing.Size(723, 189);
             this.grpSettings.TabIndex = 1;
             this.grpSettings.TabStop = false;
             this.grpSettings.Text = "Settings:";
@@ -327,9 +327,9 @@ namespace FeedBuilder
             this.chkCleanUp.AutoSize = true;
             this.chkCleanUp.Checked = true;
             this.chkCleanUp.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkCleanUp.Location = new System.Drawing.Point(293, 145);
+            this.chkCleanUp.Location = new System.Drawing.Point(305, 135);
             this.chkCleanUp.Name = "chkCleanUp";
-            this.chkCleanUp.Size = new System.Drawing.Size(134, 17);
+            this.chkCleanUp.Size = new System.Drawing.Size(156, 16);
             this.chkCleanUp.TabIndex = 17;
             this.chkCleanUp.Text = "Clean Unselected Files";
             this.chkCleanUp.UseVisualStyleBackColor = true;
@@ -339,37 +339,38 @@ namespace FeedBuilder
             this.chkCopyFiles.AutoSize = true;
             this.chkCopyFiles.Checked = true;
             this.chkCopyFiles.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkCopyFiles.Location = new System.Drawing.Point(146, 145);
+            this.chkCopyFiles.Location = new System.Drawing.Point(158, 135);
             this.chkCopyFiles.Name = "chkCopyFiles";
-            this.chkCopyFiles.Size = new System.Drawing.Size(141, 17);
+            this.chkCopyFiles.Size = new System.Drawing.Size(156, 16);
             this.chkCopyFiles.TabIndex = 16;
             this.chkCopyFiles.Text = "Copy Files with NauXML";
             this.chkCopyFiles.UseVisualStyleBackColor = true;
+            this.chkCopyFiles.Click += new System.EventHandler(this.chkCopyFiles_CheckedChanged);
             // 
             // lblIgnore
             // 
             this.lblIgnore.AutoSize = true;
-            this.lblIgnore.Location = new System.Drawing.Point(15, 174);
+            this.lblIgnore.Location = new System.Drawing.Point(15, 161);
             this.lblIgnore.Name = "lblIgnore";
-            this.lblIgnore.Size = new System.Drawing.Size(40, 13);
+            this.lblIgnore.Size = new System.Drawing.Size(47, 12);
             this.lblIgnore.TabIndex = 15;
             this.lblIgnore.Text = "Ignore:";
             // 
             // lblMisc
             // 
             this.lblMisc.AutoSize = true;
-            this.lblMisc.Location = new System.Drawing.Point(15, 146);
+            this.lblMisc.Location = new System.Drawing.Point(15, 135);
             this.lblMisc.Name = "lblMisc";
-            this.lblMisc.Size = new System.Drawing.Size(32, 13);
+            this.lblMisc.Size = new System.Drawing.Size(35, 12);
             this.lblMisc.TabIndex = 15;
             this.lblMisc.Text = "Misc:";
             // 
             // lblCompare
             // 
             this.lblCompare.AutoSize = true;
-            this.lblCompare.Location = new System.Drawing.Point(15, 118);
+            this.lblCompare.Location = new System.Drawing.Point(15, 109);
             this.lblCompare.Name = "lblCompare";
-            this.lblCompare.Size = new System.Drawing.Size(52, 13);
+            this.lblCompare.Size = new System.Drawing.Size(53, 12);
             this.lblCompare.TabIndex = 14;
             this.lblCompare.Text = "Compare:";
             // 
@@ -378,9 +379,9 @@ namespace FeedBuilder
             this.chkHash.AutoSize = true;
             this.chkHash.Checked = true;
             this.chkHash.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkHash.Location = new System.Drawing.Point(320, 117);
+            this.chkHash.Location = new System.Drawing.Point(332, 109);
             this.chkHash.Name = "chkHash";
-            this.chkHash.Size = new System.Drawing.Size(51, 17);
+            this.chkHash.Size = new System.Drawing.Size(48, 16);
             this.chkHash.TabIndex = 13;
             this.chkHash.Text = "Hash";
             this.chkHash.UseVisualStyleBackColor = true;
@@ -388,9 +389,9 @@ namespace FeedBuilder
             // chkDate
             // 
             this.chkDate.AutoSize = true;
-            this.chkDate.Location = new System.Drawing.Point(265, 117);
+            this.chkDate.Location = new System.Drawing.Point(277, 109);
             this.chkDate.Name = "chkDate";
-            this.chkDate.Size = new System.Drawing.Size(49, 17);
+            this.chkDate.Size = new System.Drawing.Size(48, 16);
             this.chkDate.TabIndex = 12;
             this.chkDate.Text = "Date";
             this.chkDate.UseVisualStyleBackColor = true;
@@ -398,9 +399,9 @@ namespace FeedBuilder
             // chkSize
             // 
             this.chkSize.AutoSize = true;
-            this.chkSize.Location = new System.Drawing.Point(213, 117);
+            this.chkSize.Location = new System.Drawing.Point(225, 109);
             this.chkSize.Name = "chkSize";
-            this.chkSize.Size = new System.Drawing.Size(46, 17);
+            this.chkSize.Size = new System.Drawing.Size(48, 16);
             this.chkSize.TabIndex = 11;
             this.chkSize.Text = "Size";
             this.chkSize.UseVisualStyleBackColor = true;
@@ -410,10 +411,10 @@ namespace FeedBuilder
             this.chkVersion.AutoSize = true;
             this.chkVersion.Checked = true;
             this.chkVersion.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkVersion.Location = new System.Drawing.Point(146, 117);
-            this.chkVersion.Margin = new System.Windows.Forms.Padding(3, 3, 3, 8);
+            this.chkVersion.Location = new System.Drawing.Point(158, 109);
+            this.chkVersion.Margin = new System.Windows.Forms.Padding(3, 3, 3, 7);
             this.chkVersion.Name = "chkVersion";
-            this.chkVersion.Size = new System.Drawing.Size(61, 17);
+            this.chkVersion.Size = new System.Drawing.Size(66, 16);
             this.chkVersion.TabIndex = 10;
             this.chkVersion.Text = "Version";
             this.chkVersion.UseVisualStyleBackColor = true;
@@ -421,9 +422,9 @@ namespace FeedBuilder
             // lblBaseURL
             // 
             this.lblBaseURL.AutoSize = true;
-            this.lblBaseURL.Location = new System.Drawing.Point(15, 89);
+            this.lblBaseURL.Location = new System.Drawing.Point(15, 82);
             this.lblBaseURL.Name = "lblBaseURL";
-            this.lblBaseURL.Size = new System.Drawing.Size(59, 13);
+            this.lblBaseURL.Size = new System.Drawing.Size(59, 12);
             this.lblBaseURL.TabIndex = 8;
             this.lblBaseURL.Text = "Base URL:";
             // 
@@ -432,9 +433,9 @@ namespace FeedBuilder
             this.chkIgnoreVsHost.AutoSize = true;
             this.chkIgnoreVsHost.Checked = true;
             this.chkIgnoreVsHost.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkIgnoreVsHost.Location = new System.Drawing.Point(293, 173);
+            this.chkIgnoreVsHost.Location = new System.Drawing.Point(305, 161);
             this.chkIgnoreVsHost.Name = "chkIgnoreVsHost";
-            this.chkIgnoreVsHost.Size = new System.Drawing.Size(103, 17);
+            this.chkIgnoreVsHost.Size = new System.Drawing.Size(120, 16);
             this.chkIgnoreVsHost.TabIndex = 7;
             this.chkIgnoreVsHost.Text = "VS Hosting Files";
             this.chkIgnoreVsHost.UseVisualStyleBackColor = true;
@@ -444,48 +445,51 @@ namespace FeedBuilder
             this.chkIgnoreSymbols.AutoSize = true;
             this.chkIgnoreSymbols.Checked = true;
             this.chkIgnoreSymbols.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkIgnoreSymbols.Location = new System.Drawing.Point(146, 173);
+            this.chkIgnoreSymbols.Location = new System.Drawing.Point(158, 161);
             this.chkIgnoreSymbols.Name = "chkIgnoreSymbols";
-            this.chkIgnoreSymbols.Size = new System.Drawing.Size(100, 17);
+            this.chkIgnoreSymbols.Size = new System.Drawing.Size(102, 16);
             this.chkIgnoreSymbols.TabIndex = 7;
             this.chkIgnoreSymbols.Text = "Debug Symbols";
             this.chkIgnoreSymbols.UseVisualStyleBackColor = true;
+            this.chkIgnoreSymbols.Click += new System.EventHandler(this.chkIgnoreSymbols_CheckedChanged);
             // 
             // cmdFeedXML
             // 
             this.cmdFeedXML.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdFeedXML.Location = new System.Drawing.Point(539, 53);
+            this.cmdFeedXML.Location = new System.Drawing.Point(682, 49);
             this.cmdFeedXML.Name = "cmdFeedXML";
-            this.cmdFeedXML.Size = new System.Drawing.Size(26, 23);
+            this.cmdFeedXML.Size = new System.Drawing.Size(26, 21);
             this.cmdFeedXML.TabIndex = 5;
             this.cmdFeedXML.Text = "...";
             this.cmdFeedXML.UseVisualStyleBackColor = true;
+            this.cmdFeedXML.Click += new System.EventHandler(this.cmdFeedXML_Click);
             // 
             // lblFeedXML
             // 
             this.lblFeedXML.AutoSize = true;
-            this.lblFeedXML.Location = new System.Drawing.Point(15, 58);
+            this.lblFeedXML.Location = new System.Drawing.Point(15, 54);
             this.lblFeedXML.Name = "lblFeedXML";
-            this.lblFeedXML.Size = new System.Drawing.Size(98, 13);
+            this.lblFeedXML.Size = new System.Drawing.Size(107, 12);
             this.lblFeedXML.TabIndex = 3;
             this.lblFeedXML.Text = "Feed NauXML File:";
             // 
             // cmdOutputFolder
             // 
             this.cmdOutputFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdOutputFolder.Location = new System.Drawing.Point(539, 22);
+            this.cmdOutputFolder.Location = new System.Drawing.Point(682, 20);
             this.cmdOutputFolder.Name = "cmdOutputFolder";
-            this.cmdOutputFolder.Size = new System.Drawing.Size(26, 23);
+            this.cmdOutputFolder.Size = new System.Drawing.Size(26, 21);
             this.cmdOutputFolder.TabIndex = 2;
             this.cmdOutputFolder.Text = "...";
             this.cmdOutputFolder.UseVisualStyleBackColor = true;
+            this.cmdOutputFolder.Click += new System.EventHandler(this.cmdOutputFolder_Click);
             // 
             // lblOutputFolder
             // 
             this.lblOutputFolder.AutoSize = true;
-            this.lblOutputFolder.Location = new System.Drawing.Point(15, 27);
+            this.lblOutputFolder.Location = new System.Drawing.Point(15, 25);
             this.lblOutputFolder.Name = "lblOutputFolder";
-            this.lblOutputFolder.Size = new System.Drawing.Size(110, 13);
+            this.lblOutputFolder.Size = new System.Drawing.Size(137, 12);
             this.lblOutputFolder.TabIndex = 0;
             this.lblOutputFolder.Text = "Project Output Folder:";
             // 
@@ -494,10 +498,10 @@ namespace FeedBuilder
             this.txtBaseURL.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtBaseURL.HelpfulText = "Where you will upload the feed and update files for distribution to clients";
-            this.txtBaseURL.Location = new System.Drawing.Point(146, 86);
-            this.txtBaseURL.Margin = new System.Windows.Forms.Padding(3, 3, 3, 8);
+            this.txtBaseURL.Location = new System.Drawing.Point(158, 79);
+            this.txtBaseURL.Margin = new System.Windows.Forms.Padding(3, 3, 3, 7);
             this.txtBaseURL.Name = "txtBaseURL";
-            this.txtBaseURL.Size = new System.Drawing.Size(387, 20);
+            this.txtBaseURL.Size = new System.Drawing.Size(518, 21);
             this.txtBaseURL.TabIndex = 9;
             // 
             // txtFeedXML
@@ -506,10 +510,10 @@ namespace FeedBuilder
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtFeedXML.BackColor = System.Drawing.Color.White;
             this.txtFeedXML.HelpfulText = "The file your application downloads to determine if there are updates";
-            this.txtFeedXML.Location = new System.Drawing.Point(146, 55);
-            this.txtFeedXML.Margin = new System.Windows.Forms.Padding(3, 3, 3, 8);
+            this.txtFeedXML.Location = new System.Drawing.Point(158, 51);
+            this.txtFeedXML.Margin = new System.Windows.Forms.Padding(3, 3, 3, 7);
             this.txtFeedXML.Name = "txtFeedXML";
-            this.txtFeedXML.Size = new System.Drawing.Size(387, 20);
+            this.txtFeedXML.Size = new System.Drawing.Size(518, 21);
             this.txtFeedXML.TabIndex = 4;
             // 
             // txtOutputFolder
@@ -518,27 +522,28 @@ namespace FeedBuilder
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtOutputFolder.BackColor = System.Drawing.Color.White;
             this.txtOutputFolder.HelpfulText = "The folder that contains the files you want to distribute";
-            this.txtOutputFolder.Location = new System.Drawing.Point(146, 24);
-            this.txtOutputFolder.Margin = new System.Windows.Forms.Padding(3, 3, 3, 8);
+            this.txtOutputFolder.Location = new System.Drawing.Point(158, 22);
+            this.txtOutputFolder.Margin = new System.Windows.Forms.Padding(3, 3, 3, 7);
             this.txtOutputFolder.Name = "txtOutputFolder";
-            this.txtOutputFolder.Size = new System.Drawing.Size(387, 20);
+            this.txtOutputFolder.Size = new System.Drawing.Size(518, 21);
             this.txtOutputFolder.TabIndex = 1;
             // 
             // frmMain
             // 
             this.AllowDrop = true;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(604, 431);
+            this.ClientSize = new System.Drawing.Size(747, 398);
             this.Controls.Add(this.ToolStripContainer1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(620, 440);
+            this.MinimumSize = new System.Drawing.Size(620, 409);
             this.Name = "frmMain";
-            this.Padding = new System.Windows.Forms.Padding(12, 8, 12, 12);
+            this.Padding = new System.Windows.Forms.Padding(12, 7, 12, 11);
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Feed Builder";
+            this.Load += new System.EventHandler(this.frmMain_Load);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.frmMain_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.frmMain_DragEnter);
             this.tlpMain.ResumeLayout(false);

@@ -13,6 +13,7 @@ using System.Configuration;
 using System.Xml.Serialization;
 using System.Collections.Specialized;
 using Microsoft.VisualBasic.Devices;
+using My;
 namespace FeedBuilder
 {
 

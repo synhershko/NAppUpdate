@@ -24,7 +24,7 @@ namespace NAppUpdate.Framework.Conditions
             if (string.IsNullOrEmpty(localPath) || !File.Exists(localPath))
                 return true;
 
-            return !string.IsNullOrEmpty(localPath) && File.Exists(localPath);
+            return false;
         }
 
         #endregion

@@ -4,12 +4,6 @@
         <name>FeedBuilder</name>
     </assembly>
     <members>
-        <member name="M:FeedBuilder.HelpfulTextBox.SetCue">
-            <summary>
-            Actually, the system cue only works for editable (i.e. not read-only) text boxes.
-            </summary>
-            <remarks></remarks>
-        </member>
         <member name="T:FindFiles.Win32.FindData">
             <summary>
             Structure that maps to WIN32_FIND_DATA
@@ -109,10 +103,11 @@
             <param name="h">Find handle returned by FindFirstFile.</param>
             <param name="p">Path corresponding to find handle.</param>
         </member>
-        <member name="M:FeedBuilder.Program.Main">
+        <member name="M:FeedBuilder.HelpfulTextBox.SetCue">
             <summary>
-            The main entry point for the application.
+            Actually, the system cue only works for editable (i.e. not read-only) text boxes.
             </summary>
+            <remarks></remarks>
         </member>
         <member name="T:FeedBuilder.My.Resources.Resources">
             <summary>
@@ -128,6 +123,11 @@
             <summary>
               Overrides the current thread's CurrentUICulture property for all
               resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="M:FeedBuilder.Program.Main">
+            <summary>
+            The main entry point for the application.
             </summary>
         </member>
     </members>
