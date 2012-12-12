@@ -450,6 +450,7 @@ namespace NAppUpdate.Framework
 						          		WorkingDirectory = Environment.CurrentDirectory,
 						          		RelaunchApplication = relaunchApplication,
 						          		LogItems = Logger.LogItems,
+                                        ProcessId = Process.GetCurrentProcess().Id
 						          	};
 
 						NauIpc.ExtractUpdaterFromResource(Config.TempFolder, Instance.Config.UpdateExecutableName);
