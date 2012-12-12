@@ -26,6 +26,7 @@ namespace NAppUpdate.Framework.Utils
 			public string AppPath { get; set; }
 			public string WorkingDirectory { get; set; }
 			public bool RelaunchApplication { get; set; }
+            public int ProcessId { get; set; }
 		}
 
 		[DllImport("kernel32.dll", SetLastError = true)]

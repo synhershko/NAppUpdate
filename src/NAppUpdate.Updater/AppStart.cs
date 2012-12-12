@@ -94,6 +94,8 @@ namespace NAppUpdate.Updater
 					}
 				}
 
+                WaitForProcessTerminate(dto);
+
 				bool updateSuccessful = true;
 
 				if (dto == null || dto.Configs == null)
@@ -179,9 +181,11 @@ namespace NAppUpdate.Updater
 					           		FileName = appPath,
 					           	};
 					
-					var p = NauIpc.LaunchProcessAndSendDto(dto, info, syncProcessName);
-					if (p == null)
-						throw new UpdateProcessFailedException("Unable to relaunch application");
+                    try {
+                        Process.Start(info);
+                    } catch(Exception) {
+                        throw new UpdateProcessFailedException("Unable to relaunch application");
+                    }
 				}
 
 				Log("All done");
@@ -218,7 +222,26 @@ namespace NAppUpdate.Updater
 			}
 		}
 
-		private static void SelfCleanUp(string tempFolder)
+	    private static void WaitForProcessTerminate(NauIpc.NauDto dto) {
+	        try {
+	            if (dto != null) {
+	                int i = 0;
+	                do {
+	                    Process.GetProcessById(dto.ProcessId);
+	                    Log("Process {0} still running...", dto.ProcessId);
+	                    i++;
+	                    Thread.Sleep(500);
+	                } while (i <= 3);
+	                Log("Killing process {0}...", dto.ProcessId);
+	                Process.GetProcessById(dto.ProcessId).Kill();
+	            }
+	        }
+	        catch (Exception) {
+	            // parent process has exited
+	        }
+	    }
+
+	    private static void SelfCleanUp(string tempFolder)
 		{
 			// Delete the updater EXE and the temp folder
 			Log("Removing updater and temp folder... {0}", tempFolder);
