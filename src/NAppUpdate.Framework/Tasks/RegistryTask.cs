@@ -6,7 +6,7 @@ namespace NAppUpdate.Framework.Tasks
 {
 	[Serializable]
 	[UpdateTaskAlias("registryUpdate")]
-	public class RegistryTask : UpdateTaskBase
+    public class RegistryTask : UpdateTaskBase, IDontRequireChecksum
 	{
 		[NauField("keyName", "The full path to the registry key", true)]
 		public string KeyName { get; set; }

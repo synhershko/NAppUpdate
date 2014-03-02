@@ -24,5 +24,15 @@ namespace NAppUpdate.Framework.Utils
             byte[] checksum = sha.ComputeHash(fileData);
             return BitConverter.ToString(checksum).Replace("-", String.Empty);
         }
+
+        public static string GetSHA512Checksum(string filePath)
+        {
+            using (FileStream stream = File.OpenRead(filePath))
+            {
+                SHA512Managed sha = new SHA512Managed();
+                byte[] checksum = sha.ComputeHash(stream);
+                return BitConverter.ToString(checksum).Replace("-", String.Empty);
+            }
+        }
     }
 }

@@ -15,6 +15,7 @@ namespace NAppUpdate.Tests.Conditions
 
 			var cnd = new FileVersionCondition {ComparisonType = "is", LocalPath = tempFile, Version = "1.0.0.0"};
 			Assert.IsTrue(cnd.IsMet(null));
+            File.Delete(tempFile);
 		}
 	}
 }
