@@ -22,7 +22,7 @@ namespace NAppUpdate.Framework.FeedReaders
         private const string sigName = "RSASignature";
 
 
-        public IList<IUpdateTask> Read(string feed)
+        public new IList<IUpdateTask> Read(string feed)
         {
             var nothing = new List<IUpdateTask>();
             var ret = base.Read(feed);
@@ -106,7 +106,6 @@ namespace NAppUpdate.Framework.FeedReaders
             {
                 throw new FeedReaderException("The given public key contains both private and public parts. Please dont publish your private keys publicly.");
             }
-
             return provider.VerifyHash(hash, "sha512", Convert.FromBase64String(sig));
         }
     }

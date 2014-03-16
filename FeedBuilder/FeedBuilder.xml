@@ -105,6 +105,23 @@
             <param name="h"> Find handle returned by FindFirstFile. </param>
             <param name="p"> Path corresponding to find handle. </param>
         </member>
+        <member name="F:FeedBuilder.frmCreateNewSignatureFile.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:FeedBuilder.frmCreateNewSignatureFile.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:FeedBuilder.frmCreateNewSignatureFile.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
         <member name="F:FeedBuilder.frmMain.components">
             <summary>
             Required designer variable.
