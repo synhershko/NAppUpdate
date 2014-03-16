@@ -237,7 +237,13 @@ namespace FeedBuilder
             if (string.IsNullOrEmpty(txtFeedXML.Text))
             {
                 const string msg = "The feed file location needs to be defined.\n" + "The outputs cannot be generated without this.";
-                if (_argParser.ShowGui) MessageBox.Show(msg);
+                if (_argParser.ShowGui)
+                {
+                    MessageBox.Show(msg);
+                } else
+                {
+                    throw new Exception(msg);
+                }
                 Console.WriteLine(msg);
                 return;
             }
