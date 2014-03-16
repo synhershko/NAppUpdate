@@ -74,8 +74,20 @@ namespace FeedBuilder
             }
             InitializeFormSettings();
             if (_argParser.ShowGui) Show();
-            if (_argParser.Build) Build();
-            if (!_argParser.ShowGui) Close();
+            if (_argParser.Build)
+            {
+                try
+                {
+                    Build();
+                }
+                catch (Exception)
+                {
+                    throw;
+                } finally
+                {
+                    if (!_argParser.ShowGui) Close();
+                }
+            } else if (!_argParser.ShowGui) Close();
         }
 
         private void InitializeFormSettings()
