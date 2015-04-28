@@ -97,6 +97,7 @@ namespace NAppUpdate.Updater
 				tempFolder = dto.Configs.TempFolder;
 				string backupFolder = dto.Configs.BackupFolder;
 				bool relaunchApp = dto.RelaunchApplication;
+                string relaunchAppArgs = dto.Configs.RelaunchAppArgs;
 
 				if (!string.IsNullOrEmpty(dto.AppPath)) logFile = Path.Combine(Path.GetDirectoryName(dto.AppPath), @"NauUpdate.log"); // now we can log to a more accessible location
 
@@ -163,6 +164,7 @@ namespace NAppUpdate.Updater
 							UseShellExecute = false,
 							WorkingDirectory = appDir,
 							FileName = appPath,
+                            Arguments=  relaunchAppArgs, 
 						};
 					}
 					else
@@ -172,6 +174,7 @@ namespace NAppUpdate.Updater
 							UseShellExecute = true,
 							WorkingDirectory = appDir,
 							FileName = appPath,
+                            Arguments = relaunchAppArgs, 
 						};
 					}
 
