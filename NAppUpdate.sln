@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{BDD7694F-9B8D-45B1-B75E-3901BC6F04DD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{78F44777-F4E4-4154-A396-80DAD1E47065}"
@@ -22,8 +24,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeedBuilder", "FeedBuilder\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsProgressSample", "Samples\WinFormsProgressSample\WinFormsProgressSample.csproj", "{991B322D-C0EC-47A6-B67A-665C873C7B19}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{6C8DFE63-0E91-4545-B426-6CF5515B208B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{C96B49BB-EBB0-4B60-A183-D6EAA7E2243B}"
 	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
@@ -115,8 +119,8 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7D4D18D4-DBD2-4ADC-9D82-397D6C5E9F40} = {BDD7694F-9B8D-45B1-B75E-3901BC6F04DD}
-		{5C07EBDF-D43F-4BE9-B560-D7A443C0EDCE} = {BDD7694F-9B8D-45B1-B75E-3901BC6F04DD}
 		{D4321517-F941-4B1C-A9F7-9F63F5B86EE8} = {78F44777-F4E4-4154-A396-80DAD1E47065}
+		{5C07EBDF-D43F-4BE9-B560-D7A443C0EDCE} = {BDD7694F-9B8D-45B1-B75E-3901BC6F04DD}
 		{935426A8-2F13-449E-A808-A3BD07AA3570} = {78F44777-F4E4-4154-A396-80DAD1E47065}
 		{991B322D-C0EC-47A6-B67A-665C873C7B19} = {78F44777-F4E4-4154-A396-80DAD1E47065}
 	EndGlobalSection
