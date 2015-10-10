@@ -451,14 +451,14 @@ namespace FeedBuilder
 			FileSystemEnumerator enumerator = new FileSystemEnumerator(txtOutputFolder.Text.Trim(), "*.*", true);
 			foreach (FileInfo fi in enumerator.Matches()) {
 				string thisFile = fi.FullName;
-				if ((IsIgnorable(thisFile))) continue;
+				if (IsIgnorable(thisFile)) continue;
 				FileInfoEx thisInfo = new FileInfoEx(thisFile,outputDirLength);
 				ListViewItem thisItem = new ListViewItem(thisInfo.RelativeName, GetImageIndex(thisInfo.FileInfo.Extension));
 				thisItem.SubItems.Add(thisInfo.FileVersion);
 				thisItem.SubItems.Add(thisInfo.FileInfo.Length.ToString(CultureInfo.InvariantCulture));
 				thisItem.SubItems.Add(thisInfo.FileInfo.LastWriteTime.ToString(CultureInfo.InvariantCulture));
 				thisItem.SubItems.Add(thisInfo.Hash);
-				thisItem.Checked = (!Settings.Default.IgnoreFiles.Contains(thisInfo.FileInfo.Name));
+				thisItem.Checked = (!Settings.Default.IgnoreFiles.Contains(thisInfo.RelativeName));
 				thisItem.Tag = thisInfo;
 				lstFiles.Items.Add(thisItem);
 			}
