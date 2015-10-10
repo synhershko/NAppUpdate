@@ -112,11 +112,17 @@ namespace FeedBuilder
                 }
             }
         }
+
+        void CheckSecurity(string folderPath)
+        {
+            new FileIOPermission(FileIOPermissionAccess.PathDiscovery, Path.Combine(folderPath, ".")).Demand();
+        }
+
         private IEnumerable<string> ProcessSubdirectories(string folderPath)
         {
 
             // check security - ensure that caller has rights to read this directory
-            new FileIOPermission(FileIOPermissionAccess.PathDiscovery, Path.Combine(folderPath, ".")).Demand();
+            CheckSecurity(folderPath);
             foreach (var d in Directory.GetDirectories(folderPath))
             {
                 new FileIOPermission(FileIOPermissionAccess.PathDiscovery, Path.Combine(d, ".")).Demand();
@@ -141,7 +147,7 @@ namespace FeedBuilder
                 string path = rootPath.Trim();
 
                 // check security - ensure that caller has rights to read this directory
-                new FileIOPermission(FileIOPermissionAccess.PathDiscovery, Path.Combine(path, ".")).Demand();
+                CheckSecurity(path);
 
                 foreach (var fi in ProcessFiles(path))
                     yield return fi;
