@@ -4,89 +4,6 @@
         <name>FeedBuilder</name>
     </assembly>
     <members>
-        <member name="T:FeedBuilder.Properties.Resources">
-            <summary>
-              A strongly-typed resource class, for looking up localized strings, etc.
-            </summary>
-        </member>
-        <member name="P:FeedBuilder.Properties.Resources.ResourceManager">
-            <summary>
-              Returns the cached ResourceManager instance used by this class.
-            </summary>
-        </member>
-        <member name="P:FeedBuilder.Properties.Resources.Culture">
-            <summary>
-              Overrides the current thread's CurrentUICulture property for all
-              resource lookups using this strongly typed resource class.
-            </summary>
-        </member>
-        <member name="M:FeedBuilder.HelpfulTextBox.SetCue">
-            <summary>
-              Actually, the system cue only works for editable (i.e. not read-only) text boxes.
-            </summary>
-            <remarks>
-            </remarks>
-        </member>
-        <member name="F:FeedBuilder.HelpfulTextBox.components">
-            <summary>
-            Required designer variable.
-            </summary>
-        </member>
-        <member name="M:FeedBuilder.HelpfulTextBox.Dispose(System.Boolean)">
-            <summary> 
-            Clean up any resources being used.
-            </summary>
-            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        </member>
-        <member name="M:FeedBuilder.HelpfulTextBox.InitializeComponent">
-            <summary>
-            Required method for Designer support - do not modify
-            the contents of this method with the code editor.
-            </summary>
-        </member>
-        <member name="F:FeedBuilder.frmMain.components">
-            <summary>
-            Required designer variable.
-            </summary>
-        </member>
-        <member name="M:FeedBuilder.frmMain.Dispose(System.Boolean)">
-            <summary>
-            Clean up any resources being used.
-            </summary>
-            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        </member>
-        <member name="M:FeedBuilder.frmMain.InitializeComponent">
-            <summary>
-            Required method for Designer support - do not modify
-            the contents of this method with the code editor.
-            </summary>
-        </member>
-        <member name="T:FeedBuilder.Win32.FindData">
-            <summary>
-              Structure that maps to WIN32_FIND_DATA
-            </summary>
-        </member>
-        <member name="T:FeedBuilder.Win32.SafeFindHandle">
-            <summary>
-              SafeHandle class for holding find handles
-            </summary>
-        </member>
-        <member name="M:FeedBuilder.Win32.SafeFindHandle.#ctor">
-            <summary>
-              Constructor
-            </summary>
-        </member>
-        <member name="M:FeedBuilder.Win32.SafeFindHandle.ReleaseHandle">
-            <summary>
-              Release the find handle
-            </summary>
-            <returns> true if the handle was released </returns>
-        </member>
-        <member name="T:FeedBuilder.Win32.SafeNativeMethods">
-            <summary>
-              Wrapper for P/Invoke methods used by FileSystemEnumerator
-            </summary>
-        </member>
         <member name="T:FeedBuilder.FileSystemEnumerator">
             <summary>
               File system enumerator.  This class provides an easy to use, efficient mechanism for searching a list of
@@ -94,12 +11,22 @@
               are consumed, so the overhead before processing the first match is always kept to a minimum.
             </summary>
         </member>
-        <member name="F:FeedBuilder.FileSystemEnumerator.m_scopes">
+        <member name="T:FeedBuilder.FileSystemEnumerator.SearchInfo">
             <summary>
-              Stack of open scopes.  This is a member (instead of a local variable)
-              to allow Dispose to close any open find handles if the object is disposed
-              before the enumeration is completed.
+              Information that's kept in our stack for simulated recursion
             </summary>
+        </member>
+        <member name="F:FeedBuilder.FileSystemEnumerator.SearchInfo.Path">
+            <summary>
+              Path that was searched to yield the find handle.
+            </summary>
+        </member>
+        <member name="M:FeedBuilder.FileSystemEnumerator.SearchInfo.#ctor(System.String)">
+            <summary>
+              Constructor
+            </summary>
+            <param name="h"> Find handle returned by FindFirstFile. </param>
+            <param name="p"> Path corresponding to find handle. </param>
         </member>
         <member name="F:FeedBuilder.FileSystemEnumerator.m_paths">
             <summary>
@@ -140,31 +67,66 @@
               searches directories incrementally as matches are consumed.
             </remarks>
         </member>
-        <member name="T:FeedBuilder.FileSystemEnumerator.SearchInfo">
+        <member name="F:FeedBuilder.frmMain.components">
             <summary>
-              Information that's kept in our stack for simulated recursion
+            Required designer variable.
             </summary>
         </member>
-        <member name="F:FeedBuilder.FileSystemEnumerator.SearchInfo.Handle">
+        <member name="M:FeedBuilder.frmMain.Dispose(System.Boolean)">
             <summary>
-              Find handle returned by FindFirstFile
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:FeedBuilder.frmMain.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
             </summary>
         </member>
-        <member name="F:FeedBuilder.FileSystemEnumerator.SearchInfo.Path">
+        <member name="M:FeedBuilder.HelpfulTextBox.SetCue">
             <summary>
-              Path that was searched to yield the find handle.
+              Actually, the system cue only works for editable (i.e. not read-only) text boxes.
+            </summary>
+            <remarks>
+            </remarks>
+        </member>
+        <member name="F:FeedBuilder.HelpfulTextBox.components">
+            <summary>
+            Required designer variable.
             </summary>
         </member>
-        <member name="M:FeedBuilder.FileSystemEnumerator.SearchInfo.#ctor(FeedBuilder.Win32.SafeFindHandle,System.String)">
-            <summary>
-              Constructor
+        <member name="M:FeedBuilder.HelpfulTextBox.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
             </summary>
-            <param name="h"> Find handle returned by FindFirstFile. </param>
-            <param name="p"> Path corresponding to find handle. </param>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:FeedBuilder.HelpfulTextBox.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
         </member>
         <member name="M:FeedBuilder.Program.Main">
             <summary>
             The main entry point for the application.
+            </summary>
+        </member>
+        <member name="T:FeedBuilder.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:FeedBuilder.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:FeedBuilder.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
             </summary>
         </member>
     </members>
