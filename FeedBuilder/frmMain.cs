@@ -3,7 +3,9 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using FeedBuilder.Properties;
@@ -74,7 +76,7 @@ namespace FeedBuilder
             if (!_argParser.ShowGui) Close();
         }
 
-        private void InitializeFormSettings()
+        private async Task InitializeFormSettings()
         {
             if (!string.IsNullOrEmpty(Settings.Default.OutputFolder) && Directory.Exists(Settings.Default.OutputFolder)) txtOutputFolder.Text = Settings.Default.OutputFolder;
             if (!string.IsNullOrEmpty(Settings.Default.FeedXML)) txtFeedXML.Text = Settings.Default.FeedXML;
@@ -91,7 +93,7 @@ namespace FeedBuilder
             chkCleanUp.Checked = Settings.Default.CleanUp;
 
             if (Settings.Default.IgnoreFiles == null) Settings.Default.IgnoreFiles = new StringCollection();
-            ReadFiles();
+            await ReadFiles();
             UpdateTitle();
         }
 
@@ -474,7 +476,7 @@ namespace FeedBuilder
             }
         }
 
-        private void ReadFiles()
+        private async Task ReadFiles()
         {
             if (string.IsNullOrEmpty(txtOutputFolder.Text.Trim()) || !Directory.Exists(txtOutputFolder.Text.Trim())) return;
 
@@ -485,18 +487,17 @@ namespace FeedBuilder
             int outputDirLength = txtOutputFolder.Text.Trim().Length;
 
             FileSystemEnumerator enumerator = new FileSystemEnumerator(txtOutputFolder.Text.Trim(), "*.*", true);
-            foreach (FileInfo fi in enumerator.Matches())
+            foreach (FileInfoEx fi in (await enumerator.MatchesToFileInfoExAsync(outputDirLength)).ToList())
             {
-                string thisFile = fi.FullName;
-                if (IsIgnorable(thisFile)) continue;
-                FileInfoEx thisInfo = new FileInfoEx(thisFile, outputDirLength);
-                ListViewItem thisItem = new ListViewItem(thisInfo.RelativeName, GetImageIndex(thisInfo.FileInfo.Extension));
-                thisItem.SubItems.Add(thisInfo.FileVersion);
-                thisItem.SubItems.Add(thisInfo.FileInfo.Length.ToString(CultureInfo.InvariantCulture));
-                thisItem.SubItems.Add(thisInfo.FileInfo.LastWriteTime.ToString(CultureInfo.InvariantCulture));
-                thisItem.SubItems.Add(thisInfo.Hash);
-                thisItem.Checked = (!Settings.Default.IgnoreFiles.Contains(thisInfo.RelativeName));
-                thisItem.Tag = thisInfo;
+                string thisFile = fi.FileInfo.FullName;
+                if ((IsIgnorable(thisFile))) continue;
+                ListViewItem thisItem = new ListViewItem(fi.RelativeName, GetImageIndex(fi.FileInfo.Extension));
+                thisItem.SubItems.Add(fi.FileVersion);
+                thisItem.SubItems.Add(fi.FileInfo.Length.ToString(CultureInfo.InvariantCulture));
+                thisItem.SubItems.Add(fi.FileInfo.LastWriteTime.ToString(CultureInfo.InvariantCulture));
+                thisItem.SubItems.Add(fi.Hash);
+                thisItem.Checked = (!Settings.Default.IgnoreFiles.Contains(fi.FileInfo.Name));
+                thisItem.Tag = fi;
                 lstFiles.Items.Add(thisItem);
             }
             lstFiles.EndUpdate();

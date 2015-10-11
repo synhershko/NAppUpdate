@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Permissions;
 using System.Text.RegularExpressions;
-
+using System.Threading.Tasks;
 namespace FeedBuilder
 {
 
@@ -14,32 +15,7 @@ namespace FeedBuilder
     /// </summary>
     public sealed class FileSystemEnumerator : IDisposable
     {
-        /// <summary>
-        ///   Information that's kept in our stack for simulated recursion
-        /// </summary>
-        private struct SearchInfo
-        {
-
-
-            /// <summary>
-            ///   Path that was searched to yield the find handle.
-            /// </summary>
-            public readonly string Path;
-
-            /// <summary>
-            ///   Constructor
-            /// </summary>
-            /// <param name="h"> Find handle returned by FindFirstFile. </param>
-            /// <param name="p"> Path corresponding to find handle. </param>
-            public SearchInfo(string p)
-            {
-                Path = p;
-            }
-        }
-
-
-
-        /// <summary>
+         /// <summary>
         ///   Array of paths to be searched.
         /// </summary>
         private readonly string[] m_paths;
@@ -142,6 +118,7 @@ namespace FeedBuilder
         /// </remarks>
         public IEnumerable<FileInfo> Matches()
         {
+
             foreach (string rootPath in m_paths)
             {
                 string path = rootPath.Trim();
@@ -165,6 +142,16 @@ namespace FeedBuilder
 
             }
         }
+
+        public Task<IEnumerable<FileInfoEx>> MatchesToFileInfoExAsync(int outputDirLength)
+        {
+            return Task.Run(() =>
+           {
+               return Matches()
+               .OrderBy(f => f.FullName)
+               .Select(f => new FileInfoEx(f.FullName, outputDirLength))
+              .ToList().AsEnumerable();
+           });
+        }
     }
 }
-
