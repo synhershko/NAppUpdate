@@ -487,6 +487,8 @@ namespace FeedBuilder
             int outputDirLength = txtOutputFolder.Text.Trim().Length;
 
             FileSystemEnumerator enumerator = new FileSystemEnumerator(txtOutputFolder.Text.Trim(), "*.*", true);
+            frmWait wait = new frmWait();
+            wait.Show(this);
             foreach (FileInfoEx fi in (await enumerator.MatchesToFileInfoExAsync(outputDirLength)).ToList())
             {
                 string thisFile = fi.FileInfo.FullName;
@@ -501,6 +503,7 @@ namespace FeedBuilder
                 lstFiles.Items.Add(thisItem);
             }
             lstFiles.EndUpdate();
+            wait.Close();
         }
 
         private bool IsIgnorable(string filename)
