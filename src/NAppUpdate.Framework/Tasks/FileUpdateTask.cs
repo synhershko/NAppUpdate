@@ -1,12 +1,11 @@
 ﻿using System;
 using System.IO;
-using System.Threading;
 using NAppUpdate.Framework.Common;
 using NAppUpdate.Framework.Utils;
 
 namespace NAppUpdate.Framework.Tasks
 {
-	[Serializable]
+    [Serializable]
 	[UpdateTaskAlias("fileUpdate")]
 	public class FileUpdateTask : UpdateTaskBase
 	{
@@ -58,7 +57,7 @@ namespace NAppUpdate.Framework.Tasks
 
 			if (!string.IsNullOrEmpty(Sha256Checksum))
 			{
-				string checksum = Utils.FileChecksum.GetSHA256Checksum(_tempFile);
+				string checksum = FileChecksum.GetSHA256Checksum(_tempFile);
 				if (!checksum.Equals(Sha256Checksum))
 					throw new UpdateProcessFailedException(string.Format("FileUpdateTask: Checksums do not match; expected {0} but got {1}", Sha256Checksum, checksum));
 			}
