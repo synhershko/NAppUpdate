@@ -30,6 +30,7 @@
         {
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.lblFileCount = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -54,6 +55,15 @@
             this.label1.TabIndex = 1;
             this.label1.Text = "Loading files.  Please wait....";
             // 
+            // lblFileCount
+            // 
+            this.lblFileCount.AutoSize = true;
+            this.lblFileCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.lblFileCount.Location = new System.Drawing.Point(136, 9);
+            this.lblFileCount.Name = "lblFileCount";
+            this.lblFileCount.Size = new System.Drawing.Size(0, 20);
+            this.lblFileCount.TabIndex = 2;
+            // 
             // frmWait
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -61,6 +71,7 @@
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(479, 116);
             this.ControlBox = false;
+            this.Controls.Add(this.lblFileCount);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBox1);
             this.Name = "frmWait";
@@ -75,5 +86,6 @@
 
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblFileCount;
     }
 }

@@ -34,6 +34,7 @@ namespace FeedBuilder
         public string FileName { get; set; }
         public bool ShowGui { get; set; }
 
+
         #endregion
 
         #region " Loading/Initialization/Lifetime"
@@ -487,23 +488,28 @@ namespace FeedBuilder
             int outputDirLength = txtOutputFolder.Text.Trim().Length;
 
             FileSystemEnumerator enumerator = new FileSystemEnumerator(txtOutputFolder.Text.Trim(), "*.*", true);
-            frmWait wait = new frmWait();
-            wait.Show(this);
-            foreach (FileInfoEx fi in (await enumerator.MatchesToFileInfoExAsync(outputDirLength)).ToList())
+            using (frmWait wait = new frmWait())
             {
-                string thisFile = fi.FileInfo.FullName;
-                if ((IsIgnorable(thisFile))) continue;
-                ListViewItem thisItem = new ListViewItem(fi.RelativeName, GetImageIndex(fi.FileInfo.Extension));
-                thisItem.SubItems.Add(fi.FileVersion);
-                thisItem.SubItems.Add(fi.FileInfo.Length.ToString(CultureInfo.InvariantCulture));
-                thisItem.SubItems.Add(fi.FileInfo.LastWriteTime.ToString(CultureInfo.InvariantCulture));
-                thisItem.SubItems.Add(fi.Hash);
-                thisItem.Checked = (!Settings.Default.IgnoreFiles.Contains(fi.FileInfo.Name));
-                thisItem.Tag = fi;
-                lstFiles.Items.Add(thisItem);
+
+                wait.Show(this);
+                enumerator.FileProcessed += new EventHandler<FileProcessedEventArgs>(wait.FileProcessed);
+                foreach (FileInfoEx fi in (await enumerator.MatchesToFileInfoExAsync(outputDirLength)).ToList())
+                {
+                    string thisFile = fi.FileInfo.FullName;
+                    if ((IsIgnorable(thisFile))) continue;
+                    ListViewItem thisItem = new ListViewItem(fi.RelativeName, GetImageIndex(fi.FileInfo.Extension));
+                    thisItem.SubItems.Add(fi.FileVersion);
+                    thisItem.SubItems.Add(fi.FileInfo.Length.ToString(CultureInfo.InvariantCulture));
+                    thisItem.SubItems.Add(fi.FileInfo.LastWriteTime.ToString(CultureInfo.InvariantCulture));
+                    thisItem.SubItems.Add(fi.Hash);
+                    thisItem.Checked = (!Settings.Default.IgnoreFiles.Contains(fi.FileInfo.Name));
+                    thisItem.Tag = fi;
+                    lstFiles.Items.Add(thisItem);
+                }
+                lstFiles.EndUpdate();
+                enumerator.FileProcessed -= new EventHandler<FileProcessedEventArgs>(wait.FileProcessed);
+                wait.Close();
             }
-            lstFiles.EndUpdate();
-            wait.Close();
         }
 
         private bool IsIgnorable(string filename)

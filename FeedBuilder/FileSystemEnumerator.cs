@@ -15,7 +15,7 @@ namespace FeedBuilder
     /// </summary>
     public sealed class FileSystemEnumerator : IDisposable
     {
-         /// <summary>
+        /// <summary>
         ///   Array of paths to be searched.
         /// </summary>
         private readonly string[] m_paths;
@@ -51,7 +51,7 @@ namespace FeedBuilder
         public FileSystemEnumerator(string pathsToSearch, string fileTypesToMatch, bool includeSubDirs)
         {
 
-
+            
             // check for nulls
             if (null == pathsToSearch) throw new ArgumentNullException("pathsToSearch");
             if (null == fileTypesToMatch) throw new ArgumentNullException("fileTypesToMatch");
@@ -107,6 +107,16 @@ namespace FeedBuilder
                     yield return sd;
             }
         }
+
+        public event EventHandler<FileProcessedEventArgs> FileProcessed;
+
+        // Invoke the Changed event; called whenever list changes:
+        private  void OnFileProcess(FileProcessedEventArgs e)
+        {
+            if (FileProcessed != null)
+                FileProcessed(this, e);
+        }
+
         /// <summary>
         ///   Get an enumerator that returns all of the files that match the wildcards that
         ///   are in any of the directories to be searched.
@@ -143,15 +153,34 @@ namespace FeedBuilder
             }
         }
 
+
+
         public Task<IEnumerable<FileInfoEx>> MatchesToFileInfoExAsync(int outputDirLength)
         {
             return Task.Run(() =>
            {
-               return Matches()
-               .OrderBy(f => f.FullName)
-               .Select(f => new FileInfoEx(f.FullName, outputDirLength))
-              .ToList().AsEnumerable();
+               int count = 0;
+               var FileInfos = new List<FileInfoEx>();
+               foreach (var m in Matches())
+               {
+                   FileInfos.Add(new FileInfoEx(m.FullName, outputDirLength));
+                   count++;
+                   OnFileProcess(new FileProcessedEventArgs(count));
+               }
+
+               return FileInfos
+                .OrderBy(f => f.FileInfo.FullName).AsEnumerable();
+               
            });
         }
+    }
+}
+public class FileProcessedEventArgs:EventArgs
+{
+    public int FileProcesCount { get; private set; }
+
+    public FileProcessedEventArgs(int FileProcesCount)
+    {
+        this.FileProcesCount = FileProcesCount;
     }
 }
