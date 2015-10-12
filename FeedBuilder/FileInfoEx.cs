@@ -4,26 +4,26 @@ using NAppUpdate.Framework.Utils;
 
 namespace FeedBuilder
 {
-	public class FileInfoEx
-	{
-		private readonly FileInfo myFileInfo;
-		private readonly string myFileVersion;
-		private readonly string myHash;
+    public class FileInfoEx
+    {
+        private readonly FileInfo myFileInfo;
+        private readonly string myFileVersion;
+        private readonly string myHash;
 
-		public FileInfo FileInfo
-		{
-			get { return myFileInfo; }
-		}
+        public FileInfo FileInfo
+        {
+            get { return myFileInfo; }
+        }
 
-		public string FileVersion
-		{
-			get { return myFileVersion; }
-		}
+        public string FileVersion
+        {
+            get { return myFileVersion; }
+        }
 
-		public string Hash
-		{
-			get { return myHash; }
-		}
+        public string Hash
+        {
+            get { return myHash; }
+        }
 
         public string RelativeName { get; private set; }
 

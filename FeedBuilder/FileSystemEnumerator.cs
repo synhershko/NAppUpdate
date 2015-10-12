@@ -51,7 +51,7 @@ namespace FeedBuilder
         public FileSystemEnumerator(string pathsToSearch, string fileTypesToMatch, bool includeSubDirs)
         {
 
-            
+
             // check for nulls
             if (null == pathsToSearch) throw new ArgumentNullException("pathsToSearch");
             if (null == fileTypesToMatch) throw new ArgumentNullException("fileTypesToMatch");
@@ -111,7 +111,7 @@ namespace FeedBuilder
         public event EventHandler<FileProcessedEventArgs> FileProcessed;
 
         // Invoke the Changed event; called whenever list changes:
-        private  void OnFileProcess(FileProcessedEventArgs e)
+        private void OnFileProcess(FileProcessedEventArgs e)
         {
             if (FileProcessed != null)
                 FileProcessed(this, e);
@@ -170,12 +170,12 @@ namespace FeedBuilder
 
                return FileInfos
                 .OrderBy(f => f.FileInfo.FullName).AsEnumerable();
-               
+
            });
         }
     }
 }
-public class FileProcessedEventArgs:EventArgs
+public class FileProcessedEventArgs : EventArgs
 {
     public int FileProcesCount { get; private set; }
 
