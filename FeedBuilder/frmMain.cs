@@ -487,7 +487,7 @@ namespace FeedBuilder
             string outputDir = txtOutputFolder.Text.Trim();
             int outputDirLength = txtOutputFolder.Text.Trim().Length;
 
-            FileSystemEnumerator enumerator = new FileSystemEnumerator(txtOutputFolder.Text.Trim(), "*.*", true);
+            FileSystemEnumerator enumerator = new FileSystemEnumerator(txtOutputFolder.Text.Trim(), "*", "NauUpdate.log", true);
             using (frmWait wait = new frmWait())
             {
 

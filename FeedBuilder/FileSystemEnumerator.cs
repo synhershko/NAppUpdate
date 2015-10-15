@@ -26,6 +26,11 @@ namespace FeedBuilder
         private readonly List<Regex> m_fileSpecs;
 
         /// <summary>
+        ///   Array of regular expressions that will detect matching files to exclude.
+        /// </summary>
+        private readonly List<Regex> m_excludeFileSpecs;
+
+        /// <summary>
         ///   If true, sub-directories are searched.
         /// </summary>
         private readonly bool m_includeSubDirs;
@@ -45,10 +50,10 @@ namespace FeedBuilder
         /// <summary>
         ///   Constructor.
         /// </summary>
-        /// <param name="pathsToSearch"> Semicolon- or comma-delimitted list of paths to search. </param>
-        /// <param name="fileTypesToMatch"> Semicolon- or comma-delimitted list of wildcard filespecs to match. </param>
+        /// <param name="pathsToSearch"> Semicolon- or comma-delimited list of paths to search. </param>
+        /// <param name="fileTypesToMatch"> Semicolon- or comma-delimited list of wildcard filespecs to match. </param>
         /// <param name="includeSubDirs"> If true, subdirectories are searched. </param>
-        public FileSystemEnumerator(string pathsToSearch, string fileTypesToMatch, bool includeSubDirs)
+        public FileSystemEnumerator(string pathsToSearch, string fileTypesToMatch, string excludeFileTypesToMatch, bool includeSubDirs)
         {
 
 
@@ -57,18 +62,27 @@ namespace FeedBuilder
             if (null == fileTypesToMatch) throw new ArgumentNullException("fileTypesToMatch");
 
             // make sure spec doesn't contain invalid characters
-            if (fileTypesToMatch.IndexOfAny(new[] { ':', '<', '>', '/', '\\' }) >= 0) throw new ArgumentException("invalid cahracters in wildcard pattern", "fileTypesToMatch");
+            if (fileTypesToMatch.IndexOfAny(new[] { ':', '<', '>', '/', '\\' }) >= 0) throw new ArgumentException("invalid characters in wildcard pattern", "fileTypesToMatch");
 
             m_includeSubDirs = includeSubDirs;
             m_paths = pathsToSearch.Split(new[] { ';', ',' });
 
             string[] specs = fileTypesToMatch.Split(new[] { ';', ',' });
+            string[] exSpecs = string.IsNullOrEmpty(excludeFileTypesToMatch) ? new string[] { } : excludeFileTypesToMatch.Split(new[] { ';', ',' });
             m_fileSpecs = new List<Regex>(specs.Length);
+            m_excludeFileSpecs = new List<Regex>(exSpecs.Length);
             foreach (string spec in specs)
             {
                 // trim whitespace off file spec and convert Win32 wildcards to regular expressions
                 string pattern = spec.Trim().Replace(".", @"\.").Replace("*", @".*").Replace("?", @".?");
                 m_fileSpecs.Add(new Regex("^" + pattern + "$", RegexOptions.IgnoreCase));
+            }
+
+            foreach (string spec in exSpecs)
+            {
+                // trim whitespace off file spec and convert Win32 wildcards to regular expressions
+                string pattern = spec.Trim().Replace(".", @"\.").Replace("*", @".*").Replace("?", @".?");
+                m_excludeFileSpecs.Add(new Regex("^" + pattern + "$", RegexOptions.IgnoreCase));
             }
         }
 
@@ -82,8 +96,15 @@ namespace FeedBuilder
                     // if this spec matches, return this file's info
                     if (fileSpec.IsMatch(tmpFile))
                     {
-                        yield return new FileInfo(file);
-                        break;
+                        bool showFile = true;
+                        foreach (Regex exSpec in m_excludeFileSpecs)
+                            if (exSpec.IsMatch(tmpFile))
+                                showFile=false;
+                        if (showFile)
+                        {
+                            yield return new FileInfo(file);
+                            break;
+                        }
                     }
                 }
             }
