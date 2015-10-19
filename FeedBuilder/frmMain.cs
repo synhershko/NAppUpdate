@@ -151,9 +151,22 @@ namespace FeedBuilder
             OpenOutputsFolder();
         }
 
-        private void btnNew_Click(Object sender, EventArgs e)
+        private void ResetSettings()
         {
             Settings.Default.Reset();
+            Settings.Default.BaseURL = "";
+            Settings.Default.OutputFolder = "";
+            Settings.Default.FeedXML = "";
+            Settings.Default.IgnoreFiles = new StringCollection();
+
+            txtOutputFolder.Text = "";
+            txtFeedXML.Text = "";
+            txtBaseURL.Text = "";
+            lstFiles.Items.Clear();
+        }
+        private void btnNew_Click(Object sender, EventArgs e)
+        {
+            ResetSettings();
             InitializeFormSettings();
         }
 
@@ -172,6 +185,7 @@ namespace FeedBuilder
             else dlg = _openDialog;
             dlg.Filter = DialogFilter;
             if (dlg.ShowDialog() != DialogResult.OK) return;
+            ResetSettings();
             FeedBuilderSettingsProvider p = new FeedBuilderSettingsProvider();
             p.LoadFrom(dlg.FileName);
             FileName = dlg.FileName;
