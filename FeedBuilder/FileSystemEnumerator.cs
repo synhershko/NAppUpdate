@@ -132,7 +132,7 @@ namespace FeedBuilder
 
         public event EventHandler<FileProcessedEventArgs> FileProcessed;
 
-        // Invoke the Changed event; called whenever list changes:
+        // Invoke the FileProcessed event; called whenever a file is processed:
         private void OnFileProcess(FileProcessedEventArgs e)
         {
             if (FileProcessed != null)
