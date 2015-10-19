@@ -637,7 +637,10 @@ namespace FeedBuilder
 
             else
             {
-
+                if (txtSelect.Text == "*")
+                    txtSelect.Text = ".*";
+                txtSelect.SelectionStart = txtSelect.SelectionStart = txtSelect.TextLength ;
+                txtSelect.SelectionLength = 0;
 
                 try
                 {
@@ -651,6 +654,7 @@ namespace FeedBuilder
                             li.Selected = true;
                     }
                 }
+                catch { }
                 finally
                 {
                     lstFiles.EndUpdate();
