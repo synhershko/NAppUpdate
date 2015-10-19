@@ -39,10 +39,10 @@ namespace FeedBuilder
 
         #region " Loading/Initialization/Lifetime"
 
-        private void frmMain_Load(Object sender, EventArgs e)
+        private async void frmMain_Load(Object sender, EventArgs e)
         {
             Visible = false;
-            InitializeFormSettings();
+           
             string[] args = Environment.GetCommandLineArgs();
             // The first arg is the path to ourself
             //If args.Count >= 2 Then
@@ -72,6 +72,7 @@ namespace FeedBuilder
                     UpdateTitle();
                 }
             }
+            await InitializeFormSettings();
             if (_argParser.ShowGui) Show();
             if (_argParser.Build) Build();
             if (!_argParser.ShowGui) Close();
