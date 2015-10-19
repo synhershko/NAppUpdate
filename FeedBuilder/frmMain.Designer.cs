@@ -137,21 +137,9 @@ namespace FeedBuilder
             // 
             // imgFiles
             // 
-            this.imgFiles.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgFiles.ImageStream")));
+            this.imgFiles.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            this.imgFiles.ImageSize = new System.Drawing.Size(16, 16);
             this.imgFiles.TransparentColor = System.Drawing.Color.Transparent;
-            this.imgFiles.Images.SetKeyName(0, "file_extension_other.png");
-            this.imgFiles.Images.SetKeyName(1, "file_extension_bmp.png");
-            this.imgFiles.Images.SetKeyName(2, "file_extension_dll.png");
-            this.imgFiles.Images.SetKeyName(3, "file_extension_doc.png");
-            this.imgFiles.Images.SetKeyName(4, "file_extension_exe.png");
-            this.imgFiles.Images.SetKeyName(5, "file_extension_htm.png");
-            this.imgFiles.Images.SetKeyName(6, "file_extension_jpg.png");
-            this.imgFiles.Images.SetKeyName(7, "file_extension_pdf.png");
-            this.imgFiles.Images.SetKeyName(8, "file_extension_png.png");
-            this.imgFiles.Images.SetKeyName(9, "file_extension_txt.png");
-            this.imgFiles.Images.SetKeyName(10, "file_extension_wav.png");
-            this.imgFiles.Images.SetKeyName(11, "file_extension_wmv.png");
-            this.imgFiles.Images.SetKeyName(12, "file_extension_zip.png");
             // 
             // fbdOutputFolder
             // 
@@ -507,10 +495,10 @@ namespace FeedBuilder
             // 
             // txtSelect
             // 
-            this.txtSelect.HelpfulText = "Type to select all files in the list that match. ";
+            this.txtSelect.HelpfulText = "Type to select all files in the list that match the entered regex pattern. ";
             this.txtSelect.Location = new System.Drawing.Point(137, 208);
             this.txtSelect.Name = "txtSelect";
-            this.txtSelect.Size = new System.Drawing.Size(259, 20);
+            this.txtSelect.Size = new System.Drawing.Size(343, 20);
             this.txtSelect.TabIndex = 18;
             this.txtSelect.TextChanged += new System.EventHandler(this.txtSelect_TextChanged);
             // 

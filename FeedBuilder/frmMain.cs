@@ -491,45 +491,6 @@ namespace FeedBuilder
             process.Start();
         }
 
-        private int GetImageIndex(string ext)
-        {
-            switch (ext.Trim('.'))
-            {
-                case "bmp":
-                    return 1;
-                case "dll":
-                    return 2;
-                case "doc":
-                case "docx":
-                    return 3;
-                case "exe":
-                    return 4;
-                case "htm":
-                case "html":
-                    return 5;
-                case "jpg":
-                case "jpeg":
-                    return 6;
-                case "pdf":
-                    return 7;
-                case "png":
-                    return 8;
-                case "txt":
-                    return 9;
-                case "wav":
-                case "mp3":
-                    return 10;
-                case "wmv":
-                    return 11;
-                case "xls":
-                case "xlsx":
-                    return 12;
-                case "zip":
-                    return 13;
-                default:
-                    return 0;
-            }
-        }
 
         private async Task ReadFiles()
         {
@@ -550,8 +511,13 @@ namespace FeedBuilder
                 foreach (FileInfoEx fi in (await enumerator.MatchesToFileInfoExAsync(outputDirLength)).ToList())
                 {
                     string thisFile = fi.FileInfo.FullName;
+                    if (!imgFiles.Images.ContainsKey(fi.FileInfo.Extension))
+                    {
+                        var iconForFile = System.Drawing.Icon.ExtractAssociatedIcon(thisFile);
+                        imgFiles.Images.Add(fi.FileInfo.Extension, iconForFile);
+                    }
                     if ((IsIgnorable(thisFile))) continue;
-                    ListViewItem thisItem = new ListViewItem(fi.RelativeName, GetImageIndex(fi.FileInfo.Extension));
+                    ListViewItem thisItem = new ListViewItem(fi.RelativeName, fi.FileInfo.Extension);
                     thisItem.SubItems.Add(fi.FileVersion);
                     thisItem.SubItems.Add(fi.FileInfo.Length.ToString(CultureInfo.InvariantCulture));
                     thisItem.SubItems.Add(fi.FileInfo.LastWriteTime.ToString(CultureInfo.InvariantCulture));
@@ -639,7 +605,7 @@ namespace FeedBuilder
             {
                 if (txtSelect.Text == "*")
                     txtSelect.Text = ".*";
-                txtSelect.SelectionStart = txtSelect.SelectionStart = txtSelect.TextLength ;
+                txtSelect.SelectionStart = txtSelect.SelectionStart = txtSelect.TextLength;
                 txtSelect.SelectionLength = 0;
 
                 try
