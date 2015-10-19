@@ -426,7 +426,8 @@ namespace FeedBuilder
                 if (itemsSkipped > 0) Console.WriteLine("{0,5} items skipped", itemsSkipped);
                 if (itemsFailed > 0) Console.WriteLine("{0,5} items failed", itemsFailed);
                 if (itemsMissingConditions > 0) Console.WriteLine("{0,5} items without any conditions", itemsMissingConditions);
-            }).ContinueWith((antecedent) => {
+            }).ContinueWith((antecedent) =>
+            {
                 wait.Close();
             }, ts);
         }
@@ -481,7 +482,8 @@ namespace FeedBuilder
             CreateDirectoryPath(dir);
             Process process = new Process
             {
-                StartInfo = {
+                StartInfo =
+                {
                     UseShellExecute = true,
                     FileName = dir
                 }
@@ -621,6 +623,40 @@ namespace FeedBuilder
             catch (Exception ex)
             {
                 MessageBox.Show("The file could not be opened: \n" + ex.Message);
+            }
+        }
+
+        private void txtSelect_TextChanged(object sender, EventArgs e)
+        {
+
+            lstFiles.SelectedItems.Clear();
+            lstFiles.HideSelection = true;
+
+            if (string.IsNullOrEmpty(txtSelect.Text))
+                return;
+
+            else
+            {
+
+
+                try
+                {
+                    lstFiles.BeginUpdate();
+                    var reg = new System.Text.RegularExpressions.Regex(txtSelect.Text);
+                    lstFiles.HideSelection = false;
+                    var files = lstFiles.Items.Cast<ListViewItem>().Where(li => reg.IsMatch(li.Text));
+                    if (files.Count() > 0)
+                    {
+                        foreach (var li in files)
+                            li.Selected = true;
+                    }
+                }
+                finally
+                {
+                    lstFiles.EndUpdate();
+                }
+
+
             }
         }
     }
