@@ -52,6 +52,7 @@ namespace FeedBuilder
         /// </summary>
         /// <param name="pathsToSearch"> Semicolon- or comma-delimited list of paths to search. </param>
         /// <param name="fileTypesToMatch"> Semicolon- or comma-delimited list of wildcard filespecs to match. </param>
+        /// /// <param name="excludeFileTypesToMatch">Semicolon- or comma-delimited list of wildcard filespecs to exclude.</param>
         /// <param name="includeSubDirs"> If true, subdirectories are searched. </param>
         public FileSystemEnumerator(string pathsToSearch, string fileTypesToMatch, string excludeFileTypesToMatch, bool includeSubDirs)
         {
@@ -99,7 +100,7 @@ namespace FeedBuilder
                         bool showFile = true;
                         foreach (Regex exSpec in m_excludeFileSpecs)
                             if (exSpec.IsMatch(tmpFile))
-                                showFile=false;
+                                showFile = false;
                         if (showFile)
                         {
                             yield return new FileInfo(file);
