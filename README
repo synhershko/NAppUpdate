@@ -1,9 +1,9 @@
-jjNAppUpdate - An application auto-update framework for .NET
+NAppUpdate - An application auto-update framework for .NET
 
 This fork adds the possibility to sign updates with a private key.
 When the client checks for updated files, it will not accept updates that are not signed with the correct key.
 
-This protects against for example DNS highjacks and compromises on the web host.
+This protects against for example DNS hijacking and compromises on the web server.
 
 Fork of NAppUpdate which is
 Copyright (c) 2010-2012 Itamar Syn-Hershko
