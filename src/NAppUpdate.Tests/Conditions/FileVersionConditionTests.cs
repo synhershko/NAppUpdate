@@ -13,7 +13,7 @@ namespace NAppUpdate.Tests.Conditions
 			var tempFile = Path.GetTempFileName();
 			File.WriteAllText(tempFile, "foo");
 
-			var cnd = new FileVersionCondition {ComparisonType = "is", LocalPath = tempFile, Version = "1.0.0.0"};
+			var cnd = new FileVersionCondition { ComparisonType = "is", LocalPath = tempFile, Version = "1.0.0.0" };
 			Assert.IsTrue(cnd.IsMet(null));
 		}
 	}

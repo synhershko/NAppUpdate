@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
 using NAppUpdate.Framework.Common;
 using NAppUpdate.Framework.Tasks;
+using System.IO.Pipes;
 
 namespace NAppUpdate.Framework.Utils
 {
@@ -29,145 +30,76 @@ namespace NAppUpdate.Framework.Utils
 			public bool RelaunchApplication { get; set; }
 		}
 
-		[DllImport("kernel32.dll", SetLastError = true)]
-		private static extern SafeFileHandle CreateNamedPipe(
-		   String pipeName,
-		   uint dwOpenMode,
-		   uint dwPipeMode,
-		   uint nMaxInstances,
-		   uint nOutBufferSize,
-		   uint nInBufferSize,
-		   uint nDefaultTimeOut,
-		   IntPtr lpSecurityAttributes);
+		private const int PIPE_TIMEOUT = 15000;
 
-		[DllImport("kernel32.dll", SetLastError = true)]
-		private static extern int ConnectNamedPipe(
-		   SafeFileHandle hNamedPipe,
-		   IntPtr lpOverlapped);
-
-		[DllImport("kernel32.dll", SetLastError = true)]
-		private static extern SafeFileHandle CreateFile(
-		   String pipeName,
-		   uint dwDesiredAccess,
-		   uint dwShareMode,
-		   IntPtr lpSecurityAttributes,
-		   uint dwCreationDisposition,
-		   uint dwFlagsAndAttributes,
-		   IntPtr hTemplate);
-
-		//private const uint DUPLEX = (0x00000003);
-		private const uint WRITE_ONLY = (0x00000002);
-		private const uint FILE_FLAG_OVERLAPPED = (0x40000000);
-
-		const uint GENERIC_READ = (0x80000000);
-		//static readonly uint GENERIC_WRITE = (0x40000000);
-		const uint OPEN_EXISTING = 3;
-
-        //Which really isn't an error...
-        const uint ERROR_PIPE_CONNECTED = 535;
-
-		internal static string GetPipeName(string syncProcessName)
-		{
-			return string.Format("\\\\.\\pipe\\{0}", syncProcessName);
-		}
-
-		private class State
-		{
-			public readonly EventWaitHandle eventWaitHandle;
-			public int result { get; set; }
-			public SafeFileHandle clientPipeHandle { get; set; }
-
-			public State()
-			{
-				eventWaitHandle = new ManualResetEvent(false);
-			}
-		}
-
-		internal static uint BUFFER_SIZE = 4096;
-
+		/// <summary>
+		/// Launches the specifies process and sends the dto object to it using a named pipe
+		/// </summary>
+		/// <param name="dto">Dto object to send</param>
+		/// <param name="processStartInfo">Process info for the process to start</param>
+		/// <param name="syncProcessName">Name of the pipe to write to</param>
+		/// <returns>The started process</returns>
 		public static Process LaunchProcessAndSendDto(NauDto dto, ProcessStartInfo processStartInfo, string syncProcessName)
 		{
 			Process p;
-			State state = new State();
 
-			using (state.clientPipeHandle = CreateNamedPipe(
-				   GetPipeName(syncProcessName),
-				   WRITE_ONLY | FILE_FLAG_OVERLAPPED,
-				   0,
-				   1, // 1 max instance (only the updater utility is expected to connect)
-				   BUFFER_SIZE,
-				   BUFFER_SIZE,
-				   0,
-				   IntPtr.Zero))
+			using (NamedPipeServerStream pipe = new NamedPipeServerStream(syncProcessName, PipeDirection.Out, 1, PipeTransmissionMode.Message, PipeOptions.Asynchronous))
 			{
-				//failed to create named pipe
-				if (state.clientPipeHandle.IsInvalid) return null;
+				p = Process.Start(processStartInfo);
 
-				try
+				if (p == null)
 				{
-					p = Process.Start(processStartInfo);
-				}
-				catch (Win32Exception)
-				{
-					// Person denied UAC escallation
-					return null;
+					throw new ProcessStartFailedException("The process failed to start");
 				}
 
-				ThreadPool.QueueUserWorkItem(ConnectPipe, state);
-				//A rather arbitary five seconds, perhaps better to be user configurable at some point?
-				state.eventWaitHandle.WaitOne(10000);
+				var asyncResult = pipe.BeginWaitForConnection(null, null);
 
-				//failed to connect client pipe
-				if (state.result == 0) return null;
-				//client connection successfull
-				using (var fStream = new FileStream(state.clientPipeHandle, FileAccess.Write, (int)BUFFER_SIZE, true))
+				if (asyncResult.AsyncWaitHandle.WaitOne(PIPE_TIMEOUT))
 				{
-					new BinaryFormatter().Serialize(fStream, dto);
-					fStream.Flush();
-					fStream.Close();
+					pipe.EndWaitForConnection(asyncResult);
+
+					BinaryFormatter formatter = new BinaryFormatter();
+					formatter.Serialize(pipe, dto);
+				}
+				else if (p.HasExited)
+				{
+					Type exceptionType = Marshal.GetExceptionForHR(p.ExitCode).GetType();
+
+					throw new TimeoutException(string.Format("The NamedPipeServerStream timed out waiting for a named pipe connection, " +
+						"but the process has exited with exit code: {0} ({1})", p.ExitCode, exceptionType.FullName));
+				}
+				else
+				{
+					throw new TimeoutException("The NamedPipeServerStream timed out waiting for a named pipe connection.");
 				}
 			}
 
 			return p;
 		}
 
-		internal static void ConnectPipe(object stateObject)
+		/// <summary>
+		/// Reads the dto object from the named pipe
+		/// </summary>
+		/// <param name="syncProcessName">Name of the pipe to read from</param>
+		/// <returns>The dto object read from the pipe</returns>
+		public static NauDto ReadDto(string syncProcessName)
 		{
-			if (stateObject == null) return;
-			State state = (State)stateObject;
+			NauDto dto;
 
-			try
+			using (NamedPipeClientStream pipe = new NamedPipeClientStream(".", syncProcessName, PipeDirection.In, PipeOptions.Asynchronous))
 			{
-				state.result = ConnectNamedPipe(state.clientPipeHandle, IntPtr.Zero);
+				pipe.Connect(PIPE_TIMEOUT);
+
+				BinaryFormatter formatter = new BinaryFormatter();
+				dto = formatter.Deserialize(pipe) as NauDto;
 			}
-            catch {  }
-            //Check for the oddball: ERROR - PIPE CONNECTED
-            //Ref: http://msdn.microsoft.com/en-us/library/windows/desktop/aa365146%28v=vs.85%29.aspx
-            if (Marshal.GetLastWin32Error() == ERROR_PIPE_CONNECTED) { state.result = 1; }
-            state.eventWaitHandle.Set(); // signal we're done
-		}
 
-
-		internal static object ReadDto(string syncProcessName)
-		{
-			using (SafeFileHandle pipeHandle = CreateFile(
-				GetPipeName(syncProcessName),
-				GENERIC_READ,
-				0,
-				IntPtr.Zero,
-				OPEN_EXISTING,
-				FILE_FLAG_OVERLAPPED,
-				IntPtr.Zero))
+			if (dto == null || dto.Configs == null)
 			{
-
-				if (pipeHandle.IsInvalid)
-					return null;
-
-				using (var fStream = new FileStream(pipeHandle, FileAccess.Read, (int)BUFFER_SIZE, true))
-				{
-					return new BinaryFormatter().Deserialize(fStream);
-				}
+				throw new Exception("Failed to read the dto from the pipe stream");
 			}
+
+			return dto;
 		}
 
 		internal static void ExtractUpdaterFromResource(string updaterPath, string hostExeName)

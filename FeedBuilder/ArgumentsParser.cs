@@ -16,24 +16,33 @@ namespace FeedBuilder
 
 		public ArgumentsParser(IEnumerable<string> args)
 		{
-			foreach (string thisArg in args) {
+			foreach (string thisArg in args)
+			{
 				if (thisArg.ToLower() == Application.ExecutablePath.ToLower() || thisArg.ToLower().Contains(".vshost.exe")) continue;
 
 				string arg = CleanArg(thisArg);
-				if (arg == "build") {
+				if (arg == "build")
+				{
 					Build = true;
 					HasArgs = true;
-				} else if (arg == "showgui") {
+				}
+				else if (arg == "showgui")
+				{
 					ShowGui = true;
 					HasArgs = true;
-				} else if (arg == "openoutputs") {
+				}
+				else if (arg == "openoutputs")
+				{
 					OpenOutputsFolder = true;
 					HasArgs = true;
-				} else if (IsValidFileName(thisArg)) {
+				}
+				else if (IsValidFileName(thisArg))
+				{
 					// keep the same character casing as we were originally provided
 					FileName = thisArg;
 					HasArgs = true;
-				} else Console.WriteLine("Unrecognized arg '{0}'", arg);
+				}
+				else Console.WriteLine("Unrecognized arg '{0}'", arg);
 			}
 		}
 
@@ -42,15 +51,17 @@ namespace FeedBuilder
 		private bool IsValidFileName(string filename)
 		{
 			if (File.Exists(filename)) return true;
-			try {
+			try
+			{
 				// the URI test... filter out things that aren't even trying to look like filenames
-// ReSharper disable UnusedVariable
+				// ReSharper disable UnusedVariable
 				Uri u = new Uri(filename);
-// ReSharper restore UnusedVariable
+				// ReSharper restore UnusedVariable
 				// see if the arg's parent folder exists
 				var d = Directory.GetParent(filename);
 				if (d.Exists) return true;
-			} catch {}
+			}
+			catch { }
 			return false;
 		}
 

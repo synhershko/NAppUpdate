@@ -1,3 +1,4 @@
+*.nupkg 
 *.dep 
 *.aps 
 *.vbw 

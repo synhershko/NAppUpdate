@@ -5,37 +5,37 @@ using NAppUpdate.Framework.Conditions;
 
 namespace NAppUpdate.Framework.FeedReaders
 {
-    public class AppcastReader : IUpdateFeedReader
-    {
-        // http://learn.adobe.com/wiki/display/ADCdocs/Appcasting+RSS
+	public class AppcastReader : IUpdateFeedReader
+	{
+		// http://learn.adobe.com/wiki/display/ADCdocs/Appcasting+RSS
 
-        #region IUpdateFeedReader Members
+		#region IUpdateFeedReader Members
 
-        public IList<IUpdateTask> Read(string feed)
-        {
-            XmlDocument doc = new XmlDocument();
-            doc.LoadXml(feed);
-            XmlNodeList nl = doc.SelectNodes("/rss/channel/item");
+		public IList<IUpdateTask> Read(string feed)
+		{
+			XmlDocument doc = new XmlDocument();
+			doc.LoadXml(feed);
+			XmlNodeList nl = doc.SelectNodes("/rss/channel/item");
 
-            List<IUpdateTask> ret = new List<IUpdateTask>();
+			List<IUpdateTask> ret = new List<IUpdateTask>();
 
-            foreach (XmlNode n in nl)
-            {
-                FileUpdateTask task = new FileUpdateTask();
-                task.Description = n["description"].InnerText;
-                task.UpdateTo = n["enclosure"].Attributes["url"].Value;
+			foreach (XmlNode n in nl)
+			{
+				FileUpdateTask task = new FileUpdateTask();
+				task.Description = n["description"].InnerText;
+				task.UpdateTo = n["enclosure"].Attributes["url"].Value;
 
-                FileVersionCondition cnd = new FileVersionCondition();
-                cnd.Version = n["appcast:version"].InnerText;
+				FileVersionCondition cnd = new FileVersionCondition();
+				cnd.Version = n["appcast:version"].InnerText;
 				if (task.UpdateConditions == null) task.UpdateConditions = new BooleanCondition();
-                task.UpdateConditions.AddCondition(cnd, BooleanCondition.ConditionType.AND);
+				task.UpdateConditions.AddCondition(cnd, BooleanCondition.ConditionType.AND);
 
-                ret.Add(task);
-            }
+				ret.Add(task);
+			}
 
-            return ret;
-        }
+			return ret;
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

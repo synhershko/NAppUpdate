@@ -53,9 +53,9 @@ namespace NAppUpdate.Framework
 			get { return instance; }
 		}
 		private static readonly UpdateManager instance = new UpdateManager();
-// ReSharper disable NotAccessedField.Local
+		// ReSharper disable NotAccessedField.Local
 		private static Mutex _shutdownMutex;
-// ReSharper restore NotAccessedField.Local
+		// ReSharper restore NotAccessedField.Local
 
 		#endregion
 
@@ -116,43 +116,48 @@ namespace NAppUpdate.Framework
 		#region Step 1 - Check for updates
 
 		/// <summary>
-		/// Check for update synchronously, using the default update source
+		/// Check for updates synchronously
 		/// </summary>
 		public void CheckForUpdates()
 		{
-			CheckForUpdates(UpdateSource);
-		}
-
-		/// <summary>
-		/// Check for updates synchronouly
-		/// </summary>
-		/// <param name="source">Updates source to use</param>
-		public void CheckForUpdates(IUpdateSource source)
-		{
 			if (IsWorking)
+			{
 				throw new InvalidOperationException("Another update process is already in progress");
-			
+			}
+			else if (UpdateFeedReader == null)
+			{
+				throw new InvalidOperationException("UpdateFeedReader must be set before calling CheckForUpdates()");
+			}
+			else if (UpdateSource == null)
+			{
+				throw new InvalidOperationException("UpdateSource must be set before calling CheckForUpdates()");
+			}
+
 			using (WorkScope.New(isWorking => IsWorking = isWorking))
 			{
-				if (UpdateFeedReader == null)
-					throw new ArgumentException("An update feed reader is required; please set one before checking for updates");
-
-				if (source == null)
-					throw new ArgumentException("An update source was not specified");
-
 				if (State != UpdateProcessState.NotChecked)
+				{
 					throw new InvalidOperationException("Already checked for updates; to reset the current state call CleanUp()");
+				}
 
 				lock (UpdatesToApply)
 				{
 					UpdatesToApply.Clear();
-					var tasks = UpdateFeedReader.Read(source.GetUpdatesFeed());
-					foreach (var t in tasks)
+                    float num = 0f;
+                    var tasks = UpdateFeedReader.Read(UpdateSource.GetUpdatesFeed());
+                    int count = tasks.Count;
+                    foreach (var t in tasks)
 					{
 						if (ShouldStop)
 							throw new UserAbortException();
-
-						if (t.UpdateConditions == null || t.UpdateConditions.IsMet(t)) // Only execute if all conditions are met
+                        this.ReportProgress(new UpdateProgressInfo     {
+                         Message = "Checking",
+                             Percentage = (int)((num += 1f) / (float)count * 100f),
+                             TaskDescription = t.Description,
+                             TaskId = (int)num,
+                             StillWorking = true
+                         });
+                        if (t.UpdateConditions == null || t.UpdateConditions.IsMet(t)) // Only execute if all conditions are met
 							UpdatesToApply.Add(t);
 					}
 				}
@@ -164,10 +169,9 @@ namespace NAppUpdate.Framework
 		/// <summary>
 		/// Check for updates asynchronously
 		/// </summary>
-		/// <param name="source">Update source to use</param>
 		/// <param name="callback">Callback function to call when done; can be null</param>
 		/// <param name="state">Allows the caller to preserve state; can be null</param>
-		public IAsyncResult BeginCheckForUpdates(IUpdateSource source, AsyncCallback callback, Object state)
+		public IAsyncResult BeginCheckForUpdates(AsyncCallback callback, Object state)
 		{
 			// Create IAsyncResult object identifying the 
 			// asynchronous operation
@@ -175,31 +179,21 @@ namespace NAppUpdate.Framework
 
 			// Use a thread pool thread to perform the operation
 			ThreadPool.QueueUserWorkItem(o =>
-			                             	{
-			                             		try
-			                             		{
-			                             			// Perform the operation; if sucessful set the result
-			                             			CheckForUpdates(source ?? UpdateSource);
-			                             			ar.SetAsCompleted(null, false);
-			                             		}
-			                             		catch (Exception e)
-			                             		{
-			                             			// If operation fails, set the exception
-			                             			ar.SetAsCompleted(e, false);
-			                             		}
-			                             	}, ar);
+			{
+				try
+				{
+					// Perform the operation; if sucessful set the result
+					CheckForUpdates();
+					ar.SetAsCompleted(null, false);
+				}
+				catch (Exception e)
+				{
+					// If operation fails, set the exception
+					ar.SetAsCompleted(e, false);
+				}
+			}, ar);
 
 			return ar;  // Return the IAsyncResult to the caller
-		}
-
-		/// <summary>
-		/// Check for updates asynchronously
-		/// </summary>
-		/// <param name="callback">Callback function to call when done; can be null</param>
-		/// <param name="state">Allows the caller to preserve state; can be null</param>
-		public IAsyncResult BeginCheckForUpdates(AsyncCallback callback, Object state)
-		{
-			return BeginCheckForUpdates(UpdateSource, callback, state);
 		}
 
 		/// <summary>
@@ -252,8 +246,9 @@ namespace NAppUpdate.Framework
 
 						var t = task;
 						task.ProgressDelegate += status => TaskProgressCallback(status, t);
-
-						try
+                        this.TaskProgressCallback(new UpdateProgressInfo{
+                                              Message = "Preparing"}, t);
+                        try
 						{
 							task.Prepare(UpdateSource);
 						}
@@ -357,9 +352,9 @@ namespace NAppUpdate.Framework
 					// Set current directory the the application directory
 					// this prevents the updater from writing to e.g. c:\windows\system32
 					// if the process is started by autorun on windows logon.
-// ReSharper disable AssignNullToNotNullAttribute
+					// ReSharper disable AssignNullToNotNullAttribute
 					Environment.CurrentDirectory = Path.GetDirectoryName(ApplicationPath);
-// ReSharper restore AssignNullToNotNullAttribute
+					// ReSharper restore AssignNullToNotNullAttribute
 
 					// Make sure the current backup folder is accessible for writing from this process
 					string backupParentPath = Path.GetDirectoryName(Config.BackupFolder) ?? string.Empty;
@@ -416,8 +411,9 @@ namespace NAppUpdate.Framework
 					{
 						IUpdateTask t = task;
 						task.ProgressDelegate += status => TaskProgressCallback(status, t);
-
-						try
+                        this.TaskProgressCallback(new UpdateProgressInfo{
+                           Message = "Applying"}, t);
+                        try
 						{
 							// Execute the task
 							task.ExecutionStatus = task.Execute(false);
@@ -429,7 +425,7 @@ namespace NAppUpdate.Framework
 						}
 
 						if (task.ExecutionStatus == TaskExecutionStatus.RequiresAppRestart
-						    || task.ExecutionStatus == TaskExecutionStatus.RequiresPrivilegedAppRestart)
+							|| task.ExecutionStatus == TaskExecutionStatus.RequiresPrivilegedAppRestart)
 						{
 							// Record that we have cold updates to run, and if required to run any of them privileged
 							runPrivileged = runPrivileged || task.ExecutionStatus == TaskExecutionStatus.RequiresPrivilegedAppRestart;
@@ -447,27 +443,27 @@ namespace NAppUpdate.Framework
 					if (hasColdUpdates)
 					{
 						var dto = new NauIpc.NauDto
-						          	{
-						          		Configs = Instance.Config,
-						          		Tasks = Instance.UpdatesToApply,
-						          		AppPath = ApplicationPath,
-						          		WorkingDirectory = Environment.CurrentDirectory,
-						          		RelaunchApplication = relaunchApplication,
-						          		LogItems = Logger.LogItems,
-						          	};
+									{
+										Configs = Instance.Config,
+										Tasks = Instance.UpdatesToApply,
+										AppPath = ApplicationPath,
+										WorkingDirectory = Environment.CurrentDirectory,
+										RelaunchApplication = relaunchApplication,
+										LogItems = Logger.LogItems,
+									};
 
 						NauIpc.ExtractUpdaterFromResource(Config.TempFolder, Instance.Config.UpdateExecutableName);
 
 						var info = new ProcessStartInfo
-						           	{
-						           		UseShellExecute = true,
-						           		WorkingDirectory = Environment.CurrentDirectory,
-						           		FileName = Path.Combine(Config.TempFolder, Instance.Config.UpdateExecutableName),
-						           		Arguments =
-						           			string.Format(@"""{0}"" {1} {2}", Config.UpdateProcessName,
-						           			              updaterShowConsole ? "-showConsole" : string.Empty,
-						           			              updaterDoLogging ? "-log" : string.Empty),
-						           	};
+									{
+										UseShellExecute = true,
+										WorkingDirectory = Environment.CurrentDirectory,
+										FileName = Path.Combine(Config.TempFolder, Instance.Config.UpdateExecutableName),
+										Arguments =
+											string.Format(@"""{0}"" {1} {2}", Config.UpdateProcessName,
+														  updaterShowConsole ? "-showConsole" : string.Empty,
+														  updaterDoLogging ? "-log" : string.Empty),
+									};
 
 						if (!updaterShowConsole)
 						{
@@ -483,8 +479,15 @@ namespace NAppUpdate.Framework
 
 						bool createdNew;
 						_shutdownMutex = new Mutex(true, Config.UpdateProcessName + "Mutex", out createdNew);
-						if (NauIpc.LaunchProcessAndSendDto(dto, info, Config.UpdateProcessName) == null)
-							throw new UpdateProcessFailedException("Could not launch cold update process");
+
+						try
+						{
+							NauIpc.LaunchProcessAndSendDto(dto, info, Config.UpdateProcessName);
+						}
+						catch (Exception ex)
+						{
+							throw new UpdateProcessFailedException("Could not launch cold update process", ex);
+						}
 
 						Environment.Exit(0);
 					}
@@ -499,10 +502,20 @@ namespace NAppUpdate.Framework
 
 		public void ReinstateIfRestarted()
 		{
+			if (!IsAfterRestart())
+			{
+				return;
+			}
+
 			lock (UpdatesToApply)
 			{
-				var dto = NauIpc.ReadDto(Config.UpdateProcessName) as NauIpc.NauDto;
-				if (dto == null) return;
+				NauIpc.NauDto dto = NauIpc.ReadDto(Config.UpdateProcessName);
+
+				if (dto == null)
+				{
+					return;
+				}
+
 				Config = dto.Configs;
 				UpdatesToApply = dto.Tasks;
 				Logger = new Logger(dto.LogItems);
@@ -573,6 +586,19 @@ namespace NAppUpdate.Framework
 
 				ShouldStop = false;
 			}
+		}
+
+		private bool IsAfterRestart()
+		{
+			foreach (string arg in Environment.GetCommandLineArgs())
+			{
+				if (arg == "-nappupdate-afterrestart")
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 	}
 }

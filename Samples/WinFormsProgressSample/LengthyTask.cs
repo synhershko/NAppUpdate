@@ -13,19 +13,19 @@ namespace WinFormsProgressSample
 			{
 				Thread.Sleep(100);
 				OnProgress(new UpdateProgressInfo
-				             	{
-				             		Message = "Doing some work, cycle " + i,
-				             		Percentage = i * 2,
-				             		StillWorking = true
-				             	});
+								{
+									Message = "Doing some work, cycle " + i,
+									Percentage = i * 2,
+									StillWorking = true
+								});
 			}
 
 			OnProgress(new UpdateProgressInfo
-			             	{
-			             		Message = "Finished preperations",
-			             		Percentage = 100,
-			             		StillWorking = false,
-			             	});
+							{
+								Message = "Finished preperations",
+								Percentage = 100,
+								StillWorking = false,
+							});
 		}
 
 		public override TaskExecutionStatus Execute(bool coldRun)

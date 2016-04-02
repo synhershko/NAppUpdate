@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NAppUpdate.Framework</RootNamespace>
     <AssemblyName>NAppUpdate.Framework</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>NAppUpdate.snk</AssemblyOriginatorKeyFile>
@@ -33,6 +33,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -101,6 +102,7 @@
     <Compile Include="Utils\NauIpc.cs" />
     <Compile Include="Utils\FileSystem.cs" />
     <Compile Include="Utils\PermissionsCheck.cs" />
+    <Compile Include="Utils\ProcessStartFailedException.cs" />
     <Compile Include="Utils\Reflection.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -17,11 +17,14 @@ namespace FeedBuilder
 
 		public void SaveAs(string filename)
 		{
-			try {
+			try
+			{
 				Settings.Default.Save();
 				string source = Path.Combine(GetAppSettingsPath(), GetAppSettingsFilename());
 				File.Copy(source, filename, true);
-			} catch (Exception ex) {
+			}
+			catch (Exception ex)
+			{
 				string msg = string.Format("An error occurred while saving the file: {0}{0}{1}", Environment.NewLine, ex.Message);
 				MessageBox.Show(msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
@@ -29,12 +32,15 @@ namespace FeedBuilder
 
 		public void LoadFrom(string filename)
 		{
-			try {
+			try
+			{
 				string dest = Path.Combine(GetAppSettingsPath(), GetAppSettingsFilename());
 				if (filename == dest) return;
 				File.Copy(filename, dest, true);
 				Settings.Default.Reload();
-			} catch (Exception ex) {
+			}
+			catch (Exception ex)
+			{
 				string msg = string.Format("An error occurred while loading the file: {0}{0}{1}", Environment.NewLine, ex.Message);
 				MessageBox.Show(msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
@@ -43,10 +49,13 @@ namespace FeedBuilder
 		public override void Initialize(string name, NameValueCollection col)
 		{
 			base.Initialize(ApplicationName, col);
-			if (!Directory.Exists(GetAppSettingsPath())) {
-				try {
+			if (!Directory.Exists(GetAppSettingsPath()))
+			{
+				try
+				{
 					Directory.CreateDirectory(GetAppSettingsPath());
-				} catch (IOException) {}
+				}
+				catch (IOException) { }
 			}
 		}
 
@@ -71,14 +80,18 @@ namespace FeedBuilder
 		{
 			//Iterate through the settings to be stored
 			//Only dirty settings are included in propvals, and only ones relevant to this provider
-			foreach (SettingsPropertyValue propval in propvals) {
+			foreach (SettingsPropertyValue propval in propvals)
+			{
 				SetValue(propval);
 			}
 
-			try {
+			try
+			{
 				if (!Directory.Exists(GetAppSettingsPath())) Directory.CreateDirectory(GetAppSettingsPath());
 				SettingsXML.Save(Path.Combine(GetAppSettingsPath(), GetAppSettingsFilename()));
-			} catch (Exception) {
+			}
+			catch (Exception)
+			{
 				//Ignore if cant save, device been ejected
 			}
 		}
@@ -90,8 +103,10 @@ namespace FeedBuilder
 
 			//Iterate through the settings to be retrieved
 
-			foreach (SettingsProperty setting in props) {
-				SettingsPropertyValue value = new SettingsPropertyValue(setting) {
+			foreach (SettingsProperty setting in props)
+			{
+				SettingsPropertyValue value = new SettingsPropertyValue(setting)
+				{
 					IsDirty = false,
 					SerializedValue = GetValue(setting)
 				};
@@ -109,12 +124,16 @@ namespace FeedBuilder
 			{
 				//If we dont hold an xml document, try opening one.  
 				//If it doesnt exist then create a new one ready.
-				if (m_SettingsXML == null) {
+				if (m_SettingsXML == null)
+				{
 					m_SettingsXML = new XmlDocument();
 
-					try {
+					try
+					{
 						m_SettingsXML.Load(Path.Combine(GetAppSettingsPath(), GetAppSettingsFilename()));
-					} catch (Exception) {
+					}
+					catch (Exception)
+					{
 						//Create new document
 						XmlDeclaration dec = m_SettingsXML.CreateXmlDeclaration("1.0", "utf-8", string.Empty);
 						m_SettingsXML.AppendChild(dec);
@@ -132,17 +151,23 @@ namespace FeedBuilder
 		{
 			string ret = null;
 
-			try {
+			try
+			{
 				string path = IsRoaming(setting) ? string.Format("{0}/{1}", SETTINGSROOT, setting.Name) : string.Format("{0}/{1}/{2}", SETTINGSROOT, Environment.MachineName, setting.Name);
 
-				if (setting.PropertyType.BaseType != null && setting.PropertyType.BaseType.Name == "CollectionBase") {
+				if (setting.PropertyType.BaseType != null && setting.PropertyType.BaseType.Name == "CollectionBase")
+				{
 					XmlNode selectSingleNode = SettingsXML.SelectSingleNode(path);
 					if (selectSingleNode != null) ret = selectSingleNode.InnerXml;
-				} else {
+				}
+				else
+				{
 					XmlNode singleNode = SettingsXML.SelectSingleNode(path);
 					if (singleNode != null) ret = singleNode.InnerText;
 				}
-			} catch (Exception) {
+			}
+			catch (Exception)
+			{
 				ret = (setting.DefaultValue != null) ? setting.DefaultValue.ToString() : string.Empty;
 			}
 
@@ -157,41 +182,57 @@ namespace FeedBuilder
 			//Determine if the setting is roaming.
 			//If roaming then the value is stored as an element under the root
 			//Otherwise it is stored under a machine name node 
-			try {
-				if (IsRoaming(propVal.Property)) {
+			try
+			{
+				if (IsRoaming(propVal.Property))
+				{
 					SettingNode = (XmlElement)SettingsXML.SelectSingleNode(SETTINGSROOT + "/" + propVal.Name);
-				} else {
+				}
+				else
+				{
 					SettingNode = (XmlElement)SettingsXML.SelectSingleNode(SETTINGSROOT + "/" + Environment.MachineName + "/" + propVal.Name);
 				}
-			} catch (Exception) {
+			}
+			catch (Exception)
+			{
 				SettingNode = null;
 			}
 
 			//Check to see if the node exists, if so then set its new value
-			if ((SettingNode != null)) {
+			if ((SettingNode != null))
+			{
 				//SettingNode.InnerText = propVal.SerializedValue.ToString
 				SetSerializedValue(SettingNode, propVal);
-			} else {
-				if (IsRoaming(propVal.Property)) {
+			}
+			else
+			{
+				if (IsRoaming(propVal.Property))
+				{
 					//Store the value as an element of the Settings Root Node
 					SettingNode = SettingsXML.CreateElement(propVal.Name);
 					//SettingNode.InnerText = propVal.SerializedValue.ToString
 					SetSerializedValue(SettingNode, propVal);
 					XmlNode selectSingleNode = SettingsXML.SelectSingleNode(SETTINGSROOT);
 					if (selectSingleNode != null) selectSingleNode.AppendChild(SettingNode);
-				} else {
+				}
+				else
+				{
 					//Its machine specific, store as an element of the machine name node,
 					//creating a new machine name node if one doesnt exist.
 					XmlElement MachineNode;
-					try {
+					try
+					{
 						MachineNode = (XmlElement)SettingsXML.SelectSingleNode(SETTINGSROOT + "/" + Environment.MachineName);
-					} catch (Exception) {
+					}
+					catch (Exception)
+					{
 						MachineNode = SettingsXML.CreateElement(Environment.MachineName);
 						XmlNode selectSingleNode = SettingsXML.SelectSingleNode(SETTINGSROOT);
 						if (selectSingleNode != null) selectSingleNode.AppendChild(MachineNode);
 					}
 
-					if (MachineNode == null) {
+					if (MachineNode == null)
+					{
 						MachineNode = SettingsXML.CreateElement(Environment.MachineName);
 						XmlNode selectSingleNode = SettingsXML.SelectSingleNode(SETTINGSROOT);
 						if (selectSingleNode != null) selectSingleNode.AppendChild(MachineNode);
@@ -207,7 +248,8 @@ namespace FeedBuilder
 
 		private void SetSerializedValue(XmlElement node, SettingsPropertyValue propVal)
 		{
-			if (propVal.Property.PropertyType.BaseType != null && propVal.Property.PropertyType.BaseType.Name == "CollectionBase") {
+			if (propVal.Property.PropertyType.BaseType != null && propVal.Property.PropertyType.BaseType.Name == "CollectionBase")
+			{
 				StringBuilder builder = new StringBuilder();
 				XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
 				XmlWriterSettings xsettings = new XmlWriterSettings();
@@ -219,13 +261,15 @@ namespace FeedBuilder
 				s.Serialize(xmlWriter, propVal.PropertyValue, ns);
 				xmlWriter.Close();
 				node.InnerXml = builder.ToString();
-			} else node.InnerText = propVal.SerializedValue.ToString();
+			}
+			else node.InnerText = propVal.SerializedValue.ToString();
 		}
 
 		private bool IsRoaming(SettingsProperty prop)
 		{
 			//Determine if the setting is marked as Roaming
-			foreach (DictionaryEntry d in prop.Attributes) {
+			foreach (DictionaryEntry d in prop.Attributes)
+			{
 				Attribute a = (Attribute)d.Value;
 				if (a is SettingsManageabilityAttribute) return true;
 			}

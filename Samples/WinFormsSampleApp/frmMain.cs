@@ -30,14 +30,16 @@ namespace WinFormsSampleApp
 			base.OnLoad(e);
 
 			// Create a timer for reseting the update state
-			_resetCheckedState = new Timer {
+			_resetCheckedState = new Timer
+			{
 				Interval = 60000
 			};
-			_resetCheckedState.Tick += (sender, ea) => {
-				                           if (UpdateManager.Instance.State != UpdateManager.UpdateProcessState.Checked) return;
-				                           UpdateManager.Instance.CleanUp();
-				                           lblStatus.Text = DateTime.Now + " - Update state was reset to NotChecked";
-			                           };
+			_resetCheckedState.Tick += (sender, ea) =>
+			{
+				if (UpdateManager.Instance.State != UpdateManager.UpdateProcessState.Checked) return;
+				UpdateManager.Instance.CleanUp();
+				lblStatus.Text = DateTime.Now + " - Update state was reset to NotChecked";
+			};
 			_resetCheckedState.Start();
 		}
 
@@ -59,11 +61,14 @@ namespace WinFormsSampleApp
 			if (string.IsNullOrEmpty(feedUrl)) return;
 
 			IUpdateSource source = UpdateManager.Instance.UpdateSource;
-			if (source is SimpleWebSource) {
+			if (source is SimpleWebSource)
+			{
 				// All we need to do is set the feed url and we are all set, no need to create new objects etc
 				((SimpleWebSource)source).FeedUrl = feedUrl;
 				CheckForUpdates(source);
-			} else {
+			}
+			else
+			{
 				// No idea what we had there, so we create a new feed source and pass it along - note the
 				// source for retreiving the actual updates will keep intact, and will be used when preparing
 				// the updates
@@ -76,28 +81,36 @@ namespace WinFormsSampleApp
 		{
 			// Get a local pointer to the UpdateManager instance
 			UpdateManager updManager = UpdateManager.Instance;
+			updManager.UpdateSource = source;
 
 			// Only check for updates if we haven't done so already
-			if (updManager.State != UpdateManager.UpdateProcessState.NotChecked) {
+			if (updManager.State != UpdateManager.UpdateProcessState.NotChecked)
+			{
 				MessageBox.Show("Update process has already initialized; current state: " + updManager.State.ToString());
 				return;
 			}
 
-			try {
+			try
+			{
 				// Check for updates - returns true if relevant updates are found (after processing all the tasks and
 				// conditions)
 				// Throws exceptions in case of bad arguments or unexpected results
-				updManager.CheckForUpdates(source);
-			} catch (Exception ex) {
-				if (ex is NAppUpdateException) {
+				updManager.CheckForUpdates();
+			}
+			catch (Exception ex)
+			{
+				if (ex is NAppUpdateException)
+				{
 					// This indicates a feed or network error; ex will contain all the info necessary
 					// to deal with that
-				} else MessageBox.Show(ex.ToString());
+				}
+				else MessageBox.Show(ex.ToString());
 				return;
 			}
 
 
-			if (updManager.UpdatesAvailable == 0) {
+			if (updManager.UpdatesAvailable == 0)
+			{
 				MessageBox.Show("Your software is up to date");
 				return;
 			}
@@ -111,12 +124,14 @@ namespace WinFormsSampleApp
 		{
 			UpdateManager updManager = UpdateManager.Instance;
 
-			if (updManager.State != UpdateManager.UpdateProcessState.Checked) {
+			if (updManager.State != UpdateManager.UpdateProcessState.Checked)
+			{
 				MessageBox.Show("Cannot prepare updates at the current state: " + updManager.State.ToString());
 				return;
 			}
 
-			if (updManager.UpdatesAvailable == 0) {
+			if (updManager.UpdatesAvailable == 0)
+			{
 				MessageBox.Show("There are no updates to prepare");
 				return;
 			}
@@ -128,7 +143,8 @@ namespace WinFormsSampleApp
 		{
 			UpdateManager updManager = UpdateManager.Instance;
 
-			if (updManager.State != UpdateManager.UpdateProcessState.Prepared) {
+			if (updManager.State != UpdateManager.UpdateProcessState.Prepared)
+			{
 				MessageBox.Show("Cannot install updates at the current state, they need to be prepared first. Current state is " + updManager.State.ToString());
 				return;
 			}
@@ -138,9 +154,12 @@ namespace WinFormsSampleApp
 
 		private void OnPrepareUpdatesCompleted(IAsyncResult asyncResult)
 		{
-			try {
+			try
+			{
 				((UpdateProcessAsyncResult)asyncResult).EndInvoke();
-			} catch (Exception ex) {
+			}
+			catch (Exception ex)
+			{
 				MessageBox.Show(string.Format("Updates preperation failed. Check the feed and try again.{0}{1}", Environment.NewLine, ex));
 				return;
 			}
@@ -153,9 +172,12 @@ namespace WinFormsSampleApp
 			if (dr != DialogResult.Yes) return;
 			// This is a synchronous method by design, make sure to save all user work before calling
 			// it as it might restart your application
-			try {
+			try
+			{
 				updManager.ApplyUpdates(chkRelaunch.Checked, chkLogging.Checked, chkShowConsole.Checked);
-			} catch (Exception ex) {
+			}
+			catch (Exception ex)
+			{
 				MessageBox.Show(string.Format("Error while trying to install software updates{0}{1}", Environment.NewLine, ex));
 			}
 		}
@@ -165,7 +187,7 @@ namespace WinFormsSampleApp
 			Application.Exit();
 		}
 
-// ReSharper disable RedundantOverridenMember
+		// ReSharper disable RedundantOverridenMember
 		protected override void OnClosing(CancelEventArgs e)
 		{
 			base.OnClosing(e);
@@ -190,11 +212,12 @@ namespace WinFormsSampleApp
             UpdateManager.Instance.CleanUp();
             */
 		}
-// ReSharper restore RedundantOverridenMember
+		// ReSharper restore RedundantOverridenMember
 
 		private void btnRollback_Click(object sender, EventArgs e)
 		{
-			if (UpdateManager.Instance.State != UpdateManager.UpdateProcessState.RollbackRequired) {
+			if (UpdateManager.Instance.State != UpdateManager.UpdateProcessState.RollbackRequired)
+			{
 				MessageBox.Show("There is no failed update process to rollback; current state: " + UpdateManager.Instance.State.ToString());
 				return;
 			}
@@ -208,7 +231,8 @@ namespace WinFormsSampleApp
 		/// <returns>string</returns>
 		public static string InputBox(string prompt, string title, string defaultValue)
 		{
-			frmInputBoxDialog ib = new frmInputBoxDialog {
+			frmInputBoxDialog ib = new frmInputBoxDialog
+			{
 				FormPrompt = prompt,
 				FormCaption = title,
 				DefaultValue = defaultValue

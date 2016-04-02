@@ -24,29 +24,29 @@ namespace NAppUpdate.Framework.Sources
 
 		#region IUpdateSource Members
 
-        /// <summary>
-        /// Speed up web request by trying to use dns to resolve ip address.  If it fails then fail early.
-        /// </summary>
-        /// <returns></returns>
-	    private void TryResolvingHost()
-	    {
-	        var uri = new Uri(FeedUrl);
-	        try
-	        {
-	            Dns.GetHostEntry(uri.Host);
-	        }
-	        catch (Exception)
-	        {
-	            throw new WebException(string.Format("Failed to resolve {0}. Check your connectivity.", uri.Host),
-	                WebExceptionStatus.ConnectFailure);
-	        }
-	    }
+		/// <summary>
+		/// Speed up web request by trying to use dns to resolve ip address.  If it fails then fail early.
+		/// </summary>
+		/// <returns></returns>
+		private void TryResolvingHost()
+		{
+			var uri = new Uri(FeedUrl);
+			try
+			{
+				Dns.GetHostEntry(uri.Host);
+			}
+			catch (Exception)
+			{
+				throw new WebException(string.Format("Failed to resolve {0}. Check your connectivity.", uri.Host),
+					WebExceptionStatus.ConnectFailure);
+			}
+		}
 
-	    public string GetUpdatesFeed()
-	    {
-	        TryResolvingHost();
+		public string GetUpdatesFeed()
+		{
+			TryResolvingHost();
 
-            var data = string.Empty;
+			var data = string.Empty;
 			var request = WebRequest.Create(FeedUrl);
 			request.Method = "GET";
 			request.Proxy = Proxy;

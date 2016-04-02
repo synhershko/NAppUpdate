@@ -29,8 +29,10 @@ namespace FeedBuilder
 			public int nFileSizeLow;
 			public int dwReserved0;
 			public int dwReserved1;
-			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)] public String fileName;
-			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)] public String alternateFileName;
+			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+			public String fileName;
+			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)]
+			public String alternateFileName;
 		}
 
 		/// <summary>
@@ -41,7 +43,7 @@ namespace FeedBuilder
 			/// <summary>
 			///   Constructor
 			/// </summary>
-			public SafeFindHandle() : base(true) {}
+			public SafeFindHandle() : base(true) { }
 
 			/// <summary>
 			///   Release the find handle
@@ -136,7 +138,8 @@ namespace FeedBuilder
 		/// </summary>
 		public void Dispose()
 		{
-			while (m_scopes.Count > 0) {
+			while (m_scopes.Count > 0)
+			{
 				SearchInfo si = m_scopes.Pop();
 				si.Handle.Close();
 			}
@@ -166,7 +169,8 @@ namespace FeedBuilder
 
 			string[] specs = fileTypesToMatch.Split(new[] { ';', ',' });
 			m_fileSpecs = new List<Regex>(specs.Length);
-			foreach (string spec in specs) {
+			foreach (string spec in specs)
+			{
 				// trim whitespace off file spec and convert Win32 wildcards to regular expressions
 				string pattern = spec.Trim().Replace(".", @"\.").Replace("*", @".*").Replace("?", @".?");
 				m_fileSpecs.Add(new Regex("^" + pattern + "$", RegexOptions.IgnoreCase));
@@ -184,11 +188,12 @@ namespace FeedBuilder
 		/// </remarks>
 		public IEnumerable<FileInfo> Matches()
 		{
-			foreach (string rootPath in m_paths) {
+			foreach (string rootPath in m_paths)
+			{
 				string path = rootPath.Trim();
 
 				// we "recurse" into a new directory by jumping to this spot
-				top:
+			top:
 
 				// check security - ensure that caller has rights to read this directory
 				new FileIOPermission(FileIOPermissionAccess.PathDiscovery, Path.Combine(path, ".")).Demand();
@@ -200,13 +205,16 @@ namespace FeedBuilder
 				bool restart = false;
 
 				// we "return" from a sub-directory by jumping to this spot
-				restart:
-// ReSharper disable InvertIf
-				if (!handle.IsInvalid) {
-// ReSharper restore InvertIf
-					do {
+			restart:
+				// ReSharper disable InvertIf
+				if (!handle.IsInvalid)
+				{
+					// ReSharper restore InvertIf
+					do
+					{
 						// if we restarted the loop (unwound a recursion), fetch the next match
-						if (restart) {
+						if (restart)
+						{
 							restart = false;
 							continue;
 						}
@@ -214,15 +222,20 @@ namespace FeedBuilder
 						// don't match . or ..
 						if (findData.fileName.Equals(@".") || findData.fileName.Equals(@"..")) continue;
 
-						if ((findData.fileAttributes & (int)FileAttributes.Directory) != 0) {
-							if (m_includeSubDirs) {
+						if ((findData.fileAttributes & (int)FileAttributes.Directory) != 0)
+						{
+							if (m_includeSubDirs)
+							{
 								// it's a directory - recurse into it
 								path = Path.Combine(path, findData.fileName);
 								goto top;
 							}
-						} else {
+						}
+						else
+						{
 							// it's a file, see if any of the filespecs matches it
-							foreach (Regex fileSpec in m_fileSpecs) {
+							foreach (Regex fileSpec in m_fileSpecs)
+							{
 								// if this spec matches, return this file's info
 								if (fileSpec.IsMatch(findData.fileName)) yield return new FileInfo(Path.Combine(path, findData.fileName));
 							}
@@ -234,7 +247,8 @@ namespace FeedBuilder
 
 					// unwind the stack - are we still in a recursion?
 					m_scopes.Pop();
-					if (m_scopes.Count > 0) {
+					if (m_scopes.Count > 0)
+					{
 						SearchInfo si = m_scopes.Peek();
 						handle = si.Handle;
 						path = si.Path;

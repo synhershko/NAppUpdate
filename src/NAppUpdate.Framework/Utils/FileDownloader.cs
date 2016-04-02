@@ -17,7 +17,6 @@ namespace NAppUpdate.Framework.Utils
 			Proxy = null;
 		}
 
-
 		public FileDownloader(string url)
 		{
 			_uri = new Uri(url);
