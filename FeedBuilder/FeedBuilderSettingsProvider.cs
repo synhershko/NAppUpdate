@@ -10,7 +10,7 @@ using System.Xml.Serialization;
 
 namespace FeedBuilder
 {
-	public class FeedBuilderSettingsProvider : SettingsProvider
+	public class FeedBuilderSettingsProvider : SettingsProvider, IApplicationSettingsProvider
 	{
 		//XML Root Node
 		private const string SETTINGSROOT = "Settings";
@@ -36,8 +36,8 @@ namespace FeedBuilder
 			{
 				string dest = Path.Combine(GetAppSettingsPath(), GetAppSettingsFilename());
 				if (filename == dest) return;
+				Settings.Default.Reset();
 				File.Copy(filename, dest, true);
-				Settings.Default.Reload();
 			}
 			catch (Exception ex)
 			{
@@ -131,6 +131,21 @@ namespace FeedBuilder
 					try
 					{
 						m_SettingsXML.Load(Path.Combine(GetAppSettingsPath(), GetAppSettingsFilename()));
+						XmlNode node = m_SettingsXML.SelectSingleNode(string.Format("{0}/*", SETTINGSROOT));
+
+						// Adopt configuration if it is from another machine.
+						if (node != null && node.Name != Environment.MachineName)
+						{
+							XmlNode machineNode = m_SettingsXML.CreateElement(Environment.MachineName);
+
+							while (node.ChildNodes.Count > 0)
+							{
+								machineNode.AppendChild(node.FirstChild);
+							}
+
+							node.ParentNode.AppendChild(machineNode);
+							node.ParentNode.RemoveChild(node);
+						}
 					}
 					catch (Exception)
 					{
@@ -262,7 +277,7 @@ namespace FeedBuilder
 				xmlWriter.Close();
 				node.InnerXml = builder.ToString();
 			}
-			else node.InnerText = propVal.SerializedValue.ToString();
+			else node.InnerText = propVal.SerializedValue != null ? propVal.SerializedValue.ToString() : string.Empty;
 		}
 
 		private bool IsRoaming(SettingsProperty prop)
@@ -275,5 +290,19 @@ namespace FeedBuilder
 			}
 			return false;
 		}
+
+		public void Reset(SettingsContext context)
+		{
+			string settingsFilePath = Path.Combine(GetAppSettingsPath(), GetAppSettingsFilename());
+			File.Delete(settingsFilePath);
+			m_SettingsXML = null;
+		}
+
+		public SettingsPropertyValue GetPreviousVersion(SettingsContext context, SettingsProperty property)
+		{
+			return null;
+		}
+
+		public void Upgrade(SettingsContext context, SettingsPropertyCollection properties)	{ }
 	}
 }

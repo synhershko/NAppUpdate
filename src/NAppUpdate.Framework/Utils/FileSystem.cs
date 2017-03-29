@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Security.AccessControl;
+using System.Security.Principal;
 
 namespace NAppUpdate.Framework.Utils
 {
@@ -65,16 +67,53 @@ namespace NAppUpdate.Framework.Utils
 			return files;
 		}
 
-		public static bool IsExeRunning(string path)
+		/// <summary>
+		/// Returns true if read/write lock exists on the file, otherwise false
+		/// From http://stackoverflow.com/a/937558
+		/// </summary>
+		/// <param name="file">The file to check for a lock</param>
+		/// <returns></returns>
+		public static bool IsFileLocked(FileInfo file)
 		{
-			var processes = Process.GetProcesses();
-			foreach (Process p in processes)
+			FileStream stream = null;
+
+			try
 			{
-				if (p.MainModule.FileName.StartsWith(path, StringComparison.InvariantCultureIgnoreCase))
-					return true;
+				stream = file.Open(FileMode.Open, FileAccess.ReadWrite, FileShare.None);
 			}
+			catch (IOException)
+			{
+				//the file is unavailable because it is:
+				//still being written to
+				//or being processed by another thread
+				//or does not exist (has already been processed)
+				return true;
+			}
+			finally
+			{
+				if (stream != null)
+					stream.Close();
+			}
+
+			//file is not locked
 			return false;
 		}
 
+		public static void CopyAccessControl(FileInfo src, FileInfo dst)
+		{
+			FileSecurity fs = src.GetAccessControl();
+
+			bool hasInheritanceRules = fs.GetAccessRules(false, true, typeof(SecurityIdentifier)).Count > 0;
+			if (hasInheritanceRules)
+			{
+				fs.SetAccessRuleProtection(false, false);
+			}
+			else
+			{
+				fs.SetAccessRuleProtection(true, true);
+			}
+
+			dst.SetAccessControl(fs);
+		}
 	}
 }

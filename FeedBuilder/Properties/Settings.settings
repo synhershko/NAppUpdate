@@ -42,5 +42,8 @@
     <Setting Name="OutputFolder" Provider="FeedBuilder.FeedBuilderSettingsProvider" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="AddExtension" Provider="FeedBuilder.FeedBuilderSettingsProvider" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

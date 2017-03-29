@@ -6,7 +6,7 @@
     <ProductVersion />
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{734FA44E-39AC-478E-A5AA-0F3D1F1974AA}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <StartupObject>FeedBuilder.Program</StartupObject>
     <RootNamespace>FeedBuilder</RootNamespace>
     <AssemblyName>FeedBuilder</AssemblyName>
@@ -55,7 +55,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
-    <OutputPath>..\bin\Debug\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DocumentationFile>FeedBuilder.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
     <DebugType>full</DebugType>
@@ -75,6 +75,9 @@
     <CodeAnalysisFailOnMissingRules>true</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NAppUpdate.Framework">
+      <HintPath>..\src\NAppUpdate.Framework\bin\Release\net35\NAppUpdate.Framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
@@ -146,12 +149,6 @@
   <ItemGroup>
     <Content Include="component.ico" />
     <Content Include="Readme.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\src\NAppUpdate.Framework\NAppUpdate.Framework.csproj">
-      <Project>{5C07EBDF-D43F-4BE9-B560-D7A443C0EDCE}</Project>
-      <Name>NAppUpdate.Framework</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
 </Project>
