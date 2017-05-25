@@ -99,6 +99,12 @@
       <DependentUpon>frmMain.cs</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmWait.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmWait.Designer.cs">
+      <DependentUpon>frmWait.cs</DependentUpon>
+    </Compile>
     <Compile Include="HelpfulTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -134,6 +140,9 @@
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmWait.resx">
+      <DependentUpon>frmWait.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -150,6 +159,7 @@
   <ItemGroup>
     <Content Include="component.ico" />
     <Content Include="Readme.txt" />
+    <None Include="Resources\ajax-loader.gif" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\src\NAppUpdate.Framework\NAppUpdate.Framework.csproj">

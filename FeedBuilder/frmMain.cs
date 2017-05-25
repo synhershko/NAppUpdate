@@ -499,9 +499,10 @@ namespace FeedBuilder
 
 			if (!string.IsNullOrEmpty(outputDir))
 			{
-
-
 				FileSystemEnumerator enumerator = new FileSystemEnumerator(txtOutputFolder.Text.Trim(), "*.*", true);
+				frmWait wait = new frmWait();
+				wait.Show(this);
+
 				foreach (FileInfoEx fi in (await enumerator.MatchesToFileInfoExAsync(outputDir.Length)).ToList())
 				{
 					string thisFile = fi.FileInfo.FullName;
@@ -515,9 +516,10 @@ namespace FeedBuilder
 					thisItem.Tag = fi;
 					lstFiles.Items.Add(thisItem);
 				}
+				wait.Close();
 			}
-
 			lstFiles.EndUpdate();
+
 		}
 
 		private bool IsIgnorable(string filename)
