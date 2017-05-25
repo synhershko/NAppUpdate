@@ -2,6 +2,7 @@
 using System.IO;
 using NAppUpdate.Framework.Common;
 using NAppUpdate.Framework.Tasks;
+using NAppUpdate.Framework.Utils;
 
 namespace NAppUpdate.Framework.Conditions
 {
@@ -33,7 +34,7 @@ namespace NAppUpdate.Framework.Conditions
 
 			if ("sha256".Equals(ChecksumType, StringComparison.InvariantCultureIgnoreCase))
 			{
-				var sha256 = Utils.FileChecksum.GetSHA256Checksum(localPath);
+				var sha256 = FileChecksum.GetSHA256Checksum(localPath);
 				if (!string.IsNullOrEmpty(sha256) && sha256.Equals(Checksum, StringComparison.InvariantCultureIgnoreCase))
 					return true;
 			}
