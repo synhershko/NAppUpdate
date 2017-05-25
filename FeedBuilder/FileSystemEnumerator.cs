@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Permissions;
 using System.Text.RegularExpressions;
-
+using System.Threading.Tasks;
 namespace FeedBuilder
 {
 	/// <summary>
@@ -122,6 +123,17 @@ namespace FeedBuilder
 					}
 				}
 			}
+		}
+
+		public Task<IEnumerable<FileInfoEx>> MatchesToFileInfoExAsync(int outputDirLength)
+		{
+			return Task.Run(() =>
+		   {
+			   return Matches()
+			   .OrderBy(f => f.FullName)
+			   .Select(f => new FileInfoEx(f.FullName, outputDirLength))
+			  .ToList().AsEnumerable();
+		   });
 		}
 	}
 }
