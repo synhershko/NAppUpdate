@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
+using FeedBuilder.Properties;
 
 namespace FeedBuilder
 {
