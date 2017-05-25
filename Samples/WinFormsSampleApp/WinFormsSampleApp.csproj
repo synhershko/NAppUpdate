@@ -56,9 +56,6 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NAppUpdate.Framework">
-      <HintPath>..\..\src\NAppUpdate.Framework\bin\Release\net35\NAppUpdate.Framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -123,6 +120,12 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\NAppUpdate.Framework\NAppUpdate.Framework.csproj">
+      <Project>{5c07ebdf-d43f-4be9-b560-d7a443c0edce}</Project>
+      <Name>NAppUpdate.Framework</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
