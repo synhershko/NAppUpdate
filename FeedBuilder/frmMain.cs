@@ -531,7 +531,7 @@ namespace FeedBuilder
 				item.SubItems.Add(fileInfo.FileInfo.Length.ToString(CultureInfo.InvariantCulture));
 				item.SubItems.Add(fileInfo.FileInfo.LastWriteTime.ToString(CultureInfo.InvariantCulture));
 				item.SubItems.Add(fileInfo.Hash);
-				item.Checked = (!Settings.Default.IgnoreFiles.Contains(fileInfo.FileInfo.Name));
+				item.Checked = (!Settings.Default.IgnoreFiles.Contains(fileInfo.RelativeName));
 				item.Tag = fileInfo;
 				lstFiles.Items.Add(item);
 			}
