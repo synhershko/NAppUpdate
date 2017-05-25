@@ -296,9 +296,9 @@ namespace FeedBuilder
 					var fileInfoEx = (FileInfoEx)thisItem.Tag;
 					XmlElement task = doc.CreateElement("FileUpdateTask");
 					task.SetAttribute("localPath", fileInfoEx.RelativeName);
-                    if (!string.IsNullOrEmpty(txtAddExtension.Text)) task.SetAttribute("updateTo",fileInfoEx.RelativeName+"."+txtAddExtension.Text.Trim());
                     // generate FileUpdateTask metadata items
                     task.SetAttribute("lastModified", fileInfoEx.FileInfo.LastWriteTime.ToFileTime().ToString(CultureInfo.InvariantCulture));
+					if (!string.IsNullOrEmpty(txtAddExtension.Text)) task.SetAttribute("updateTo", fileInfoEx.RelativeName + (txtAddExtension.Text.Trim().StartsWith(".") ? String.Empty : ".") + txtAddExtension.Text.Trim());
 					task.SetAttribute("fileSize", fileInfoEx.FileInfo.Length.ToString(CultureInfo.InvariantCulture));
 					if (!string.IsNullOrEmpty(fileInfoEx.FileVersion)) task.SetAttribute("version", fileInfoEx.FileVersion);
 
@@ -400,7 +400,7 @@ namespace FeedBuilder
 			var fi = new FileInfo(destFile);
 			var d = Directory.GetParent(fi.FullName);
 			if (!Directory.Exists(d.FullName)) CreateDirectoryPath(d.FullName);
-            if (!string.IsNullOrEmpty(txtAddExtension.Text)) destFile += "." + txtAddExtension.Text.Trim();
+			if (!string.IsNullOrEmpty(txtAddExtension.Text)) destFile += (txtAddExtension.Text.Trim().StartsWith(".") ? String.Empty : ".") + txtAddExtension.Text.Trim();
 			// Copy with delayed retry
 			int retries = 3;
 			while (retries > 0)
