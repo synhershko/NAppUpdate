@@ -579,6 +579,7 @@ namespace FeedBuilder
             this.grpSettings.ResumeLayout(false);
             this.grpSettings.PerformLayout();
             this.ResumeLayout(false);
+			this.Shown += new System.EventHandler(this.frmMain_Shown);
 
 		}
 
