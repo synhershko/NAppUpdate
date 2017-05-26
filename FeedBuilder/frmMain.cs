@@ -43,7 +43,7 @@ namespace FeedBuilder
 		private bool loadedSettings = false;
 		private async void frmMain_Load(Object sender, EventArgs e)
 		{
-			
+
 
 			string[] args = Environment.GetCommandLineArgs();
 			// The first arg is the path to ourself
@@ -245,6 +245,7 @@ namespace FeedBuilder
 
 		private async void Build()
 		{
+			SaveFormSettings();
 			AttachConsole(ATTACH_PARENT_PROCESS);
 
 			Console.WriteLine("Building NAppUpdater feed '{0}'", txtBaseURL.Text.Trim());
