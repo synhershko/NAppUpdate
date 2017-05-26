@@ -50,7 +50,11 @@ namespace FeedBuilder
 		{
 			if (e.KeyCode == Keys.Escape)
 			{
-				CancelTokenSource.Cancel();
+				try
+				{
+					CancelTokenSource.Cancel();
+				}
+				catch { }
 			}
 		}
 	}

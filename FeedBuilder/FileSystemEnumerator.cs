@@ -187,7 +187,7 @@ namespace FeedBuilder
 
 			   }, token);
 			}
-			catch (TaskCanceledException ex)
+			catch
 			{
 				return Task.FromResult(Enumerable.Empty<FileInfoEx>().AsEnumerable());
 			}

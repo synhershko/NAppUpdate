@@ -504,21 +504,27 @@ namespace FeedBuilder
 				{
 					var handler = new EventHandler<FileProcessedEventArgs>(wait.FileProcessed);
 					enumerator.FileProcessed += handler;
-					wait.CancelTokenSource.Token.Register(()=> 
+					wait.CancelTokenSource.Token.Register(() =>
 					{
+						frmMain mn = this;
 						Action alert = () =>
 						{
-							MessageBox.Show(this ,"File processing was canceled.", "File Processing Canceled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+							MessageBox.Show(mn, "File processing was canceled.", "File Processing Canceled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 						};
-
-						if (InvokeRequired)
-							Invoke(alert);
-						else
-							alert.Invoke();
+						Invoke(alert);
 					});
 					wait.Show(this);
-
-					foreach (FileInfoEx fi in (await enumerator.MatchesToFileInfoExAsync(outputDir.Length, wait.CancelTokenSource)).ToList())
+					List<FileInfoEx> files;
+					try
+					{
+						var tmp = await enumerator.MatchesToFileInfoExAsync(outputDir.Length, wait.CancelTokenSource);
+						files = tmp.ToList();
+					}
+					catch
+					{
+						files = Enumerable.Empty<FileInfoEx>().ToList();
+					}
+					foreach (FileInfoEx fi in files)
 					{
 						string thisFile = fi.FileInfo.FullName;
 						if ((IsIgnorable(thisFile))) continue;
