@@ -500,27 +500,46 @@ namespace FeedBuilder
 			if (!string.IsNullOrEmpty(outputDir))
 			{
 				FileSystemEnumerator enumerator = new FileSystemEnumerator(txtOutputFolder.Text.Trim(), "*.*", true);
-				frmWait wait = new frmWait();
-				wait.Show(this);
-
-				foreach (FileInfoEx fi in (await enumerator.MatchesToFileInfoExAsync(outputDir.Length)).ToList())
+				using (frmWait wait = new frmWait())
 				{
-					string thisFile = fi.FileInfo.FullName;
-					if ((IsIgnorable(thisFile))) continue;
-					ListViewItem thisItem = new ListViewItem(fi.RelativeName, GetImageIndex(fi.FileInfo.Extension));
-					thisItem.SubItems.Add(fi.FileVersion);
-					thisItem.SubItems.Add(fi.FileInfo.Length.ToString(CultureInfo.InvariantCulture));
-					thisItem.SubItems.Add(fi.FileInfo.LastWriteTime.ToString(CultureInfo.InvariantCulture));
-					thisItem.SubItems.Add(fi.Hash);
-					thisItem.Checked = (!Settings.Default.IgnoreFiles.Contains(fi.FileInfo.Name));
-					thisItem.Tag = fi;
-					lstFiles.Items.Add(thisItem);
-				}
-				wait.Close();
-			}
-			lstFiles.EndUpdate();
+					var handler = new EventHandler<FileProcessedEventArgs>(wait.FileProcessed);
+					enumerator.FileProcessed += handler;
+					wait.CancelTokenSource.Token.Register(()=> 
+					{
+						Action alert = () =>
+						{
+							MessageBox.Show(this ,"File processing was canceled.", "File Processing Canceled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+						};
 
+						if (InvokeRequired)
+							Invoke(alert);
+						else
+							alert.Invoke();
+					});
+					wait.Show(this);
+
+					foreach (FileInfoEx fi in (await enumerator.MatchesToFileInfoExAsync(outputDir.Length, wait.CancelTokenSource)).ToList())
+					{
+						string thisFile = fi.FileInfo.FullName;
+						if ((IsIgnorable(thisFile))) continue;
+						ListViewItem thisItem = new ListViewItem(fi.RelativeName, GetImageIndex(fi.FileInfo.Extension));
+						thisItem.SubItems.Add(fi.FileVersion);
+						thisItem.SubItems.Add(fi.FileInfo.Length.ToString(CultureInfo.InvariantCulture));
+						thisItem.SubItems.Add(fi.FileInfo.LastWriteTime.ToString(CultureInfo.InvariantCulture));
+						thisItem.SubItems.Add(fi.Hash);
+						thisItem.Checked = (!Settings.Default.IgnoreFiles.Contains(fi.FileInfo.Name));
+						thisItem.Tag = fi;
+						lstFiles.Items.Add(thisItem);
+					}
+					enumerator.FileProcessed -= handler;
+					wait.Close();
+				}
+			}
+
+
+			lstFiles.EndUpdate();
 		}
+
 
 		private bool IsIgnorable(string filename)
 		{

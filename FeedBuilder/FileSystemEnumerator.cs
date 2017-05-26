@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Permissions;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 namespace FeedBuilder
 {
@@ -71,7 +72,7 @@ namespace FeedBuilder
 				m_fileSpecs.Add(new Regex("^" + pattern + "$", RegexOptions.IgnoreCase));
 			}
 		}
-
+		private int fileCount = 0;
 		private IEnumerable<FileInfo> ProcessFiles(string folderPath)
 		{
 			foreach (var file in Directory.GetFiles(folderPath))
@@ -83,9 +84,14 @@ namespace FeedBuilder
 					if (fileSpec.IsMatch(tmpFile))
 					{
 						yield return new FileInfo(file);
+						fileCount++;
+						OnFileProcess(new FileProcessedEventArgs(fileCount));
 						break;
 					}
 				}
+				if (token != null)
+					token.ThrowIfCancellationRequested();
+
 			}
 		}
 		void CheckSecurity(string folderPath)
@@ -108,6 +114,24 @@ namespace FeedBuilder
 					yield return sd;
 			}
 		}
+
+		public event EventHandler<FileProcessedEventArgs> FileProcessed;
+
+
+
+		// Invoke the Changed event; called whenever list changes:
+
+		// Invoke the FileProcessed event; called whenever a file is processed:
+
+		private void OnFileProcess(FileProcessedEventArgs e)
+
+		{
+
+			if (FileProcessed != null)
+
+				FileProcessed(this, e);
+
+		}
 		/// <summary>
 		///   Get an enumerator that returns all of the files that match the wildcards that
 		///   are in any of the directories to be searched.
@@ -119,6 +143,7 @@ namespace FeedBuilder
 		/// </remarks>
 		public IEnumerable<FileInfo> Matches()
 		{
+			fileCount = 0;
 			foreach (string rootPath in m_paths)
 			{
 				string path = rootPath.Trim();
@@ -128,6 +153,7 @@ namespace FeedBuilder
 
 				foreach (var fi in ProcessFiles(path))
 					yield return fi;
+
 
 				if (m_includeSubDirs)
 				{
@@ -142,17 +168,51 @@ namespace FeedBuilder
 
 			}
 		}
-
-		public Task<IEnumerable<FileInfoEx>> MatchesToFileInfoExAsync(int outputDirLength)
+		private CancellationToken token;
+		public Task<IEnumerable<FileInfoEx>> MatchesToFileInfoExAsync(int outputDirLength, CancellationTokenSource TokenSource)
 		{
-			return Task.Run(() =>
-		   {
-			   return Matches()
-			   .OrderBy(f => f.FullName)
-			   .Select(f => new FileInfoEx(f.FullName, outputDirLength))
-			  .ToList().AsEnumerable();
-		   });
+			token = TokenSource.Token;
+			try
+			{
+				return Task.Run(() =>
+			   {
+				   List<FileInfoEx> items = new List<FileInfoEx>();
+				   foreach (var info in Matches().OrderBy(f => f.FullName)
+					  .Select(f => new FileInfoEx(f.FullName, outputDirLength)))
+				   {
+					   items.Add(info);
+
+				   }
+				   return items.AsEnumerable();
+
+			   }, token);
+			}
+			catch (TaskCanceledException ex)
+			{
+				return Task.FromResult(Enumerable.Empty<FileInfoEx>().AsEnumerable());
+			}
+
+
 		}
 	}
+
+	public class FileProcessedEventArgs : EventArgs
+
+	{
+
+		public int FileProcesCount { get; private set; }
+
+
+
+		public FileProcessedEventArgs(int FileProcesCount)
+
+		{
+
+			this.FileProcesCount = FileProcesCount;
+
+		}
+
+	}
 }
+
 
