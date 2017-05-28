@@ -162,6 +162,10 @@
     <None Include="Resources\ajax-loader.gif" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FileIcons\FileIcons.vbproj">
+      <Project>{3637b716-7eee-4a84-b6b9-982c4d8a39a6}</Project>
+      <Name>FileIcons</Name>
+    </ProjectReference>
     <ProjectReference Include="..\src\NAppUpdate.Framework\NAppUpdate.Framework.csproj">
       <Project>{5c07ebdf-d43f-4be9-b560-d7a443c0edce}</Project>
       <Name>NAppUpdate.Framework</Name>

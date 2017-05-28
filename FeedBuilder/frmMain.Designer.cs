@@ -22,7 +22,8 @@ namespace FeedBuilder
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
 		protected override void Dispose(bool disposing)
 		{
-			if (disposing && (components != null)) {
+			if (disposing && (components != null))
+			{
 				components.Dispose();
 			}
 			base.Dispose(disposing);
@@ -97,11 +98,11 @@ namespace FeedBuilder
 			// 
 			this.lstFiles.CheckBoxes = true;
 			this.lstFiles.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.colFilename,
-            this.colVersion,
-            this.colSize,
-            this.colDate,
-            this.colHash});
+			this.colFilename,
+			this.colVersion,
+			this.colSize,
+			this.colDate,
+			this.colHash});
 			this.lstFiles.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.lstFiles.Location = new System.Drawing.Point(0, 12);
 			this.lstFiles.Margin = new System.Windows.Forms.Padding(0);
@@ -141,21 +142,9 @@ namespace FeedBuilder
 			// 
 			// imgFiles
 			// 
-			this.imgFiles.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgFiles.ImageStream")));
+			this.imgFiles.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+			this.imgFiles.ImageSize = new System.Drawing.Size(32, 32);
 			this.imgFiles.TransparentColor = System.Drawing.Color.Transparent;
-			this.imgFiles.Images.SetKeyName(0, "file_extension_other.png");
-			this.imgFiles.Images.SetKeyName(1, "file_extension_bmp.png");
-			this.imgFiles.Images.SetKeyName(2, "file_extension_dll.png");
-			this.imgFiles.Images.SetKeyName(3, "file_extension_doc.png");
-			this.imgFiles.Images.SetKeyName(4, "file_extension_exe.png");
-			this.imgFiles.Images.SetKeyName(5, "file_extension_htm.png");
-			this.imgFiles.Images.SetKeyName(6, "file_extension_jpg.png");
-			this.imgFiles.Images.SetKeyName(7, "file_extension_pdf.png");
-			this.imgFiles.Images.SetKeyName(8, "file_extension_png.png");
-			this.imgFiles.Images.SetKeyName(9, "file_extension_txt.png");
-			this.imgFiles.Images.SetKeyName(10, "file_extension_wav.png");
-			this.imgFiles.Images.SetKeyName(11, "file_extension_wmv.png");
-			this.imgFiles.Images.SetKeyName(12, "file_extension_zip.png");
 			// 
 			// fbdOutputFolder
 			// 
@@ -171,15 +160,15 @@ namespace FeedBuilder
 			// 
 			this.tsMain.Dock = System.Windows.Forms.DockStyle.None;
 			this.tsMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.btnNew,
-            this.btnOpen,
-            this.btnSave,
-            this.btnSaveAs,
-            this.tsSeparator1,
-            this.btnRefresh,
-            this.btnOpenOutputs,
-            this.toolStripSeparator1,
-            this.btnBuild});
+			this.btnNew,
+			this.btnOpen,
+			this.btnSave,
+			this.btnSaveAs,
+			this.tsSeparator1,
+			this.btnRefresh,
+			this.btnOpenOutputs,
+			this.toolStripSeparator1,
+			this.btnBuild});
 			this.tsMain.Location = new System.Drawing.Point(0, 0);
 			this.tsMain.Name = "tsMain";
 			this.tsMain.Size = new System.Drawing.Size(871, 25);
@@ -344,8 +333,8 @@ namespace FeedBuilder
 			// 
 			// txtAddExtension
 			// 
-			this.txtAddExtension.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.txtAddExtension.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.txtAddExtension.HelpfulText = "Add extension to each file";
 			this.txtAddExtension.Location = new System.Drawing.Point(516, 175);
 			this.txtAddExtension.Margin = new System.Windows.Forms.Padding(3, 3, 3, 8);
@@ -452,8 +441,8 @@ namespace FeedBuilder
 			// 
 			// txtBaseURL
 			// 
-			this.txtBaseURL.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.txtBaseURL.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.txtBaseURL.HelpfulText = "Where you will upload the feed and update files for distribution to clients";
 			this.txtBaseURL.Location = new System.Drawing.Point(146, 119);
 			this.txtBaseURL.Margin = new System.Windows.Forms.Padding(3, 3, 3, 8);
@@ -508,8 +497,8 @@ namespace FeedBuilder
 			// 
 			// txtFeedXML
 			// 
-			this.txtFeedXML.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.txtFeedXML.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.txtFeedXML.BackColor = System.Drawing.Color.White;
 			this.txtFeedXML.HelpfulText = "The file your application downloads to determine if there are updates";
 			this.txtFeedXML.Location = new System.Drawing.Point(146, 88);
@@ -540,8 +529,8 @@ namespace FeedBuilder
 			// 
 			// txtOutputFolder
 			// 
-			this.txtOutputFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.txtOutputFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.txtOutputFolder.BackColor = System.Drawing.Color.White;
 			this.txtOutputFolder.HelpfulText = "The folder that contains the files you want to distribute";
 			this.txtOutputFolder.Location = new System.Drawing.Point(146, 57);
@@ -639,7 +628,7 @@ namespace FeedBuilder
 		private System.Windows.Forms.ToolStripButton btnNew;
 		private System.Windows.Forms.ToolStripButton btnOpen;
 		private System.Windows.Forms.ToolStripButton btnSave;
-        private System.Windows.Forms.ToolStripButton btnRefresh;
+		private System.Windows.Forms.ToolStripButton btnRefresh;
 		private System.Windows.Forms.ToolStripContainer ToolStripContainer1;
 		private System.Windows.Forms.GroupBox grpSettings;
 		private System.Windows.Forms.CheckBox chkCleanUp;
@@ -664,11 +653,11 @@ namespace FeedBuilder
 		private System.Windows.Forms.ToolStripButton btnSaveAs;
 		private System.Windows.Forms.ToolStripButton btnBuild;
 		private System.Windows.Forms.ToolStripSeparator tsSeparator1;
-        private ToolStripButton btnOpenOutputs;
+		private ToolStripButton btnOpenOutputs;
 		private Panel panFiles;
 		private ToolStripSeparator toolStripSeparator1;
-        private Label lblAddExtension;
-        private HelpfulTextBox txtAddExtension;
+		private Label lblAddExtension;
+		private HelpfulTextBox txtAddExtension;
 		private Label label2;
 		private Label label1;
 		private TextBox txtExcludeFileSpec;

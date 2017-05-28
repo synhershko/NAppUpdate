@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeedBuilder", "FeedBuilder\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsProgressSample", "Samples\WinFormsProgressSample\WinFormsProgressSample.csproj", "{991B322D-C0EC-47A6-B67A-665C873C7B19}"
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "FileIcons", "FileIcons\FileIcons.vbproj", "{3637B716-7EEE-4A84-B6B9-982C4D8A39A6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

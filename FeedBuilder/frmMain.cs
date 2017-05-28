@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using FeedBuilder.Properties;
+using FileIcons;
 
 namespace FeedBuilder
 {
@@ -474,45 +475,6 @@ namespace FeedBuilder
 			process.Start();
 		}
 
-		private int GetImageIndex(string ext)
-		{
-			switch (ext.Trim('.'))
-			{
-				case "bmp":
-					return 1;
-				case "dll":
-					return 2;
-				case "doc":
-				case "docx":
-					return 3;
-				case "exe":
-					return 4;
-				case "htm":
-				case "html":
-					return 5;
-				case "jpg":
-				case "jpeg":
-					return 6;
-				case "pdf":
-					return 7;
-				case "png":
-					return 8;
-				case "txt":
-					return 9;
-				case "wav":
-				case "mp3":
-					return 10;
-				case "wmv":
-					return 11;
-				case "xls":
-				case "xlsx":
-					return 12;
-				case "zip":
-					return 13;
-				default:
-					return 0;
-			}
-		}
 
 		private async Task<bool> ReadFiles()
 		{
@@ -556,11 +518,41 @@ namespace FeedBuilder
 						Console.WriteLine(ex.Message);
 
 					}
+
+					var exts = files.Select(f => f.FileInfo.Extension).Except(new string[] { ".exe" }).Distinct().ToList();
+					var exes = files.Where(f => f.FileInfo.Extension == ".exe").Where(f => !imgFiles.Images.ContainsKey(f.FileInfo.FullName)).Select(f => f.FileInfo.FullName);
+					var iconInfos = (await FileIconListCreator.GenerateAsync(FileIcon.enmIconSize.Large, exts)).ToArray();
+					int offset = imgFiles.Images.Count;
+					for (int index = 0; index < iconInfos.Count(); index++)
+					{
+						imgFiles.Images.Add(iconInfos[index].Icon);
+						imgFiles.Images.SetKeyName(index + offset, iconInfos[index].FileName);
+
+					}
+					foreach (var exe in exes)
+					{
+						using (Icon ico = Icon.ExtractAssociatedIcon(exe))
+						{
+							var bmp = ((Icon)ico.Clone()).ToBitmap();
+							bmp.MakeTransparent();
+							int indx = imgFiles.Images.Count;
+							imgFiles.Images.Add(bmp);
+							imgFiles.Images.SetKeyName(indx, exe);
+						}
+
+					}
 					foreach (FileInfoEx fi in files)
 					{
 						string thisFile = fi.FileInfo.FullName;
 						if ((IsIgnorable(thisFile))) continue;
-						ListViewItem thisItem = new ListViewItem(fi.RelativeName, GetImageIndex(fi.FileInfo.Extension));
+
+						//if (!imgFiles.Images.ContainsKey(fi.FileInfo.Extension))
+						//{
+						//	var info = System.Drawing.Icon.ExtractAssociatedIcon(thisFile);
+						//	imgFiles.Images.Add(fi.FileInfo.Extension, iconForFile);
+
+						//}
+						ListViewItem thisItem = new ListViewItem(fi.RelativeName, fi.FileInfo.Extension == ".exe" ? fi.FileInfo.FullName : fi.FileInfo.Extension);
 						thisItem.SubItems.Add(fi.FileVersion);
 						thisItem.SubItems.Add(fi.FileInfo.Length.ToString(CultureInfo.InvariantCulture));
 						thisItem.SubItems.Add(fi.FileInfo.LastWriteTime.ToString(CultureInfo.InvariantCulture));
@@ -571,6 +563,7 @@ namespace FeedBuilder
 					}
 					enumerator.FileProcessed -= handler;
 					wait.Close();
+
 				}
 			}
 
