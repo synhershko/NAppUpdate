@@ -97,6 +97,8 @@ namespace FeedBuilder
 			txtOutputFolder.Text = !string.IsNullOrEmpty(Settings.Default.OutputFolder) && Directory.Exists(Settings.Default.OutputFolder) ? Settings.Default.OutputFolder : string.Empty;
 			txtFeedXML.Text = string.IsNullOrEmpty(Settings.Default.FeedXML) ? string.Empty : Settings.Default.FeedXML;
 			txtBaseURL.Text = string.IsNullOrEmpty(Settings.Default.BaseURL) ? string.Empty : Settings.Default.BaseURL;
+			txtMatchFileSpec.Text = string.IsNullOrEmpty(Settings.Default.MatchFileSpec) ? "*.*" : Settings.Default.MatchFileSpec;
+			txtExcludeFileSpec.Text = string.IsNullOrEmpty(Settings.Default.ExcludeFileSpec) ? string.Empty : Settings.Default.ExcludeFileSpec;
 
 			chkVersion.Checked = Settings.Default.CompareVersion;
 			chkSize.Checked = Settings.Default.CompareSize;
@@ -128,6 +130,9 @@ namespace FeedBuilder
 			if (!string.IsNullOrEmpty(txtFeedXML.Text.Trim()) && Directory.Exists(Path.GetDirectoryName(txtFeedXML.Text.Trim()))) Settings.Default.FeedXML = txtFeedXML.Text.Trim();
 			// ReSharper restore AssignNullToNotNullAttribute
 			if (!string.IsNullOrEmpty(txtBaseURL.Text.Trim())) Settings.Default.BaseURL = txtBaseURL.Text.Trim();
+
+			Settings.Default.MatchFileSpec = string.IsNullOrWhiteSpace(txtMatchFileSpec.Text) ? "*.*" : txtMatchFileSpec.Text;
+			Settings.Default.ExcludeFileSpec = string.IsNullOrWhiteSpace(txtMatchFileSpec.Text) ? string.Empty : txtExcludeFileSpec.Text;
 
 			if (!string.IsNullOrEmpty(txtAddExtension.Text.Trim())) Settings.Default.AddExtension = txtAddExtension.Text.Trim();
 			Settings.Default.CompareVersion = chkVersion.Checked;
@@ -514,12 +519,13 @@ namespace FeedBuilder
 			bool result = true;
 			string outputDir = string.IsNullOrEmpty(txtOutputFolder.Text.Trim()) || !Directory.Exists(txtOutputFolder.Text.Trim()) ? string.Empty : txtOutputFolder.Text.Trim();
 
+
 			lstFiles.BeginUpdate();
 			lstFiles.Items.Clear();
 
 			if (!string.IsNullOrEmpty(outputDir))
 			{
-				FileSystemEnumerator enumerator = new FileSystemEnumerator(txtOutputFolder.Text.Trim(), "*.*", true);
+				FileSystemEnumerator enumerator = new FileSystemEnumerator(txtOutputFolder.Text.Trim(), string.IsNullOrWhiteSpace(txtMatchFileSpec.Text) ? "*.*" : txtMatchFileSpec.Text, string.IsNullOrWhiteSpace(txtExcludeFileSpec.Text) ? "" : txtExcludeFileSpec.Text, true);
 				using (frmWait wait = new frmWait())
 				{
 					var handler = new EventHandler<FileProcessedEventArgs>(wait.FileProcessed);

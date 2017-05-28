@@ -27,6 +27,11 @@ namespace FeedBuilder
 		private readonly List<Regex> m_fileSpecs;
 
 		/// <summary>
+		///   Array of regular expressions that will detect matching files to exclude.
+		/// </summary>
+		private readonly List<Regex> m_excludeFileSpecs;
+
+		/// <summary>
 		///   If true, sub-directories are searched.
 		/// </summary>
 		private readonly bool m_includeSubDirs;
@@ -46,10 +51,11 @@ namespace FeedBuilder
 		/// <summary>
 		///   Constructor.
 		/// </summary>
-		/// <param name="pathsToSearch"> Semicolon- or comma-delimitted list of paths to search. </param>
-		/// <param name="fileTypesToMatch"> Semicolon- or comma-delimitted list of wildcard filespecs to match. </param>
+		/// <param name="pathsToSearch"> Semicolon- or comma-delimited list of paths to search. </param>
+		/// <param name="fileTypesToMatch"> Semicolon- or comma-delimited list of wildcard filespecs to match. </param>
+		/// <param name="excludeFileTypesToMatch">Semicolon- or comma-delimited list of wildcard filespecs to exclude from matching. </param>
 		/// <param name="includeSubDirs"> If true, subdirectories are searched. </param>
-		public FileSystemEnumerator(string pathsToSearch, string fileTypesToMatch, bool includeSubDirs)
+		public FileSystemEnumerator(string pathsToSearch, string fileTypesToMatch, string excludeFileTypesToMatch, bool includeSubDirs)
 		{
 
 
@@ -64,15 +70,25 @@ namespace FeedBuilder
 			m_paths = pathsToSearch.Split(new[] { ';', ',' });
 
 			string[] specs = fileTypesToMatch.Split(new[] { ';', ',' });
+			string[] exSpecs = string.IsNullOrEmpty(excludeFileTypesToMatch) ? new string[] { } : excludeFileTypesToMatch.Split(new[] { ';', ',' });
 			m_fileSpecs = new List<Regex>(specs.Length);
+			m_excludeFileSpecs = new List<Regex>(exSpecs.Length);
 			foreach (string spec in specs)
 			{
 				// trim whitespace off file spec and convert Win32 wildcards to regular expressions
 				string pattern = spec.Trim().Replace(".", @"\.").Replace("*", @".*").Replace("?", @".?");
 				m_fileSpecs.Add(new Regex("^" + pattern + "$", RegexOptions.IgnoreCase));
 			}
+
+			foreach (string spec in exSpecs)
+			{
+				// trim whitespace off file spec and convert Win32 wildcards to regular expressions
+				string pattern = spec.Trim().Replace(".", @"\.").Replace("*", @".*").Replace("?", @".?");
+				m_excludeFileSpecs.Add(new Regex("^" + pattern + "$", RegexOptions.IgnoreCase));
+			}
 		}
 		private int fileCount = 0;
+
 		private IEnumerable<FileInfo> ProcessFiles(string folderPath)
 		{
 			foreach (var file in Directory.GetFiles(folderPath))
@@ -83,10 +99,20 @@ namespace FeedBuilder
 					// if this spec matches, return this file's info
 					if (fileSpec.IsMatch(tmpFile))
 					{
-						yield return new FileInfo(file);
-						fileCount++;
-						OnFileProcess(new FileProcessedEventArgs(fileCount));
-						break;
+						bool showFile = true;
+						foreach (Regex exSpec in m_excludeFileSpecs)
+							if (exSpec.IsMatch(tmpFile))
+							{
+								showFile = false;
+								break;
+							}
+						if (showFile)
+						{
+							yield return new FileInfo(file);
+							fileCount++;
+							OnFileProcess(new FileProcessedEventArgs(fileCount));
+							break;
+						}
 					}
 				}
 				if (token != null)
@@ -95,12 +121,10 @@ namespace FeedBuilder
 			}
 		}
 		void CheckSecurity(string folderPath)
-
 		{
-
 			new FileIOPermission(FileIOPermissionAccess.PathDiscovery, Path.Combine(folderPath, ".")).Demand();
-
 		}
+
 		private IEnumerable<string> ProcessSubdirectories(string folderPath)
 		{
 
@@ -117,21 +141,13 @@ namespace FeedBuilder
 
 		public event EventHandler<FileProcessedEventArgs> FileProcessed;
 
-
-
-		// Invoke the Changed event; called whenever list changes:
-
 		// Invoke the FileProcessed event; called whenever a file is processed:
-
 		private void OnFileProcess(FileProcessedEventArgs e)
-
 		{
-
 			if (FileProcessed != null)
-
 				FileProcessed(this, e);
-
 		}
+
 		/// <summary>
 		///   Get an enumerator that returns all of the files that match the wildcards that
 		///   are in any of the directories to be searched.
@@ -144,6 +160,7 @@ namespace FeedBuilder
 		public IEnumerable<FileInfo> Matches()
 		{
 			fileCount = 0;
+
 			foreach (string rootPath in m_paths)
 			{
 				string path = rootPath.Trim();
@@ -154,7 +171,6 @@ namespace FeedBuilder
 				foreach (var fi in ProcessFiles(path))
 					yield return fi;
 
-
 				if (m_includeSubDirs)
 				{
 
@@ -164,8 +180,6 @@ namespace FeedBuilder
 							yield return fi;
 					}
 				}
-
-
 			}
 		}
 		private CancellationToken token;
@@ -211,8 +225,5 @@ namespace FeedBuilder
 			this.FileProcesCount = FileProcesCount;
 
 		}
-
 	}
 }
-
-
