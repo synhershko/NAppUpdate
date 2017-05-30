@@ -554,7 +554,7 @@ namespace FeedBuilder
 						//}
 						ListViewItem thisItem = new ListViewItem(fi.RelativeName, fi.FileInfo.Extension == ".exe" ? fi.FileInfo.FullName : fi.FileInfo.Extension);
 						thisItem.SubItems.Add(fi.FileVersion);
-						thisItem.SubItems.Add(fi.FileInfo.Length.ToString(CultureInfo.InvariantCulture));
+						thisItem.SubItems.Add(fi.getFileSize(1));
 						thisItem.SubItems.Add(fi.FileInfo.LastWriteTime.ToString(CultureInfo.InvariantCulture));
 						thisItem.SubItems.Add(fi.Hash);
 						thisItem.Checked = (!Settings.Default.IgnoreFiles.Contains(fi.FileInfo.Name));
