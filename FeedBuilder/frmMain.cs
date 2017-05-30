@@ -569,6 +569,7 @@ namespace FeedBuilder
 
 
 			lstFiles.EndUpdate();
+			lstFiles.AutoResizeColumns( ColumnHeaderAutoResizeStyle.ColumnContent);
 			return result;
 		}
 
