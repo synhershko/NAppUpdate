@@ -26,6 +26,10 @@ namespace FeedBuilder
 			{
 				components.Dispose();
 			}
+			if (disposing && (curSelector != null))
+			{
+				curSelector.Dispose();
+			}
 			base.Dispose(disposing);
 		}
 
@@ -61,8 +65,11 @@ namespace FeedBuilder
 			this.ToolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
 			this.panFiles = new System.Windows.Forms.Panel();
 			this.grpSettings = new System.Windows.Forms.GroupBox();
+			this.label2 = new System.Windows.Forms.Label();
+			this.label1 = new System.Windows.Forms.Label();
+			this.txtExcludeFileSpec = new System.Windows.Forms.TextBox();
+			this.txtMatchFileSpec = new System.Windows.Forms.TextBox();
 			this.lblAddExtension = new System.Windows.Forms.Label();
-			this.txtAddExtension = new FeedBuilder.HelpfulTextBox(this.components);
 			this.chkCleanUp = new System.Windows.Forms.CheckBox();
 			this.chkCopyFiles = new System.Windows.Forms.CheckBox();
 			this.lblIgnore = new System.Windows.Forms.Label();
@@ -72,20 +79,20 @@ namespace FeedBuilder
 			this.chkDate = new System.Windows.Forms.CheckBox();
 			this.chkSize = new System.Windows.Forms.CheckBox();
 			this.chkVersion = new System.Windows.Forms.CheckBox();
-			this.txtBaseURL = new FeedBuilder.HelpfulTextBox(this.components);
 			this.lblBaseURL = new System.Windows.Forms.Label();
 			this.chkIgnoreVsHost = new System.Windows.Forms.CheckBox();
 			this.chkIgnoreSymbols = new System.Windows.Forms.CheckBox();
 			this.cmdFeedXML = new System.Windows.Forms.Button();
-			this.txtFeedXML = new FeedBuilder.HelpfulTextBox(this.components);
 			this.lblFeedXML = new System.Windows.Forms.Label();
 			this.cmdOutputFolder = new System.Windows.Forms.Button();
-			this.txtOutputFolder = new FeedBuilder.HelpfulTextBox(this.components);
 			this.lblOutputFolder = new System.Windows.Forms.Label();
-			this.txtMatchFileSpec = new System.Windows.Forms.TextBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.txtExcludeFileSpec = new System.Windows.Forms.TextBox();
+			this.txtFileSearch = new System.Windows.Forms.TextBox();
+			this.label3 = new System.Windows.Forms.Label();
+			this.label4 = new System.Windows.Forms.Label();
+			this.txtAddExtension = new FeedBuilder.HelpfulTextBox(this.components);
+			this.txtBaseURL = new FeedBuilder.HelpfulTextBox(this.components);
+			this.txtFeedXML = new FeedBuilder.HelpfulTextBox(this.components);
+			this.txtOutputFolder = new FeedBuilder.HelpfulTextBox(this.components);
 			this.tsMain.SuspendLayout();
 			this.ToolStripContainer1.ContentPanel.SuspendLayout();
 			this.ToolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -104,10 +111,11 @@ namespace FeedBuilder
 			this.colDate,
 			this.colHash});
 			this.lstFiles.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lstFiles.FullRowSelect = true;
 			this.lstFiles.Location = new System.Drawing.Point(0, 12);
 			this.lstFiles.Margin = new System.Windows.Forms.Padding(0);
 			this.lstFiles.Name = "lstFiles";
-			this.lstFiles.Size = new System.Drawing.Size(847, 323);
+			this.lstFiles.Size = new System.Drawing.Size(847, 290);
 			this.lstFiles.SmallImageList = this.imgFiles;
 			this.lstFiles.TabIndex = 0;
 			this.lstFiles.UseCompatibleStateImageBehavior = false;
@@ -280,14 +288,15 @@ namespace FeedBuilder
 			// 
 			this.panFiles.Controls.Add(this.lstFiles);
 			this.panFiles.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panFiles.Location = new System.Drawing.Point(12, 253);
+			this.panFiles.Location = new System.Drawing.Point(12, 286);
 			this.panFiles.Name = "panFiles";
 			this.panFiles.Padding = new System.Windows.Forms.Padding(0, 12, 0, 0);
-			this.panFiles.Size = new System.Drawing.Size(847, 335);
+			this.panFiles.Size = new System.Drawing.Size(847, 302);
 			this.panFiles.TabIndex = 2;
 			// 
 			// grpSettings
 			// 
+			this.grpSettings.Controls.Add(this.txtFileSearch);
 			this.grpSettings.Controls.Add(this.label2);
 			this.grpSettings.Controls.Add(this.label1);
 			this.grpSettings.Controls.Add(this.txtExcludeFileSpec);
@@ -296,6 +305,8 @@ namespace FeedBuilder
 			this.grpSettings.Controls.Add(this.txtAddExtension);
 			this.grpSettings.Controls.Add(this.chkCleanUp);
 			this.grpSettings.Controls.Add(this.chkCopyFiles);
+			this.grpSettings.Controls.Add(this.label4);
+			this.grpSettings.Controls.Add(this.label3);
 			this.grpSettings.Controls.Add(this.lblIgnore);
 			this.grpSettings.Controls.Add(this.lblMisc);
 			this.grpSettings.Controls.Add(this.lblCompare);
@@ -317,10 +328,43 @@ namespace FeedBuilder
 			this.grpSettings.Location = new System.Drawing.Point(12, 8);
 			this.grpSettings.Name = "grpSettings";
 			this.grpSettings.Padding = new System.Windows.Forms.Padding(12, 8, 12, 8);
-			this.grpSettings.Size = new System.Drawing.Size(847, 245);
+			this.grpSettings.Size = new System.Drawing.Size(847, 278);
 			this.grpSettings.TabIndex = 1;
 			this.grpSettings.TabStop = false;
 			this.grpSettings.Text = "Settings:";
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(449, 34);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(95, 13);
+			this.label2.TabIndex = 21;
+			this.label2.Text = "File Exclude Spec:";
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(15, 34);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(87, 13);
+			this.label1.TabIndex = 21;
+			this.label1.Text = "File Match Spec:";
+			// 
+			// txtExcludeFileSpec
+			// 
+			this.txtExcludeFileSpec.Location = new System.Drawing.Point(563, 31);
+			this.txtExcludeFileSpec.Name = "txtExcludeFileSpec";
+			this.txtExcludeFileSpec.Size = new System.Drawing.Size(237, 20);
+			this.txtExcludeFileSpec.TabIndex = 20;
+			// 
+			// txtMatchFileSpec
+			// 
+			this.txtMatchFileSpec.Location = new System.Drawing.Point(146, 31);
+			this.txtMatchFileSpec.Name = "txtMatchFileSpec";
+			this.txtMatchFileSpec.Size = new System.Drawing.Size(237, 20);
+			this.txtMatchFileSpec.TabIndex = 20;
+			this.txtMatchFileSpec.Text = "*.*";
 			// 
 			// lblAddExtension
 			// 
@@ -330,17 +374,6 @@ namespace FeedBuilder
 			this.lblAddExtension.Size = new System.Drawing.Size(77, 13);
 			this.lblAddExtension.TabIndex = 19;
 			this.lblAddExtension.Text = "Add extension:";
-			// 
-			// txtAddExtension
-			// 
-			this.txtAddExtension.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-			| System.Windows.Forms.AnchorStyles.Right)));
-			this.txtAddExtension.HelpfulText = "Add extension to each file";
-			this.txtAddExtension.Location = new System.Drawing.Point(516, 175);
-			this.txtAddExtension.Margin = new System.Windows.Forms.Padding(3, 3, 3, 8);
-			this.txtAddExtension.Name = "txtAddExtension";
-			this.txtAddExtension.Size = new System.Drawing.Size(135, 20);
-			this.txtAddExtension.TabIndex = 18;
 			// 
 			// chkCleanUp
 			// 
@@ -439,17 +472,6 @@ namespace FeedBuilder
 			this.chkVersion.Text = "Version";
 			this.chkVersion.UseVisualStyleBackColor = true;
 			// 
-			// txtBaseURL
-			// 
-			this.txtBaseURL.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-			| System.Windows.Forms.AnchorStyles.Right)));
-			this.txtBaseURL.HelpfulText = "Where you will upload the feed and update files for distribution to clients";
-			this.txtBaseURL.Location = new System.Drawing.Point(146, 119);
-			this.txtBaseURL.Margin = new System.Windows.Forms.Padding(3, 3, 3, 8);
-			this.txtBaseURL.Name = "txtBaseURL";
-			this.txtBaseURL.Size = new System.Drawing.Size(654, 20);
-			this.txtBaseURL.TabIndex = 9;
-			// 
 			// lblBaseURL
 			// 
 			this.lblBaseURL.AutoSize = true;
@@ -495,18 +517,6 @@ namespace FeedBuilder
 			this.cmdFeedXML.UseVisualStyleBackColor = true;
 			this.cmdFeedXML.Click += new System.EventHandler(this.cmdFeedXML_Click);
 			// 
-			// txtFeedXML
-			// 
-			this.txtFeedXML.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-			| System.Windows.Forms.AnchorStyles.Right)));
-			this.txtFeedXML.BackColor = System.Drawing.Color.White;
-			this.txtFeedXML.HelpfulText = "The file your application downloads to determine if there are updates";
-			this.txtFeedXML.Location = new System.Drawing.Point(146, 88);
-			this.txtFeedXML.Margin = new System.Windows.Forms.Padding(3, 3, 3, 8);
-			this.txtFeedXML.Name = "txtFeedXML";
-			this.txtFeedXML.Size = new System.Drawing.Size(654, 20);
-			this.txtFeedXML.TabIndex = 4;
-			// 
 			// lblFeedXML
 			// 
 			this.lblFeedXML.AutoSize = true;
@@ -527,6 +537,76 @@ namespace FeedBuilder
 			this.cmdOutputFolder.UseVisualStyleBackColor = true;
 			this.cmdOutputFolder.Click += new System.EventHandler(this.cmdOutputFolder_Click);
 			// 
+			// lblOutputFolder
+			// 
+			this.lblOutputFolder.AutoSize = true;
+			this.lblOutputFolder.Location = new System.Drawing.Point(15, 60);
+			this.lblOutputFolder.Name = "lblOutputFolder";
+			this.lblOutputFolder.Size = new System.Drawing.Size(110, 13);
+			this.lblOutputFolder.TabIndex = 0;
+			this.lblOutputFolder.Text = "Project Output Folder:";
+			// 
+			// txtFileSearch
+			// 
+			this.txtFileSearch.Enabled = false;
+			this.txtFileSearch.Location = new System.Drawing.Point(146, 254);
+			this.txtFileSearch.Name = "txtFileSearch";
+			this.txtFileSearch.Size = new System.Drawing.Size(505, 20);
+			this.txtFileSearch.TabIndex = 22;
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(15, 257);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(61, 13);
+			this.label3.TabIndex = 15;
+			this.label3.Text = "Select Files";
+			// 
+			// label4
+			// 
+			this.label4.BackColor = System.Drawing.SystemColors.Info;
+			this.label4.Location = new System.Drawing.Point(657, 245);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(143, 30);
+			this.label4.TabIndex = 15;
+			this.label4.Text = "Use regex pattern to select files in the listview.";
+			this.label4.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+			// 
+			// txtAddExtension
+			// 
+			this.txtAddExtension.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
+			this.txtAddExtension.HelpfulText = "Add extension to each file";
+			this.txtAddExtension.Location = new System.Drawing.Point(516, 175);
+			this.txtAddExtension.Margin = new System.Windows.Forms.Padding(3, 3, 3, 8);
+			this.txtAddExtension.Name = "txtAddExtension";
+			this.txtAddExtension.Size = new System.Drawing.Size(135, 20);
+			this.txtAddExtension.TabIndex = 18;
+			// 
+			// txtBaseURL
+			// 
+			this.txtBaseURL.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
+			this.txtBaseURL.HelpfulText = "Where you will upload the feed and update files for distribution to clients";
+			this.txtBaseURL.Location = new System.Drawing.Point(146, 119);
+			this.txtBaseURL.Margin = new System.Windows.Forms.Padding(3, 3, 3, 8);
+			this.txtBaseURL.Name = "txtBaseURL";
+			this.txtBaseURL.Size = new System.Drawing.Size(654, 20);
+			this.txtBaseURL.TabIndex = 9;
+			// 
+			// txtFeedXML
+			// 
+			this.txtFeedXML.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
+			this.txtFeedXML.BackColor = System.Drawing.Color.White;
+			this.txtFeedXML.HelpfulText = "The file your application downloads to determine if there are updates";
+			this.txtFeedXML.Location = new System.Drawing.Point(146, 88);
+			this.txtFeedXML.Margin = new System.Windows.Forms.Padding(3, 3, 3, 8);
+			this.txtFeedXML.Name = "txtFeedXML";
+			this.txtFeedXML.Size = new System.Drawing.Size(654, 20);
+			this.txtFeedXML.TabIndex = 4;
+			// 
 			// txtOutputFolder
 			// 
 			this.txtOutputFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
@@ -539,48 +619,6 @@ namespace FeedBuilder
 			this.txtOutputFolder.Size = new System.Drawing.Size(654, 20);
 			this.txtOutputFolder.TabIndex = 1;
 			// 
-			// lblOutputFolder
-			// 
-			this.lblOutputFolder.AutoSize = true;
-			this.lblOutputFolder.Location = new System.Drawing.Point(15, 60);
-			this.lblOutputFolder.Name = "lblOutputFolder";
-			this.lblOutputFolder.Size = new System.Drawing.Size(110, 13);
-			this.lblOutputFolder.TabIndex = 0;
-			this.lblOutputFolder.Text = "Project Output Folder:";
-			// 
-			// txtMatchFileSpec
-			// 
-			this.txtMatchFileSpec.Location = new System.Drawing.Point(146, 31);
-			this.txtMatchFileSpec.Name = "txtMatchFileSpec";
-			this.txtMatchFileSpec.Size = new System.Drawing.Size(237, 20);
-			this.txtMatchFileSpec.TabIndex = 20;
-			this.txtMatchFileSpec.Text = "*.*";
-			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(15, 34);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(87, 13);
-			this.label1.TabIndex = 21;
-			this.label1.Text = "File Match Spec:";
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(449, 34);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(95, 13);
-			this.label2.TabIndex = 21;
-			this.label2.Text = "File Exclude Spec:";
-			// 
-			// txtExcludeFileSpec
-			// 
-			this.txtExcludeFileSpec.Location = new System.Drawing.Point(563, 31);
-			this.txtExcludeFileSpec.Name = "txtExcludeFileSpec";
-			this.txtExcludeFileSpec.Size = new System.Drawing.Size(237, 20);
-			this.txtExcludeFileSpec.TabIndex = 20;
-			// 
 			// frmMain
 			// 
 			this.AllowDrop = true;
@@ -589,6 +627,7 @@ namespace FeedBuilder
 			this.BackColor = System.Drawing.Color.White;
 			this.ClientSize = new System.Drawing.Size(871, 625);
 			this.Controls.Add(this.ToolStripContainer1);
+			this.DoubleBuffered = true;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MinimumSize = new System.Drawing.Size(850, 530);
 			this.Name = "frmMain";
@@ -662,5 +701,8 @@ namespace FeedBuilder
 		private Label label1;
 		private TextBox txtExcludeFileSpec;
 		private TextBox txtMatchFileSpec;
+		private TextBox txtFileSearch;
+		private Label label4;
+		private Label label3;
 	}
 }

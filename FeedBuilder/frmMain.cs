@@ -6,7 +6,10 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reactive;
+using System.Reactive.Linq;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -475,13 +478,47 @@ namespace FeedBuilder
 			process.Start();
 		}
 
+		private IDisposable curSelector = null;
+		IDisposable ItemSelector()
+		{
+			var observe = Observable.FromEventPattern(txtFileSearch, "TextChanged")
+				.Select(evt => ((TextBox)evt.Sender).Text)
+				.Where(txt => !string.IsNullOrWhiteSpace(txt))
+				.DistinctUntilChanged()
+				.Throttle(TimeSpan.FromMilliseconds(500))
+				.Select(txt =>
+				{
+					try
+					{
+						Regex reg = new Regex(txt, RegexOptions.IgnoreCase);
+						return reg;
+					}
+					catch
+					{
+						return null;
+					}
+				}).Where(reg => reg != null);
+
+			return ControlObservable.ObserveOn(observe, txtFileSearch).Subscribe(reg =>
+			{
+				lstFiles.SelectedIndices.Clear();
+				foreach (var lvi in lstFiles.Items.Cast<ListViewItem>().Where(itm => reg.IsMatch(itm.Text)))
+				{
+					lvi.Selected = true;
+				}
+			});
+		}
 
 		private async Task<bool> ReadFiles()
 		{
 			bool result = true;
 			string outputDir = string.IsNullOrEmpty(txtOutputFolder.Text.Trim()) || !Directory.Exists(txtOutputFolder.Text.Trim()) ? string.Empty : txtOutputFolder.Text.Trim();
+			txtFileSearch.Text = "";
+			if (curSelector != null)
+				curSelector.Dispose();
 
 
+			lstFiles.HideSelection = true;
 			lstFiles.BeginUpdate();
 			lstFiles.Items.Clear();
 
@@ -569,7 +606,14 @@ namespace FeedBuilder
 
 
 			lstFiles.EndUpdate();
-			lstFiles.AutoResizeColumns( ColumnHeaderAutoResizeStyle.ColumnContent);
+			if (lstFiles.Items.Count > 0)
+			{
+				lstFiles.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+				lstFiles.HideSelection = false;
+				curSelector = ItemSelector();
+				txtFileSearch.Enabled = true;
+			}
+
 			return result;
 		}
 
