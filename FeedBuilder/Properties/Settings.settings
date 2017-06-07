@@ -45,5 +45,11 @@
     <Setting Name="AddExtension" Provider="FeedBuilder.FeedBuilderSettingsProvider" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="MatchFileSpec" Type="System.String" Scope="User">
+      <Value Profile="(Default)">*.*</Value>
+    </Setting>
+    <Setting Name="ExcludeFileSpec" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

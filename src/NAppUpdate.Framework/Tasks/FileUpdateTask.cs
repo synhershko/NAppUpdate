@@ -1,7 +1,5 @@
-using System;
+﻿using System;
 using System.IO;
-using System.Security.AccessControl;
-using System.Security.Principal;
 using System.Threading;
 using NAppUpdate.Framework.Common;
 using NAppUpdate.Framework.Utils;
@@ -60,7 +58,7 @@ namespace NAppUpdate.Framework.Tasks
 
 			if (!string.IsNullOrEmpty(Sha256Checksum))
 			{
-				string checksum = Utils.FileChecksum.GetSHA256Checksum(_tempFile);
+				string checksum = FileChecksum.GetSHA256Checksum(_tempFile);
 				if (!checksum.Equals(Sha256Checksum))
 					throw new UpdateProcessFailedException(string.Format("FileUpdateTask: Checksums do not match; expected {0} but got {1}", Sha256Checksum, checksum));
 			}
@@ -78,7 +76,6 @@ namespace NAppUpdate.Framework.Tasks
 			}
 
 			var dirName = Path.GetDirectoryName(_destinationFile);
-
 			if (!Directory.Exists(dirName))
 			{
 				Utils.FileSystem.CreateDirectoryStructure(dirName, false);
@@ -92,7 +89,6 @@ namespace NAppUpdate.Framework.Tasks
 					string backupPath = Path.GetDirectoryName(Path.Combine(UpdateManager.Instance.Config.BackupFolder, LocalPath));
 					Utils.FileSystem.CreateDirectoryStructure(backupPath, false);
 				}
-
 				_backupFile = Path.Combine(UpdateManager.Instance.Config.BackupFolder, LocalPath);
 				File.Copy(_destinationFile, _backupFile, true);
 			}
@@ -123,7 +119,6 @@ namespace NAppUpdate.Framework.Tasks
 
 						File.Delete(_destinationFile);
 					}
-
 					File.Move(_tempFile, _destinationFile);
 					_tempFile = null;
 				}
@@ -152,7 +147,6 @@ namespace NAppUpdate.Framework.Tasks
 			return TaskExecutionStatus.RequiresAppRestart;
 		}
 
-
 		public override bool Rollback()
 		{
 			if (string.IsNullOrEmpty(_destinationFile))
@@ -165,7 +159,6 @@ namespace NAppUpdate.Framework.Tasks
 
 			return true;
 		}
-
 		/// <summary>
 		/// To mitigate problems with the files being locked even though the application mutex has been released.
 		/// https://github.com/synhershko/NAppUpdate/issues/35

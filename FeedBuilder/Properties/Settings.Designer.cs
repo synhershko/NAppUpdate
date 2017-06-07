@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace FeedBuilder {
+namespace FeedBuilder.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -191,6 +191,30 @@ namespace FeedBuilder {
             }
             set {
                 this["AddExtension"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("*.*")]
+        public string MatchFileSpec {
+            get {
+                return ((string)(this["MatchFileSpec"]));
+            }
+            set {
+                this["MatchFileSpec"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ExcludeFileSpec {
+            get {
+                return ((string)(this["ExcludeFileSpec"]));
+            }
+            set {
+                this["ExcludeFileSpec"] = value;
             }
         }
     }
