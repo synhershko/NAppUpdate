@@ -59,7 +59,7 @@ namespace NAppUpdate.Framework.Tasks
 			if (!string.IsNullOrEmpty(Sha256Checksum))
 			{
 				string checksum = FileChecksum.GetSHA256Checksum(_tempFile);
-				if (!checksum.Equals(Sha256Checksum))
+				if (!checksum.Equals(Sha256Checksum, StringComparison.InvariantCultureIgnoreCase))
 					throw new UpdateProcessFailedException(string.Format("FileUpdateTask: Checksums do not match; expected {0} but got {1}", Sha256Checksum, checksum));
 			}
 
