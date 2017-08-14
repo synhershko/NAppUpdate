@@ -75,12 +75,6 @@ namespace NAppUpdate.Framework.Tasks
 				return TaskExecutionStatus.Successful; // Errorneous case, but there's nothing to prepare to, and by default we prefer a noop over an error
 			}
 
-			var dirName = Path.GetDirectoryName(_destinationFile);
-			if (!Directory.Exists(dirName))
-			{
-				Utils.FileSystem.CreateDirectoryStructure(dirName, false);
-			}
-
 			// Create a backup copy if target exists
 			if (_backupFile == null && File.Exists(_destinationFile))
 			{
@@ -113,7 +107,12 @@ namespace NAppUpdate.Framework.Tasks
 
 				try
 				{
-					if (File.Exists(_destinationFile))
+                    var dirName = Path.GetDirectoryName(_destinationFile);
+                    if (!Directory.Exists(dirName))
+                    {
+                        Utils.FileSystem.CreateDirectoryStructure(dirName, false);
+                    }
+                    if (File.Exists(_destinationFile))
 					{
 						FileSystem.CopyAccessControl(new FileInfo(_destinationFile), new FileInfo(_tempFile));
 
@@ -139,8 +138,12 @@ namespace NAppUpdate.Framework.Tasks
 				// If we got thus far, we have completed execution
 				return TaskExecutionStatus.Successful;
 
-			// Otherwise, figure out what restart method to use
-			if (File.Exists(_destinationFile) && !Utils.PermissionsCheck.HaveWritePermissionsForFileOrFolder(_destinationFile))
+            // Otherwise, figure out what restart method to use
+            var applicationDir = Path.GetDirectoryName(UpdateManager.Instance.ApplicationPath);
+            if ((File.Exists(_destinationFile) && !Utils.PermissionsCheck.HaveWritePermissionsForFileOrFolder(_destinationFile))
+                // If file don't exist and we don't have right to write. 
+                // TODO: check directory from dirName to applicationDir one by one...
+                || (!File.Exists(_destinationFile) && !Utils.PermissionsCheck.HaveWritePermissionsForFolder(applicationDir)))
 			{
 				return TaskExecutionStatus.RequiresPrivilegedAppRestart;
 			}
