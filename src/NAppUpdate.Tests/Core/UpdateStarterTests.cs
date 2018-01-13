@@ -31,16 +31,16 @@ namespace NAppUpdate.Tests.Core
 		public void UpdaterDeploymentAndIPCWorks()
 		{
 			var dto = new NauIpc.NauDto
-			          	{
-			          		Configs = UpdateManager.Instance.Config,
-			          		Tasks = new List<IUpdateTask>
-			          		        	{
-											new FileUpdateTask {Description = "Task #1", ExecutionStatus = TaskExecutionStatus.RequiresAppRestart},
-			          		        	},
-			          		AppPath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName,
-			          		WorkingDirectory = Environment.CurrentDirectory,
-			          		RelaunchApplication = false,
-			          	};
+			{
+				Configs = UpdateManager.Instance.Config,
+				Tasks = new List<IUpdateTask>
+				{
+					new FileUpdateTask {Description = "Task #1", ExecutionStatus = TaskExecutionStatus.RequiresAppRestart},
+				},
+				AppPath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName,
+				WorkingDirectory = Environment.CurrentDirectory,
+				RelaunchApplication = false,
+			};
 
 			var path = dto.Configs.TempFolder;
 

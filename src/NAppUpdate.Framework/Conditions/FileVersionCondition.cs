@@ -6,48 +6,49 @@ using NAppUpdate.Framework.Common;
 namespace NAppUpdate.Framework.Conditions
 {
 	[Serializable]
-    [UpdateConditionAlias("version")]
-    public class FileVersionCondition : IUpdateCondition
-    {
-        [NauField("localPath",
-            "The local path of the file to check. If not set but set under a FileUpdateTask, the LocalPath of the task will be used. Otherwise this condition will be ignored."
-            , false)]
-        public string LocalPath { get; set; }
+	[UpdateConditionAlias("version")]
+	public class FileVersionCondition : IUpdateCondition
+	{
+		[NauField("localPath",
+			"The local path of the file to check. If not set but set under a FileUpdateTask, the LocalPath of the task will be used. Otherwise this condition will be ignored."
+			, false)]
+		public string LocalPath { get; set; }
 
-        [NauField("version", "Version string to check against", true)]
-        public string Version { get; set; }
+		[NauField("version", "Version string to check against", true)]
+		public string Version { get; set; }
 
-        [NauField("what", "Comparison action to perform. Accepted values: above, is, below. Default: below.", false)]
-        public string ComparisonType { get; set; }
+		[NauField("what", "Comparison action to perform. Accepted values: above, is, below. Default: below.", false)]
+		public string ComparisonType { get; set; }
 
-        #region IUpdateCondition Members
+		public bool IsMet(Tasks.IUpdateTask task)
+		{
+			var localPath = !string.IsNullOrEmpty(LocalPath)
+				? LocalPath
+				: Utils.Reflection.GetNauAttribute(task, "LocalPath") as string;
 
-        public bool IsMet(Tasks.IUpdateTask task)
-        {
-            string localPath = !string.IsNullOrEmpty(LocalPath)
-                                   ? LocalPath
-                                   : Utils.Reflection.GetNauAttribute(task, "LocalPath") as string;
-            if (string.IsNullOrEmpty(localPath) || !File.Exists(localPath))
-                return true;
+			// local path is invalid, we can't check for anything so we will return as if the condition was met
+			if (string.IsNullOrEmpty(localPath))
+				return true;
 
-        	var versionInfo = FileVersionInfo.GetVersionInfo(localPath);
+			// if the file doesn't exist it has a null version, and therefore the condition result depends on the ComparisonType
+			if (!File.Exists(localPath))
+				return ComparisonType.Equals("below", StringComparison.InvariantCultureIgnoreCase);
+
+			var versionInfo = FileVersionInfo.GetVersionInfo(localPath);
 			if (versionInfo.FileVersion == null) return true; // perform the update if no version info is found
-			
-			string versionString = versionInfo.FileVersion.Replace(", ", ".");
-            Version localVersion = new Version(versionString);
-            Version updateVersion = Version != null ? new Version(Version) : new Version();
 
-            switch (ComparisonType)
-            {
-                case "above":
-                    return updateVersion < localVersion;
-                case "is":
-                    return updateVersion == localVersion;
-                default:
-                    return updateVersion > localVersion;
-            }
-        }
+			var localVersion = new Version(versionInfo.FileMajorPart, versionInfo.FileMinorPart, versionInfo.FileBuildPart, versionInfo.FilePrivatePart);
+			var updateVersion = Version != null ? new Version(Version) : new Version();
 
-        #endregion
-    }
+			switch (ComparisonType)
+			{
+				case "above":
+					return updateVersion < localVersion;
+				case "is":
+					return updateVersion == localVersion;
+				default:
+					return updateVersion > localVersion;
+			}
+		}
+	}
 }

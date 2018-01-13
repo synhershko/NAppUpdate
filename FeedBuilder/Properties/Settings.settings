@@ -48,5 +48,8 @@
     <Setting Name="SignFile" Provider="FeedBuilder.FeedBuilderSettingsProvider" Type="System.String" Scope="User">
       <Value Profile="(Default)">signaturefile.txt</Value>
     </Setting>
+    <Setting Name="AddExtension" Provider="FeedBuilder.FeedBuilderSettingsProvider" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

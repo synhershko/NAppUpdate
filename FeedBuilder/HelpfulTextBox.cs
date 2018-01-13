@@ -6,7 +6,6 @@ using System.Windows.Forms;
 namespace FeedBuilder
 {
 	public partial class HelpfulTextBox : TextBox
-
 	{
 		public HelpfulTextBox()
 		{

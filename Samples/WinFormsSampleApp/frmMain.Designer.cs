@@ -1,33 +1,33 @@
 ﻿namespace WinFormsSampleApp
 {
-    partial class frmMain
-    {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private System.ComponentModel.IContainer components = null;
+	partial class frmMain
+	{
+		/// <summary>
+		/// Required designer variable.
+		/// </summary>
+		private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing && (components != null))
+			{
+				components.Dispose();
+			}
+			base.Dispose(disposing);
+		}
 
-        #region Windows Form Designer generated code
+		#region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InitializeComponent()
-        {
+		/// <summary>
+		/// Required method for Designer support - do not modify
+		/// the contents of this method with the code editor.
+		/// </summary>
+		private void InitializeComponent()
+		{
 			this.btnCheckForUpdates = new System.Windows.Forms.Button();
 			this.btnPrepareUpdates = new System.Windows.Forms.Button();
 			this.btnInstallUpdates = new System.Windows.Forms.Button();
@@ -167,20 +167,20 @@
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
-        }
+		}
 
-        #endregion
+		#endregion
 
-        private System.Windows.Forms.Button btnCheckForUpdates;
-        private System.Windows.Forms.Button btnPrepareUpdates;
-        private System.Windows.Forms.Button btnInstallUpdates;
-        private System.Windows.Forms.Button btnCheckForUpdatesCustom;
-        private System.Windows.Forms.Button btnRollback;
-        private System.Windows.Forms.Button btnQuit;
-        private System.Windows.Forms.Label lblStatus;
+		private System.Windows.Forms.Button btnCheckForUpdates;
+		private System.Windows.Forms.Button btnPrepareUpdates;
+		private System.Windows.Forms.Button btnInstallUpdates;
+		private System.Windows.Forms.Button btnCheckForUpdatesCustom;
+		private System.Windows.Forms.Button btnRollback;
+		private System.Windows.Forms.Button btnQuit;
+		private System.Windows.Forms.Label lblStatus;
 		private System.Windows.Forms.CheckBox chkShowConsole;
 		private System.Windows.Forms.CheckBox chkRelaunch;
 		private System.Windows.Forms.CheckBox chkLogging;
-    }
+	}
 }
 

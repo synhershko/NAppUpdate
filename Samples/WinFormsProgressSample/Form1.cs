@@ -28,22 +28,22 @@ namespace WinFormsProgressSample
 
 			// Setup UI progress notifications
 			updManager.ReportProgress += status =>
-			                             	{
-			                             		lblDetails.Invoke(new Action(() => lblDetails.Text = status.Message));
-			                             		lblOverview.Invoke(new Action( () => lblOverview.Text = string.Format("Phase: {0}, executing task #{1}: {2}",
-			                             				                                       UpdateManager.Instance.State,
-			                             				                                       status.TaskId,
-			                             				                                       status.TaskDescription
-			                             				                         	)));
+											{
+												lblDetails.Invoke(new Action(() => lblDetails.Text = status.Message));
+												lblOverview.Invoke(new Action(() => lblOverview.Text = string.Format("Phase: {0}, executing task #{1}: {2}",
+																							   UpdateManager.Instance.State,
+																							   status.TaskId,
+																							   status.TaskDescription
+																					)));
 
 												progressBar1.Invoke(new Action(() =>
-												                               	{
-												                               		progressBar1.Value = status.Percentage;
-												                               	}));
+																				{
+																					progressBar1.Value = status.Percentage;
+																				}));
 
 												if (!status.StillWorking)
 													btnStart.Invoke(new Action(() => btnStart.Enabled = true));
-			                             	};
+											};
 		}
 
 		private void btnStart_Click(object sender, EventArgs e)
@@ -52,12 +52,12 @@ namespace WinFormsProgressSample
 			progressBar1.Step = 0;
 
 			UpdateManager.Instance.BeginCheckForUpdates(asyncResult => UpdateManager.Instance.BeginPrepareUpdates(ar2 =>
-			                                                                                               	{
-																													//UpdateManager.
-																													//    Instance.
-																													//    ApplyUpdates(false);
-			                                                                                               	}
-			                                                    	, null), null);
+																											{
+																												//UpdateManager.
+																												//    Instance.
+																												//    ApplyUpdates(false);
+																											}
+																	, null), null);
 		}
 	}
 }

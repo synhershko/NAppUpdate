@@ -3,6 +3,6 @@ Frequently Asked Questions
 
 Q: My application settings are lost when I update; what do I do?
 A: NAppUpdate wouldn't make changes to user.config files by design. Here's
-hwo to handle this from your code:
+how to handle this from your code:
 
 http://cs.rthand.com/blogs/blog_with_righthand/archive/2005/12/09/246.aspx

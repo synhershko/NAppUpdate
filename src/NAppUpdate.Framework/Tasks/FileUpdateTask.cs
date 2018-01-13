@@ -61,7 +61,7 @@ namespace NAppUpdate.Framework.Tasks
 
 			if (!string.IsNullOrEmpty(Sha256Checksum))
 			{
-				string checksum = Utils.FileChecksum.GetSHA256Checksum(_tempFile);
+				string checksum = FileChecksum.GetSHA256Checksum(_tempFile);
 				if (!checksum.Equals(Sha256Checksum))
 					throw new UpdateProcessFailedException(string.Format("FileUpdateTask: Checksums do not match; expected {0} but got {1}", Sha256Checksum, checksum));
 			}
@@ -86,14 +86,18 @@ namespace NAppUpdate.Framework.Tasks
 
 			var dirName = Path.GetDirectoryName(_destinationFile);
 			if (!Directory.Exists(dirName))
+			{
 				Utils.FileSystem.CreateDirectoryStructure(dirName, false);
+			}
 
 			// Create a backup copy if target exists
 			if (_backupFile == null && File.Exists(_destinationFile))
 			{
 				if (!Directory.Exists(Path.GetDirectoryName(Path.Combine(UpdateManager.Instance.Config.BackupFolder, LocalPath))))
-					Utils.FileSystem.CreateDirectoryStructure(
-						Path.GetDirectoryName(Path.Combine(UpdateManager.Instance.Config.BackupFolder, LocalPath)), false);
+				{
+					string backupPath = Path.GetDirectoryName(Path.Combine(UpdateManager.Instance.Config.BackupFolder, LocalPath));
+					Utils.FileSystem.CreateDirectoryStructure(backupPath, false);
+				}
 				_backupFile = Path.Combine(UpdateManager.Instance.Config.BackupFolder, LocalPath);
 				File.Copy(_destinationFile, _backupFile, true);
 			}
@@ -103,11 +107,7 @@ namespace NAppUpdate.Framework.Tasks
 			{
 				if (File.Exists(_destinationFile))
 				{
-					//if (FileSystem.IsExeRunning(_destinationFile))
-					//{
-					//    UpdateManager.Instance.Logger.Log(Logger.SeverityLevel.Warning, "Process {0} is still running", _destinationFile);
-					//    Thread.Sleep(1000); // TODO: retry a few times and throw after a while
-					//}
+					FileLockWait();
 
 					if (!PermissionsCheck.HaveWritePermissionsForFileOrFolder(_destinationFile))
 					{
@@ -123,7 +123,11 @@ namespace NAppUpdate.Framework.Tasks
 				try
 				{
 					if (File.Exists(_destinationFile))
+					{
+						FileSystem.CopyAccessControl(new FileInfo(_destinationFile), new FileInfo(_tempFile));
+
 						File.Delete(_destinationFile);
+					}
 					File.Move(_tempFile, _destinationFile);
 					_tempFile = null;
 				}
@@ -163,6 +167,23 @@ namespace NAppUpdate.Framework.Tasks
 			File.Copy(_backupFile, _destinationFile, true);
 
 			return true;
+		}
+		/// <summary>
+		/// To mitigate problems with the files being locked even though the application mutex has been released.
+		/// https://github.com/synhershko/NAppUpdate/issues/35
+		/// </summary>
+		private void FileLockWait()
+		{
+			int attempt = 0;
+			while (FileSystem.IsFileLocked(new FileInfo(_destinationFile)))
+			{
+				Thread.Sleep(500);
+				attempt++;
+				if (attempt == 10)
+				{
+					throw new UpdateProcessFailedException("Failed to update, the file is locked: " + _destinationFile);
+				}
+			}
 		}
 	}
 }

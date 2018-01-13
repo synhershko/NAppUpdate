@@ -1,162 +1,166 @@
-using FeedBuilder.Properties;
 using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
+using FeedBuilder.Properties;
 
 namespace FeedBuilder
 {
-    public partial class frmMain : Form
-    {
-        public frmMain()
-        {
-            InitializeComponent();
-            InitializeFormSettings();
-        }
+	public partial class frmMain : Form
+	{
+		public frmMain()
+		{
+			InitializeComponent();
+		}
 
-        #region " Private constants/variables"
+		#region " Private constants/variables"
 
-        private const string DialogFilter = "Feed configuration files (*.config)|*.config|All files (*.*)|*.*";
-        private const string DefaultFileName = "FeedBuilder.config";
-        private OpenFileDialog _openDialog;
+		private const string DialogFilter = "Feed configuration files (*.config)|*.config|All files (*.*)|*.*";
+		private const string DefaultFileName = "FeedBuilder.config";
+		private OpenFileDialog _openDialog;
 
-        #endregion
+		#endregion
 
-        private ArgumentsParser _argParser;
+		private ArgumentsParser _argParser;
 
-        #region " Properties"
+		#region " Properties"
 
-        public string FileName { get; set; }
-        public bool ShowGui { get; set; }
+		public string FileName { get; set; }
+		public bool ShowGui { get; set; }
 
-        #endregion
+		#endregion
 
-        #region " Loading/Initialization/Lifetime"
+		#region " Loading/Initialization/Lifetime"
 
-        private void frmMain_Load(Object sender, EventArgs e)
-        {
-            Visible = false;
+		private void frmMain_Load(Object sender, EventArgs e)
+		{
+			Visible = false;
+			InitializeFormSettings();
+			string[] args = Environment.GetCommandLineArgs();
+			// The first arg is the path to ourself
+			//If args.Count >= 2 Then
+			//    If File.Exists(args(1)) Then
+			//        Dim p As New FeedBuilderSettingsProvider()
+			//        p.LoadFrom(args(1))
+			//        Me.FileName = args(1)
+			//    End If
+			//End If
 
-            string[] args = Environment.GetCommandLineArgs();
-            // The first arg is the path to ourself
-            //If args.Count >= 2 Then
-            //    If File.Exists(args(1)) Then
-            //        Dim p As New FeedBuilderSettingsProvider()
-            //        p.LoadFrom(args(1))
-            //        Me.FileName = args(1)
-            //    End If
-            //End If
+			// The first arg is the path to ourself
+			_argParser = new ArgumentsParser(args);
 
-            // The first arg is the path to ourself
-            _argParser = new ArgumentsParser(args);
-            if (!_argParser.HasArgs) return;
-            FileName = _argParser.FileName;
-            if (!string.IsNullOrEmpty(FileName))
-            {
-                if (File.Exists(FileName))
-                {
-                    FeedBuilderSettingsProvider p = new FeedBuilderSettingsProvider();
-                    p.LoadFrom(FileName);
-                }
-                else
-                {
-                    _argParser.ShowGui = true;
-                    _argParser.Build = false;
-                    FileName = _argParser.FileName;
-                    UpdateTitle();
-                }
-            }
-            InitializeFormSettings();
-            if (_argParser.ShowGui) Show();
-            if (_argParser.Build)
-            {
-                try
-                {
-                    Build();
-                }
-                catch (Exception)
-                {
-                    throw;
-                } finally
-                {
-                    if (!_argParser.ShowGui) Close();
-                }
-            } else if (!_argParser.ShowGui) Close();
-        }
+			if (!_argParser.HasArgs)
+			{
+				FreeConsole();
+				return;
+			}
 
-        private void InitializeFormSettings()
-        {
-            if (!string.IsNullOrEmpty(Settings.Default.OutputFolder) && Directory.Exists(Settings.Default.OutputFolder)) txtOutputFolder.Text = Settings.Default.OutputFolder;
-            if (!string.IsNullOrEmpty(Settings.Default.FeedXML)) txtFeedXML.Text = Settings.Default.FeedXML;
-            if (!string.IsNullOrEmpty(Settings.Default.BaseURL)) txtBaseURL.Text = Settings.Default.BaseURL;
+			FileName = _argParser.FileName;
+			if (!string.IsNullOrEmpty(FileName))
+			{
+				if (File.Exists(FileName))
+				{
+					FeedBuilderSettingsProvider p = new FeedBuilderSettingsProvider();
+					p.LoadFrom(FileName);
+					InitializeFormSettings();
+				}
+				else
+				{
+					_argParser.ShowGui = true;
+					_argParser.Build = false;
+					UpdateTitle();
+				}
+			}
+			if (_argParser.ShowGui) Show();
+			if (_argParser.Build) Build();
+			if (!_argParser.ShowGui) Close();
+		}
 
-            chkVersion.Checked = Settings.Default.CompareVersion;
-            chkSize.Checked = Settings.Default.CompareSize;
-            chkDate.Checked = Settings.Default.CompareDate;
-            chkHash.Checked = Settings.Default.CompareHash;
+		private void InitializeFormSettings()
+		{
+			if (string.IsNullOrEmpty(Settings.Default.OutputFolder))
+			{
+				txtOutputFolder.Text = string.Empty;
+			}
+			else
+			{
+				string path = GetFullDirectoryPath(Settings.Default.OutputFolder);
+				txtOutputFolder.Text = Directory.Exists(path) ? Settings.Default.OutputFolder : string.Empty;
+			}
+
+			txtFeedXML.Text = string.IsNullOrEmpty(Settings.Default.FeedXML) ? string.Empty : Settings.Default.FeedXML;
+			txtBaseURL.Text = string.IsNullOrEmpty(Settings.Default.BaseURL) ? string.Empty : Settings.Default.BaseURL;
+
+			chkVersion.Checked = Settings.Default.CompareVersion;
+			chkSize.Checked = Settings.Default.CompareSize;
+			chkDate.Checked = Settings.Default.CompareDate;
+			chkHash.Checked = Settings.Default.CompareHash;
             chkSign.Checked = Settings.Default.Sign;
             txtSignFile.Text = Settings.Default.SignFile;
 
-            chkIgnoreSymbols.Checked = Settings.Default.IgnoreDebugSymbols;
-            chkIgnoreVsHost.Checked = Settings.Default.IgnoreVsHosting;
-            chkCopyFiles.Checked = Settings.Default.CopyFiles;
-            chkCleanUp.Checked = Settings.Default.CleanUp;
+			chkIgnoreSymbols.Checked = Settings.Default.IgnoreDebugSymbols;
+			chkIgnoreVsHost.Checked = Settings.Default.IgnoreVsHosting;
+			chkCopyFiles.Checked = Settings.Default.CopyFiles;
+			chkCleanUp.Checked = Settings.Default.CleanUp;
+            txtAddExtension.Text = Settings.Default.AddExtension;
 
             if (Settings.Default.IgnoreFiles == null) Settings.Default.IgnoreFiles = new StringCollection();
-            ReadFiles();
-            UpdateTitle();
-        }
+			ReadFiles();
+			UpdateTitle();
+		}
 
-        private void UpdateTitle()
-        {
-            if (string.IsNullOrEmpty(FileName)) Text = "Feed Builder";
-            else Text = "Feed Builder - " + FileName;
-        }
+		private void UpdateTitle()
+		{
+			if (string.IsNullOrEmpty(FileName)) Text = "Feed Builder";
+			else Text = "Feed Builder - " + FileName;
+		}
 
-        private void SaveFormSettings()
-        {
+		private void SaveFormSettings()
+		{
+			if (!string.IsNullOrEmpty(txtOutputFolder.Text.Trim()) && Directory.Exists(txtOutputFolder.Text.Trim())) Settings.Default.OutputFolder = txtOutputFolder.Text.Trim();
+			// ReSharper disable AssignNullToNotNullAttribute
+			if (!string.IsNullOrEmpty(txtFeedXML.Text.Trim()) && Directory.Exists(Path.GetDirectoryName(txtFeedXML.Text.Trim()))) Settings.Default.FeedXML = txtFeedXML.Text.Trim();
+			// ReSharper restore AssignNullToNotNullAttribute
+			if (!string.IsNullOrEmpty(txtBaseURL.Text.Trim())) Settings.Default.BaseURL = txtBaseURL.Text.Trim();
 
-            if (!string.IsNullOrEmpty(txtOutputFolder.Text.Trim()) && Directory.Exists(txtOutputFolder.Text.Trim())) Settings.Default.OutputFolder = txtOutputFolder.Text.Trim();
-            // ReSharper disable AssignNullToNotNullAttribute
-            if (!string.IsNullOrEmpty(txtFeedXML.Text.Trim()) && Directory.Exists(Path.GetDirectoryName(txtFeedXML.Text.Trim()))) Settings.Default.FeedXML = txtFeedXML.Text.Trim();
-            // ReSharper restore AssignNullToNotNullAttribute
-            if (!string.IsNullOrEmpty(txtBaseURL.Text.Trim())) Settings.Default.BaseURL = txtBaseURL.Text.Trim();
+            if (!string.IsNullOrEmpty(txtAddExtension.Text.Trim())) Settings.Default.AddExtension = txtAddExtension.Text.Trim();
 
             Settings.Default.CompareVersion = chkVersion.Checked;
-            Settings.Default.CompareSize = chkSize.Checked;
-            Settings.Default.CompareDate = chkDate.Checked;
-            Settings.Default.CompareHash = chkHash.Checked;
+			Settings.Default.CompareSize = chkSize.Checked;
+			Settings.Default.CompareDate = chkDate.Checked;
+			Settings.Default.CompareHash = chkHash.Checked;
             Settings.Default.Sign = chkSign.Checked;
             Settings.Default.SignFile = txtSignFile.Text;
 
-            Settings.Default.IgnoreDebugSymbols = chkIgnoreSymbols.Checked;
-            Settings.Default.IgnoreVsHosting = chkIgnoreVsHost.Checked;
-            Settings.Default.CopyFiles = chkCopyFiles.Checked;
-            Settings.Default.CleanUp = chkCleanUp.Checked;
+			Settings.Default.IgnoreDebugSymbols = chkIgnoreSymbols.Checked;
+			Settings.Default.IgnoreVsHosting = chkIgnoreVsHost.Checked;
+			Settings.Default.CopyFiles = chkCopyFiles.Checked;
+			Settings.Default.CleanUp = chkCleanUp.Checked;
 
-            if (Settings.Default.IgnoreFiles == null) Settings.Default.IgnoreFiles = new StringCollection();
-            Settings.Default.IgnoreFiles.Clear();
-            foreach (ListViewItem thisItem in lstFiles.Items)
-            {
-                if (!thisItem.Checked) Settings.Default.IgnoreFiles.Add(thisItem.Text);
-            }
-            Settings.Default.Save();
-        }
+			if (Settings.Default.IgnoreFiles == null) Settings.Default.IgnoreFiles = new StringCollection();
+			Settings.Default.IgnoreFiles.Clear();
+			foreach (ListViewItem thisItem in lstFiles.Items)
+			{
+				if (!thisItem.Checked) Settings.Default.IgnoreFiles.Add(thisItem.Text);
+			}
+		}
 
-        private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            SaveFormSettings();
-        }
+		private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			SaveFormSettings();
+			Settings.Default.Save();
+		}
 
-        #endregion
+		#endregion
 
-        #region " Commands Events"
+		#region " Commands Events"
 
         private void cmdBuild_Click(Object sender, EventArgs e)
         {
@@ -245,23 +249,19 @@ namespace FeedBuilder
 
         private void Build()
         {
+			AttachConsole(ATTACH_PARENT_PROCESS);
+			
             Console.WriteLine("Building NAppUpdater feed '{0}'", txtBaseURL.Text.Trim());
             if (string.IsNullOrEmpty(txtFeedXML.Text))
             {
                 const string msg = "The feed file location needs to be defined.\n" + "The outputs cannot be generated without this.";
-                if (_argParser.ShowGui)
-                {
-                    MessageBox.Show(msg);
-                } else
-                {
-                    throw new Exception(msg);
-                }
+				if (_argParser.ShowGui) MessageBox.Show(msg);
                 Console.WriteLine(msg);
                 return;
             }
             // If the target folder doesn't exist, create a path to it
             string dest = txtFeedXML.Text.Trim();
-            var destDir = Directory.GetParent(new FileInfo(dest).FullName);
+			var destDir = Directory.GetParent(GetFullDirectoryPath(Path.GetDirectoryName(dest)));
             if (!Directory.Exists(destDir.FullName)) Directory.CreateDirectory(destDir.FullName);
 
             XmlDocument doc = new XmlDocument();
@@ -283,18 +283,16 @@ namespace FeedBuilder
             foreach (ListViewItem thisItem in lstFiles.Items)
             {
                 string destFile = "";
-                string folder = "";
                 string filename = "";
                 try
                 {
-                    folder = Path.GetDirectoryName(txtFeedXML.Text.Trim());
                     filename = thisItem.Text;
-                    if (folder != null) destFile = Path.Combine(folder, filename);
+					destFile = Path.Combine(destDir.FullName, filename);
                 }
                 catch { }
-                if (destFile == "" || folder == "" || filename == "")
+				if (destFile == "" || filename == "")
                 {
-                    string msg = string.Format("The file could not be pathed:\nFolder:'{0}'\nFile:{1}", folder, filename);
+					string msg = string.Format("The file could not be pathed:\nFolder:'{0}'\nFile:{1}", destDir.FullName, filename);
                     if (_argParser.ShowGui) MessageBox.Show(msg);
                     Console.WriteLine(msg);
                     continue;
@@ -308,16 +306,20 @@ namespace FeedBuilder
 
                     // generate FileUpdateTask metadata items
                     task.SetAttribute("lastModified", fileInfoEx.FileInfo.LastWriteTime.ToFileTime().ToString(CultureInfo.InvariantCulture));
+					if (!string.IsNullOrEmpty(txtAddExtension.Text))
+					{
+						task.SetAttribute("updateTo", AddExtensionToPath(fileInfoEx.RelativeName, txtAddExtension.Text));
+					}
+
                     task.SetAttribute("fileSize", fileInfoEx.FileInfo.Length.ToString(CultureInfo.InvariantCulture));
                     if (!string.IsNullOrEmpty(fileInfoEx.FileVersion)) task.SetAttribute("version", fileInfoEx.FileVersion);
 
                     XmlElement conds = doc.CreateElement("Conditions");
                     XmlElement cond;
-                    bool hasFirstCondition = false;
 
                     //File Exists
                     cond = doc.CreateElement("FileExistsCondition");
-                    cond.SetAttribute("type", "or");
+					cond.SetAttribute("type", "or-not");
                     conds.AppendChild(cond);
 
 
@@ -325,17 +327,17 @@ namespace FeedBuilder
                     if (chkVersion.Checked && !string.IsNullOrEmpty(fileInfoEx.FileVersion))
                     {
                         cond = doc.CreateElement("FileVersionCondition");
+						cond.SetAttribute("type", "or");
                         cond.SetAttribute("what", "below");
                         cond.SetAttribute("version", fileInfoEx.FileVersion);
                         conds.AppendChild(cond);
-                        hasFirstCondition = true;
                     }
 
                     //Size
                     if (chkSize.Checked)
                     {
                         cond = doc.CreateElement("FileSizeCondition");
-                        cond.SetAttribute("type", hasFirstCondition ? "or-not" : "not");
+						cond.SetAttribute("type", "or-not");
                         cond.SetAttribute("what", "is");
                         cond.SetAttribute("size", fileInfoEx.FileInfo.Length.ToString(CultureInfo.InvariantCulture));
                         conds.AppendChild(cond);
@@ -345,7 +347,7 @@ namespace FeedBuilder
                     if (chkDate.Checked)
                     {
                         cond = doc.CreateElement("FileDateCondition");
-                        if (hasFirstCondition) cond.SetAttribute("type", "or");
+						cond.SetAttribute("type", "or");
                         cond.SetAttribute("what", "older");
                         // local timestamp, not UTC
                         cond.SetAttribute("timestamp", fileInfoEx.FileInfo.LastWriteTime.ToFileTime().ToString(CultureInfo.InvariantCulture));
@@ -356,7 +358,7 @@ namespace FeedBuilder
                     if (chkHash.Checked)
                     {
                         cond = doc.CreateElement("FileChecksumCondition");
-                        cond.SetAttribute("type", hasFirstCondition ? "or-not" : "not");
+						cond.SetAttribute("type", "or-not");
                         cond.SetAttribute("checksumType", "sha256");
                         cond.SetAttribute("checksum", fileInfoEx.Hash);
                         conds.AppendChild(cond);
@@ -397,7 +399,8 @@ namespace FeedBuilder
                 feed.SetAttribute("RSASignature", signature);
             }
 
-            doc.Save(txtFeedXML.Text.Trim());
+			string xmlDest = Path.Combine(destDir.FullName, Path.GetFileName(dest));
+			doc.Save(xmlDest);
 
             // open the outputs folder if we're running from the GUI or 
             // we have an explicit command line option to do so
@@ -460,6 +463,10 @@ namespace FeedBuilder
             var fi = new FileInfo(destFile);
             var d = Directory.GetParent(fi.FullName);
             if (!Directory.Exists(d.FullName)) CreateDirectoryPath(d.FullName);
+			if (!string.IsNullOrEmpty(txtAddExtension.Text))
+			{
+				destFile = AddExtensionToPath(destFile, txtAddExtension.Text);
+			}
 
             // Copy with delayed retry
             int retries = 3;
@@ -499,13 +506,15 @@ namespace FeedBuilder
 
         private void OpenOutputsFolder()
         {
-            if (txtFeedXML == null || string.IsNullOrEmpty(txtFeedXML.Text) || string.IsNullOrEmpty(txtFeedXML.Text.Trim()))
+			string path = txtOutputFolder.Text.Trim();
+
+			if (string.IsNullOrEmpty(path))
             {
                 return;
             }
 
-            string dir = Path.GetDirectoryName(txtFeedXML.Text.Trim());
-            if (dir == null) return;
+			string dir = GetFullDirectoryPath(path);
+
             CreateDirectoryPath(dir);
             Process process = new Process
             {
@@ -560,31 +569,59 @@ namespace FeedBuilder
 
         private void ReadFiles()
         {
-            if (string.IsNullOrEmpty(txtOutputFolder.Text.Trim()) || !Directory.Exists(txtOutputFolder.Text.Trim())) return;
+			string outputDir = GetFullDirectoryPath(txtOutputFolder.Text.Trim());
+
+			if (string.IsNullOrEmpty(outputDir) || !Directory.Exists(outputDir))
+			{
+				return;
+			}
+
+			outputDir = GetFullDirectoryPath(outputDir);
 
             lstFiles.BeginUpdate();
             lstFiles.Items.Clear();
 
-            string outputDir = txtOutputFolder.Text.Trim();
-            int outputDirLength = txtOutputFolder.Text.Trim().Length;
-
-            FileSystemEnumerator enumerator = new FileSystemEnumerator(txtOutputFolder.Text.Trim(), "*.*", true);
+			FileSystemEnumerator enumerator = new FileSystemEnumerator(outputDir, "*.*", true);
             foreach (FileInfo fi in enumerator.Matches())
             {
-                string thisFile = fi.FullName;
-                if ((IsIgnorable(thisFile))) continue;
-                FileInfoEx thisInfo = new FileInfoEx(thisFile, outputDirLength);
-                ListViewItem thisItem = new ListViewItem(thisInfo.RelativeName, GetImageIndex(thisInfo.FileInfo.Extension));
-                thisItem.SubItems.Add(thisInfo.FileVersion);
-                thisItem.SubItems.Add(thisInfo.FileInfo.Length.ToString(CultureInfo.InvariantCulture));
-                thisItem.SubItems.Add(thisInfo.FileInfo.LastWriteTime.ToString(CultureInfo.InvariantCulture));
-                thisItem.SubItems.Add(thisInfo.Hash);
-                thisItem.Checked = (!Settings.Default.IgnoreFiles.Contains(thisInfo.FileInfo.Name));
-                thisItem.Tag = thisInfo;
-                lstFiles.Items.Add(thisItem);
+				string filePath = fi.FullName;
+
+				if ((IsIgnorable(filePath)))
+				{
+					continue;
             }
+
+				FileInfoEx fileInfo = new FileInfoEx(filePath, outputDir.Length);
+
+				ListViewItem item = new ListViewItem(fileInfo.RelativeName, GetImageIndex(fileInfo.FileInfo.Extension));
+				item.SubItems.Add(fileInfo.FileVersion);
+				item.SubItems.Add(fileInfo.FileInfo.Length.ToString(CultureInfo.InvariantCulture));
+				item.SubItems.Add(fileInfo.FileInfo.LastWriteTime.ToString(CultureInfo.InvariantCulture));
+				item.SubItems.Add(fileInfo.Hash);
+				item.Checked = (!Settings.Default.IgnoreFiles.Contains(fileInfo.RelativeName));
+				item.Tag = fileInfo;
+				lstFiles.Items.Add(item);
+			}
+
             lstFiles.EndUpdate();
         }
+
+		private string GetFullDirectoryPath(string path)
+		{
+			string absolutePath = path;
+
+			if (!Path.IsPathRooted(absolutePath))
+			{
+				absolutePath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), path);
+			}
+
+			if (!absolutePath.EndsWith("\\"))
+			{
+				absolutePath += "\\";
+			}
+
+			return Path.GetFullPath(absolutePath);
+		}
 
         private bool IsIgnorable(string filename)
         {
@@ -592,6 +629,12 @@ namespace FeedBuilder
             if ((chkIgnoreSymbols.Checked && ext == ".pdb")) return true;
             return (chkIgnoreVsHost.Checked && filename.ToLower().Contains("vshost.exe"));
         }
+
+		private string AddExtensionToPath(string filePath, string extension)
+		{
+			string sanitizedExtension = (extension.Trim().StartsWith(".") ? String.Empty : ".") + extension.Trim();
+			return filePath + sanitizedExtension;
+		}
 
         private void Save(bool forceDialog)
         {
@@ -682,5 +725,14 @@ namespace FeedBuilder
                 txtSignFile.Text = win.SelectedPublicKeyPath;
             };
         }
+
+
+		private static readonly int ATTACH_PARENT_PROCESS = -1;
+
+		[DllImport("kernel32.dll")]
+		private static extern bool AttachConsole(int dwProcessId);
+
+		[DllImport("kernel32.dll")]
+		private static extern bool FreeConsole();
     }
 }
