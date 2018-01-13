@@ -60,6 +60,9 @@ namespace FeedBuilder
             this.ToolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.panFiles = new System.Windows.Forms.Panel();
             this.grpSettings = new System.Windows.Forms.GroupBox();
+            this.cmdSignFile = new System.Windows.Forms.Button();
+            this.lblSignFile = new System.Windows.Forms.Label();
+            this.chkSign = new System.Windows.Forms.CheckBox();
             this.chkCleanUp = new System.Windows.Forms.CheckBox();
             this.chkCopyFiles = new System.Windows.Forms.CheckBox();
             this.lblIgnore = new System.Windows.Forms.Label();
@@ -77,6 +80,12 @@ namespace FeedBuilder
             this.txtFeedXML = new FeedBuilder.HelpfulTextBox(this.components);
             this.lblFeedXML = new System.Windows.Forms.Label();
             this.cmdOutputFolder = new System.Windows.Forms.Button();
+            this.lblOutputFolder = new System.Windows.Forms.Label();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.cmdCreateSigFile = new System.Windows.Forms.Button();
+            this.txtSignFile = new FeedBuilder.HelpfulTextBox(this.components);
+            this.txtBaseURL = new FeedBuilder.HelpfulTextBox(this.components);
+            this.txtFeedXML = new FeedBuilder.HelpfulTextBox(this.components);
             this.txtOutputFolder = new FeedBuilder.HelpfulTextBox(this.components);
             this.lblOutputFolder = new System.Windows.Forms.Label();
             this.txtAddExtension = new FeedBuilder.HelpfulTextBox(this.components);
@@ -297,6 +306,11 @@ namespace FeedBuilder
             // 
             this.grpSettings.Controls.Add(this.lblAddExtension);
             this.grpSettings.Controls.Add(this.txtAddExtension);
+            this.grpSettings.Controls.Add(this.cmdCreateSigFile);
+            this.grpSettings.Controls.Add(this.cmdSignFile);
+            this.grpSettings.Controls.Add(this.txtSignFile);
+            this.grpSettings.Controls.Add(this.lblSignFile);
+            this.grpSettings.Controls.Add(this.chkSign);
             this.grpSettings.Controls.Add(this.chkCleanUp);
             this.grpSettings.Controls.Add(this.chkCopyFiles);
             this.grpSettings.Controls.Add(this.lblIgnore);
@@ -324,6 +338,39 @@ namespace FeedBuilder
             this.grpSettings.TabIndex = 1;
             this.grpSettings.TabStop = false;
             this.grpSettings.Text = "Settings:";
+            // 
+            // cmdSignFile
+            // 
+            this.cmdSignFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdSignFile.Enabled = false;
+            this.cmdSignFile.Location = new System.Drawing.Point(687, 115);
+            this.cmdSignFile.Name = "cmdSignFile";
+            this.cmdSignFile.Size = new System.Drawing.Size(26, 23);
+            this.cmdSignFile.TabIndex = 21;
+            this.cmdSignFile.Text = "...";
+            this.cmdSignFile.UseVisualStyleBackColor = true;
+            this.cmdSignFile.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // lblSignFile
+            // 
+            this.lblSignFile.AutoSize = true;
+            this.lblSignFile.Enabled = false;
+            this.lblSignFile.Location = new System.Drawing.Point(15, 120);
+            this.lblSignFile.Name = "lblSignFile";
+            this.lblSignFile.Size = new System.Drawing.Size(71, 13);
+            this.lblSignFile.TabIndex = 19;
+            this.lblSignFile.Text = "Signature file:";
+            // 
+            // chkSign
+            // 
+            this.chkSign.AutoSize = true;
+            this.chkSign.Location = new System.Drawing.Point(377, 149);
+            this.chkSign.Name = "chkSign";
+            this.chkSign.Size = new System.Drawing.Size(47, 17);
+            this.chkSign.TabIndex = 18;
+            this.chkSign.Text = "Sign";
+            this.chkSign.UseVisualStyleBackColor = true;
+            this.chkSign.CheckedChanged += new System.EventHandler(this.chkSign_CheckedChanged);
             // 
             // chkCleanUp
             // 
@@ -550,6 +597,72 @@ namespace FeedBuilder
             this.lblAddExtension.Size = new System.Drawing.Size(77, 13);
             this.lblAddExtension.TabIndex = 19;
             this.lblAddExtension.Text = "Add extension:";
+
+
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            // 
+            // cmdCreateSigFile
+            // 
+            this.cmdCreateSigFile.Enabled = false;
+            this.cmdCreateSigFile.Location = new System.Drawing.Point(728, 115);
+            this.cmdCreateSigFile.Name = "cmdCreateSigFile";
+            this.cmdCreateSigFile.Size = new System.Drawing.Size(75, 23);
+            this.cmdCreateSigFile.TabIndex = 22;
+            this.cmdCreateSigFile.Text = "Create";
+            this.cmdCreateSigFile.UseVisualStyleBackColor = true;
+            this.cmdCreateSigFile.Click += new System.EventHandler(this.cmdCreateSigFile_Click);
+            // 
+            // txtSignFile
+            // 
+            this.txtSignFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSignFile.BackColor = System.Drawing.Color.White;
+            this.txtSignFile.Enabled = false;
+            this.txtSignFile.HelpfulText = "The file containing the private and public parts of the signing key";
+            this.txtSignFile.Location = new System.Drawing.Point(146, 117);
+            this.txtSignFile.Margin = new System.Windows.Forms.Padding(3, 3, 3, 8);
+            this.txtSignFile.Name = "txtSignFile";
+            this.txtSignFile.Size = new System.Drawing.Size(535, 20);
+            this.txtSignFile.TabIndex = 20;
+            this.txtSignFile.TextChanged += new System.EventHandler(this.helpfulTextBox1_TextChanged);
+            // 
+            // txtBaseURL
+            // 
+            this.txtBaseURL.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtBaseURL.HelpfulText = "Where you will upload the feed and update files for distribution to clients";
+            this.txtBaseURL.Location = new System.Drawing.Point(146, 86);
+            this.txtBaseURL.Margin = new System.Windows.Forms.Padding(3, 3, 3, 8);
+            this.txtBaseURL.Name = "txtBaseURL";
+            this.txtBaseURL.Size = new System.Drawing.Size(625, 20);
+            this.txtBaseURL.TabIndex = 9;
+            // 
+            // txtFeedXML
+            // 
+            this.txtFeedXML.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtFeedXML.BackColor = System.Drawing.Color.White;
+            this.txtFeedXML.HelpfulText = "The file your application downloads to determine if there are updates";
+            this.txtFeedXML.Location = new System.Drawing.Point(146, 55);
+            this.txtFeedXML.Margin = new System.Windows.Forms.Padding(3, 3, 3, 8);
+            this.txtFeedXML.Name = "txtFeedXML";
+            this.txtFeedXML.Size = new System.Drawing.Size(625, 20);
+            this.txtFeedXML.TabIndex = 4;
+            // 
+            // txtOutputFolder
+            // 
+            this.txtOutputFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtOutputFolder.BackColor = System.Drawing.Color.White;
+            this.txtOutputFolder.HelpfulText = "The folder that contains the files you want to distribute";
+            this.txtOutputFolder.Location = new System.Drawing.Point(146, 24);
+            this.txtOutputFolder.Margin = new System.Windows.Forms.Padding(3, 3, 3, 8);
+            this.txtOutputFolder.Name = "txtOutputFolder";
+            this.txtOutputFolder.Size = new System.Drawing.Size(625, 20);
+            this.txtOutputFolder.TabIndex = 1;
             // 
             // frmMain
             // 
@@ -625,6 +738,12 @@ namespace FeedBuilder
         private ToolStripButton btnOpenOutputs;
 		private Panel panFiles;
 		private ToolStripSeparator toolStripSeparator1;
+        private CheckBox chkSign;
+        private Button cmdSignFile;
+        private HelpfulTextBox txtSignFile;
+        private Label lblSignFile;
+        private OpenFileDialog openFileDialog1;
+        private Button cmdCreateSigFile;
         private Label lblAddExtension;
         private HelpfulTextBox txtAddExtension;
     }

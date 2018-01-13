@@ -92,6 +92,7 @@
     <Compile Include="Conditions\UpdateConditionAliasAttribute.cs" />
     <Compile Include="FeedReaders\IUpdateFeedReader.cs" />
     <Compile Include="FeedReaders\NauXmlFeedReader.cs" />
+    <Compile Include="FeedReaders\NauXmlFeedReaderSigned.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -102,6 +103,9 @@
     <Compile Include="Sources\SimpleWebSource.cs" />
     <Compile Include="Sources\UncSource.cs" />
     <Compile Include="Tasks\FileUpdateTask.cs" />
+    <Compile Include="Tasks\IDontRequireChecksum.cs" />
+    <Compile Include="Tasks\IHaveSha256Checksum.cs" />
+    <Compile Include="Tasks\IHaveSha512Checksum.cs" />
     <Compile Include="Tasks\IUpdateTask.cs" />
     <Compile Include="Tasks\RegistryTask.cs" />
     <Compile Include="Tasks\UpdateTaskAliasAttribute.cs" />

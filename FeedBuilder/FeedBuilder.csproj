@@ -92,6 +92,12 @@
     <Compile Include="FeedBuilderSettingsProvider.cs" />
     <Compile Include="FileInfoEx.cs" />
     <Compile Include="FileSystemEnumerator.cs" />
+    <Compile Include="frmCreateNewSignatureFile.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmCreateNewSignatureFile.Designer.cs">
+      <DependentUpon>frmCreateNewSignatureFile.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -131,6 +137,9 @@
     <Import Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="frmCreateNewSignatureFile.resx">
+      <DependentUpon>frmCreateNewSignatureFile.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>

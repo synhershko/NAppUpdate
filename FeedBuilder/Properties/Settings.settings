@@ -42,6 +42,12 @@
     <Setting Name="OutputFolder" Provider="FeedBuilder.FeedBuilderSettingsProvider" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="Sign" Provider="FeedBuilder.FeedBuilderSettingsProvider" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="SignFile" Provider="FeedBuilder.FeedBuilderSettingsProvider" Type="System.String" Scope="User">
+      <Value Profile="(Default)">signaturefile.txt</Value>
+    </Setting>
     <Setting Name="AddExtension" Provider="FeedBuilder.FeedBuilderSettingsProvider" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
