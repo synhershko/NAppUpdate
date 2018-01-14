@@ -79,6 +79,7 @@
     <Compile Include="Conditions\BooleanCondition.cs" />
     <Compile Include="Conditions\FileVersionConditionTests.cs" />
     <Compile Include="Core\UpdateStarterTests.cs" />
+    <Compile Include="FeedReaders\NauXmlFeedReaderSignedTests.cs" />
     <Compile Include="FeedReaders\NauXmlFeedReaderTests.cs" />
     <Compile Include="Integration\FileDownloaderTests.cs" />
     <Compile Include="Integration\SimpleWebSourceTests.cs" />

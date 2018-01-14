@@ -180,7 +180,34 @@ namespace FeedBuilder.Properties {
                 this["OutputFolder"] = value;
             }
         }
+
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(FeedBuilder.FeedBuilderSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Sign {
+            get {
+                return ((bool)(this["Sign"]));
+            }
+            set {
+                this["Sign"] = value;
+            }
+        }
         
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(FeedBuilder.FeedBuilderSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("set_to_a_file_with_public_key.txt")]
+        public string SignFile {
+            get {
+                return ((string)(this["SignFile"]));
+            }
+            set {
+                this["SignFile"] = value;
+            }
+        }
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Configuration.SettingsProviderAttribute(typeof(FeedBuilder.FeedBuilderSettingsProvider))]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
