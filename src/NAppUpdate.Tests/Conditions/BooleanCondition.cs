@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NAppUpdate.Framework.Conditions;
+﻿using NAppUpdate.Framework.Conditions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +6,8 @@ using System.Text;
 
 namespace NAppUpdate.Tests.Conditions
 {
+	using Xunit;
+
 	internal class MockCondition : NAppUpdate.Framework.Conditions.IUpdateCondition
 	{
 		private bool _isMet;
@@ -22,10 +23,9 @@ namespace NAppUpdate.Tests.Conditions
 		}
 	}
 
-	[TestClass]
 	public class BooleanConditionTests
 	{
-		[TestMethod]
+		[Fact]
 		public void ShortCircuitOR()
 		{
 			BooleanCondition bc = new BooleanCondition();
@@ -35,10 +35,10 @@ namespace NAppUpdate.Tests.Conditions
 
 			bool isMet = bc.IsMet(null);
 
-			Assert.IsTrue(isMet, "Expected the second or to short circuit the condition list");
+			Assert.True(isMet, "Expected the second or to short circuit the condition list");
 		}
 
-		[TestMethod]
+		[Fact]
 		public void MultipleAND()
 		{
 			BooleanCondition bc = new BooleanCondition();
@@ -47,10 +47,10 @@ namespace NAppUpdate.Tests.Conditions
 
 			bool isMet = bc.IsMet(null);
 
-			Assert.IsTrue(isMet);
+			Assert.True(isMet);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void MultipleANDFail()
 		{
 			BooleanCondition bc = new BooleanCondition();
@@ -59,10 +59,10 @@ namespace NAppUpdate.Tests.Conditions
 
 			bool isMet = bc.IsMet(null);
 
-			Assert.IsFalse(isMet);
+			Assert.False(isMet);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void MultipleANDFail2()
 		{
 			BooleanCondition bc = new BooleanCondition();
@@ -71,10 +71,10 @@ namespace NAppUpdate.Tests.Conditions
 
 			bool isMet = bc.IsMet(null);
 
-			Assert.IsFalse(isMet);
+			Assert.False(isMet);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void LastORPass()
 		{
 			BooleanCondition bc = new BooleanCondition();
@@ -84,10 +84,10 @@ namespace NAppUpdate.Tests.Conditions
 
 			bool isMet = bc.IsMet(null);
 
-			Assert.IsTrue(isMet);
+			Assert.True(isMet);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void MiddleORFail()
 		{
 			BooleanCondition bc = new BooleanCondition();
@@ -97,10 +97,10 @@ namespace NAppUpdate.Tests.Conditions
 
 			bool isMet = bc.IsMet(null);
 
-			Assert.IsFalse(isMet);
+			Assert.False(isMet);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void Not()
 		{
 			BooleanCondition bc = new BooleanCondition();
@@ -108,7 +108,7 @@ namespace NAppUpdate.Tests.Conditions
 
 			bool isMet = bc.IsMet(null);
 
-			Assert.IsTrue(isMet);
+			Assert.True(isMet);
 		}
 	}
 }

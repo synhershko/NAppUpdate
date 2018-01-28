@@ -17,10 +17,10 @@ namespace NAppUpdate.Framework.Utils
 	/// Starts the cold update process by extracting the updater app from the library's resources,
 	/// passing it all the data it needs and terminating the current application
 	/// </summary>
-	internal static class NauIpc
+	public static class NauIpc
 	{
 		[Serializable]
-		internal class NauDto
+		public class NauDto
 		{
 			public NauConfigurations Configs { get; set; }
 			public IList<IUpdateTask> Tasks { get; set; }
@@ -102,7 +102,7 @@ namespace NAppUpdate.Framework.Utils
 			return dto;
 		}
 
-		internal static void ExtractUpdaterFromResource(string updaterPath, string hostExeName)
+		public static void ExtractUpdaterFromResource(string updaterPath, string hostExeName)
 		{
 			if (!Directory.Exists(updaterPath))
 				Directory.CreateDirectory(updaterPath);

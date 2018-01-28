@@ -101,19 +101,19 @@ namespace NAppUpdate.Framework.Utils
 
 		public static void CopyAccessControl(FileInfo src, FileInfo dst)
 		{
-			FileSecurity fs = src.GetAccessControl();
+			//FileSecurity fs = src.GetAccessControl();
 
-			bool hasInheritanceRules = fs.GetAccessRules(false, true, typeof(SecurityIdentifier)).Count > 0;
-			if (hasInheritanceRules)
-			{
-				fs.SetAccessRuleProtection(false, false);
-			}
-			else
-			{
-				fs.SetAccessRuleProtection(true, true);
-			}
+			//bool hasInheritanceRules = fs.GetAccessRules(false, true, typeof(SecurityIdentifier)).Count > 0;
+			//if (hasInheritanceRules)
+			//{
+			//	fs.SetAccessRuleProtection(false, false);
+			//}
+			//else
+			//{
+			//	fs.SetAccessRuleProtection(true, true);
+			//}
 
-			dst.SetAccessControl(fs);
+			//dst.SetAccessControl(fs);
 		}
 	}
 }

@@ -1,12 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NAppUpdate.Framework.Sources;
+﻿using NAppUpdate.Framework.Sources;
 
 namespace NAppUpdate.Tests.Integration
 {
-	[TestClass]
+	using Xunit;
+
 	public class SimpleWebSourceTests
 	{
-		[TestMethod]
+		[Fact]
 		public void can_download_ansi_feed()
 		{
 			const string expected = "NHibernate.Profiler-Build-";
@@ -14,7 +14,7 @@ namespace NAppUpdate.Tests.Integration
 			var ws = new SimpleWebSource("http://builds.hibernatingrhinos.com/latest/nhprof");
 			var str = ws.GetUpdatesFeed();
 
-			Assert.AreEqual(expected, str.Substring(0, expected.Length));
+			Assert.Equal(expected, str.Substring(0, expected.Length));
 		}
 	}
 }
