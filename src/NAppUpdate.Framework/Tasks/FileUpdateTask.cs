@@ -159,6 +159,7 @@ namespace NAppUpdate.Framework.Tasks
 
 			return true;
 		}
+
 		/// <summary>
 		/// To mitigate problems with the files being locked even though the application mutex has been released.
 		/// https://github.com/synhershko/NAppUpdate/issues/35
@@ -175,6 +176,12 @@ namespace NAppUpdate.Framework.Tasks
 					throw new UpdateProcessFailedException("Failed to update, the file is locked: " + _destinationFile);
 				}
 			}
+		}
+
+		public override string ToString()
+		{
+			var ret = base.ToString();
+			return string.IsNullOrWhiteSpace(ret) ? LocalPath : ret;
 		}
 	}
 }
