@@ -39,21 +39,21 @@ namespace NAppUpdate.Framework.Conditions
 		}
 		#endregion
 
-		protected class ConditionItem
+		public class ConditionItem
 		{
 			public ConditionItem(IUpdateCondition cnd, ConditionType typ)
 			{
-				this._Condition = cnd;
-				this._ConditionType = typ;
+				this.Condition = cnd;
+				this.ConditionType = typ;
 			}
 
 			internal bool HasConditionType(ConditionType type)
 			{
-				return (_ConditionType & type) > 0;
+				return (ConditionType & type) > 0;
 			}
 
-			public readonly IUpdateCondition _Condition;
-			public readonly ConditionType _ConditionType;
+			public IUpdateCondition Condition { get; private set; }
+			public ConditionType ConditionType { get; private set; }
 		}
 
 		public BooleanCondition()
@@ -61,7 +61,7 @@ namespace NAppUpdate.Framework.Conditions
 			Attributes = new Dictionary<string, string>();
 		}
 
-		protected LinkedList<ConditionItem> ChildConditions { get; set; }
+		public LinkedList<ConditionItem> ChildConditions { get; private set; }
 		public int ChildConditionsCount { get { if (ChildConditions != null) return ChildConditions.Count; return 0; } }
 
 		public void AddCondition(IUpdateCondition cnd)
@@ -77,8 +77,8 @@ namespace NAppUpdate.Framework.Conditions
 
 		public IUpdateCondition Degrade()
 		{
-			if (ChildConditionsCount == 1 && (ChildConditions.First.Value._ConditionType & ConditionType.NOT) == 0)
-				return ChildConditions.First.Value._Condition;
+			if (ChildConditionsCount == 1 && (ChildConditions.First.Value.ConditionType & ConditionType.NOT) == 0)
+				return ChildConditions.First.Value.Condition;
 
 			return this;
 		}
@@ -110,13 +110,13 @@ namespace NAppUpdate.Framework.Conditions
 				{
 					if (item.HasConditionType(ConditionType.OR))
 					{
-						var checkResult = item._Condition.IsMet(task);
+						var checkResult = item.Condition.IsMet(task);
 						passed = item.HasConditionType(ConditionType.NOT) ? !checkResult : checkResult;
 					}
 				}
 				else
 				{
-					var checkResult = item._Condition.IsMet(task);
+					var checkResult = item.Condition.IsMet(task);
 					passed = item.HasConditionType(ConditionType.NOT) ? !checkResult : checkResult;
 				}
 			}
