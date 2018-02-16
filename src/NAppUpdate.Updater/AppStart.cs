@@ -131,7 +131,8 @@ namespace NAppUpdate.Updater
 				}
 			}
 
-			_logger.LogItems.InsertRange(0, _dto.LogItems);
+			if(_dto.LogItems != null)
+				_logger.LogItems.InsertRange(0, _dto.LogItems);
 			_dto.LogItems = _logger.LogItems;
 
 			// Get some required environment variables
