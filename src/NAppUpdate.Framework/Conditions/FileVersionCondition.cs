@@ -50,5 +50,10 @@ namespace NAppUpdate.Framework.Conditions
 					return updateVersion > localVersion;
 			}
 		}
+
+		public override string ToString()
+		{
+			return "FileSize not " + ComparisonType + " " + Version;
+		}
 	}
 }

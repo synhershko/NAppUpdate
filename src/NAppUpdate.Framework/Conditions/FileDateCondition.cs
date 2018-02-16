@@ -62,5 +62,10 @@ namespace NAppUpdate.Framework.Conditions
 			}
 			return result;
 		}
+
+		public override string ToString()
+		{
+			return "Timestamp not " + ComparisonType + " " + Timestamp;
+		}
 	}
 }

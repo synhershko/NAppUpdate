@@ -24,5 +24,10 @@ namespace NAppUpdate.Framework.Conditions
 
 			return File.Exists(localPath);
 		}
+
+		public override string ToString()
+		{
+			return "File does not exist";
+		}
 	}
 }
