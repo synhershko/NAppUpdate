@@ -46,7 +46,7 @@ namespace NAppUpdate.Framework.Conditions
 
 		public override string ToString()
 		{
-			return "Checksum [" + ChecksumType + "] != " + Checksum;
+			return "Checksum [" + ChecksumType + "] equals " + Checksum;
 		}
 	}
 }

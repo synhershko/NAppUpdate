@@ -27,7 +27,7 @@ namespace NAppUpdate.Framework.Conditions
 
 		public override string ToString()
 		{
-			return "File does not exist";
+			return "File exists";
 		}
 	}
 }

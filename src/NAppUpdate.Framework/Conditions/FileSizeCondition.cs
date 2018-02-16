@@ -50,7 +50,7 @@ namespace NAppUpdate.Framework.Conditions
 
 		public override string ToString()
 		{
-			return "FileSize not " + ComparisonType + " " + FileSize;
+			return "FileSize " + ComparisonType + " " + FileSize;
 		}
 	}
 }

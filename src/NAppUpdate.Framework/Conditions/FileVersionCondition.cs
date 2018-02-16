@@ -53,7 +53,7 @@ namespace NAppUpdate.Framework.Conditions
 
 		public override string ToString()
 		{
-			return "Version not " + ComparisonType + " " + Version;
+			return "Version " + ComparisonType + " " + Version;
 		}
 	}
 }

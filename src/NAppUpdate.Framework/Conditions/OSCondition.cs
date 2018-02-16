@@ -96,7 +96,7 @@ namespace NAppUpdate.Framework.Conditions
 
 		public override string ToString()
 		{
-			return "OS bitness != " + OsBits;
+			return "OS bitness is " + OsBits;
 		}
 	}
 }
