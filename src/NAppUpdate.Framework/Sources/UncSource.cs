@@ -36,14 +36,16 @@ namespace NAppUpdate.Framework.Sources
 		/// </summary>
 		public string UncPath { get; set; }
 
-		private readonly string _byteOrderMarkUtf8 = Encoding.UTF8.GetString(Encoding.UTF8.GetPreamble());
-
 		public string GetUpdatesFeed()
 		{
 			string data = File.ReadAllText(FeedUncPath, Encoding.UTF8);
 
-			if (data.StartsWith(_byteOrderMarkUtf8))
-				data = data.Remove(0, _byteOrderMarkUtf8.Length);
+			// Remove byteorder mark if necessary
+			int indexTagOpening = data.IndexOf('<');
+			if (indexTagOpening > 0)
+			{
+				data = data.Substring( indexTagOpening );
+			}
 
 			return data;
 		}
