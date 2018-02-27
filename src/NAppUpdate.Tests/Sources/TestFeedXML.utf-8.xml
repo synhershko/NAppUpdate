@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Feed>
+  <Tasks>
+    <FileUpdateTask hotswap="false" updateTo="file:///c:/test/htmlayout.dll" localPath="htmlayout.dll">
+      <Description>ÖÜÄ - some non 7-bit chars</Description>
+      <Conditions>
+        <FileVersionCondition what="below" version="3.3.2.10" />
+        <OSCondition type="and-not" bit="64" />
+        <FileSizeCondition type="and" what="above" size="1000" />
+        <FileDateCondition type="or" what="is" timestamp="20091010T000000" />
+      </Conditions>
+    </FileUpdateTask>
+    <FileUpdateTask updateTo="file:///c:/test/htmlayout.dll" localPath="htmlayout64.dll">
+      <Description>ÖÜÄ - some non 7-bit chars (for 64 bit platforms)</Description>
+      <Conditions>
+        <FileVersionCondition what="below" version="3.3.2.10" />
+        <OSCondition type="and" bit="64" />
+        <FileSizeCondition type="and-not" what="below" size="1000" />
+        <FileExistsCondition type="or" />
+      </Conditions>
+    </FileUpdateTask>
+    <FileUpdateTask hotswap="true" localPath="logo.png" updateTo="http://www.google.com/intl/en_ALL/images/srpr/logo1w.png" />
+  </Tasks>
+</Feed>

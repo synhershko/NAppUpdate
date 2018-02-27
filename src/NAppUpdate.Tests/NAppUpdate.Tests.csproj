@@ -80,6 +80,7 @@
     <Compile Include="Conditions\FileVersionConditionTests.cs" />
     <Compile Include="Core\UpdateStarterTests.cs" />
     <Compile Include="FeedReaders\NauXmlFeedReaderTests.cs" />
+    <Compile Include="Sources\SourceEncodingTests.cs" />
     <Compile Include="Integration\FileDownloaderTests.cs" />
     <Compile Include="Integration\SimpleWebSourceTests.cs" />
     <Compile Include="Tasks\BasicTaskTests.cs" />
