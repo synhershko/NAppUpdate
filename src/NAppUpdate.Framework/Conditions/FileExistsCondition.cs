@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using NAppUpdate.Framework.Common;
+using NAppUpdate.Framework.Utils;
 
 namespace NAppUpdate.Framework.Conditions
 {
@@ -21,8 +22,8 @@ namespace NAppUpdate.Framework.Conditions
 			string localPath = !string.IsNullOrEmpty(LocalPath) ? LocalPath : Utils.Reflection.GetNauAttribute(task, "LocalPath") as string;
 			if (string.IsNullOrEmpty(localPath))
 				return true;
-
-			return File.Exists(localPath);
+			var fullPath = FileSystem.GetFullPath(localPath);
+			return File.Exists(fullPath);
 		}
 	}
 }

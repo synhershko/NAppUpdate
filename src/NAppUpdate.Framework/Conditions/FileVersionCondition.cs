@@ -2,6 +2,7 @@
 using System.IO;
 using System.Diagnostics;
 using NAppUpdate.Framework.Common;
+using NAppUpdate.Framework.Utils;
 
 namespace NAppUpdate.Framework.Conditions
 {
@@ -30,11 +31,13 @@ namespace NAppUpdate.Framework.Conditions
 			if (string.IsNullOrEmpty(localPath))
 				return true;
 
+			var fullPath = FileSystem.GetFullPath(localPath);
+
 			// if the file doesn't exist it has a null version, and therefore the condition result depends on the ComparisonType
-			if (!File.Exists(localPath))
+			if (!File.Exists(fullPath))
 				return ComparisonType.Equals("below", StringComparison.InvariantCultureIgnoreCase);
 
-			var versionInfo = FileVersionInfo.GetVersionInfo(localPath);
+			var versionInfo = FileVersionInfo.GetVersionInfo(fullPath);
 			if (versionInfo.FileVersion == null) return true; // perform the update if no version info is found
 
 			var localVersion = new Version(versionInfo.FileMajorPart, versionInfo.FileMinorPart, versionInfo.FileBuildPart, versionInfo.FilePrivatePart);

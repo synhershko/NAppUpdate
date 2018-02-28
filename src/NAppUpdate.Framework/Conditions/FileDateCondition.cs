@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using NAppUpdate.Framework.Common;
+using NAppUpdate.Framework.Utils;
 
 namespace NAppUpdate.Framework.Conditions
 {
@@ -36,13 +37,15 @@ namespace NAppUpdate.Framework.Conditions
 			if (string.IsNullOrEmpty(localPath))
 				return true;
 
+			var fullPath = FileSystem.GetFullPath(localPath);
+
 			// if the file doesn't exist it has a null timestamp, and therefore the condition result depends on the ComparisonType
-			if (!File.Exists(localPath))
+			if (!File.Exists(fullPath))
 				return ComparisonType.Equals("older", StringComparison.InvariantCultureIgnoreCase);
 
 			// File timestamps seem to be off by a little bit (conversion rounding?), so the code below
 			// gets around that
-			var dt = File.GetLastWriteTime(localPath);
+			var dt = File.GetLastWriteTime(fullPath);
 			var localPlus = dt.AddSeconds(2).ToFileTimeUtc();
 			var localMinus = dt.AddSeconds(-2).ToFileTimeUtc();
 			var remoteFileDateTime = Timestamp.ToFileTimeUtc();

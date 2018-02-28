@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using NAppUpdate.Framework.Common;
+using NAppUpdate.Framework.Utils;
 
 namespace NAppUpdate.Framework.Conditions
 {
@@ -31,10 +32,12 @@ namespace NAppUpdate.Framework.Conditions
 			if (string.IsNullOrEmpty(localPath))
 				return true;
 
+			var fullPath = FileSystem.GetFullPath(localPath);
+
 			long localFileSize = 0;
-			if (File.Exists(localPath))
+			if (File.Exists(fullPath))
 			{
-				var fi = new FileInfo(localPath);
+				var fi = new FileInfo(fullPath);
 				localFileSize = fi.Length;
 			}
 

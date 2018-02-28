@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -145,6 +145,11 @@ namespace NAppUpdate.Framework.Utils
 				if (read < bufferSize)
 					yield break;
 			}
+
+		public static string GetFullPath(string localPath)
+		{
+			var currentDirectory = AppDomain.CurrentDomain.BaseDirectory;
+			return Path.Combine(currentDirectory, localPath);
 		}
 	}
 }

@@ -28,13 +28,15 @@ namespace NAppUpdate.Framework.Conditions
 			if (string.IsNullOrEmpty(localPath))
 				return true;
 
+			var fullPath = FileSystem.GetFullPath(localPath);
+
 			// if the local file does not exist, checksums don't match vacuously
-			if (!File.Exists(localPath))
+			if (!File.Exists(fullPath))
 				return false;
 
 			if ("sha256".Equals(ChecksumType, StringComparison.InvariantCultureIgnoreCase))
 			{
-				var sha256 = FileChecksum.GetSHA256Checksum(localPath);
+				var sha256 = FileChecksum.GetSHA256Checksum(fullPath);
 				if (!string.IsNullOrEmpty(sha256) && sha256.Equals(Checksum, StringComparison.InvariantCultureIgnoreCase))
 					return true;
 			}
