@@ -1,160 +1,16 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{5C07EBDF-D43F-4BE9-B560-D7A443C0EDCE}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NAppUpdate.Framework</RootNamespace>
-    <AssemblyName>NAppUpdate.Framework</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>NAppUpdate.snk</AssemblyOriginatorKeyFile>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation />
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
+    <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release 3.5|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\net35\</OutputPath>
-    <DefineConstants>
-    </DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release 4.0|AnyCPU'">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\net40\</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Xml" />
+    <Folder Include="Properties\" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="Common\INauFieldsHolder.cs" />
-    <Compile Include="Common\Logger.cs" />
-    <Compile Include="Common\NauConfigurations.cs" />
-    <Compile Include="Common\NauFieldAttribute.cs" />
-    <Compile Include="Common\UpdateProcessAsyncResult.cs" />
-    <Compile Include="Common\UpdateProgressInfo.cs" />
-    <Compile Include="Common\WorkScope.cs" />
-    <Compile Include="Conditions\FileChecksumCondition.cs" />
-    <Compile Include="Conditions\FileDateCondition.cs" />
-    <Compile Include="Conditions\FileSizeCondition.cs" />
-    <Compile Include="Conditions\OSCondition.cs" />
-    <Compile Include="Common\Exceptions.cs" />
-    <Compile Include="FeedReaders\AppcastReader.cs" />
-    <Compile Include="Conditions\BooleanCondition.cs" />
-    <Compile Include="Conditions\FileExistsCondition.cs" />
-    <Compile Include="Conditions\FileVersionCondition.cs" />
-    <Compile Include="Conditions\IUpdateCondition.cs" />
-    <Compile Include="Conditions\UpdateConditionAliasAttribute.cs" />
-    <Compile Include="FeedReaders\IUpdateFeedReader.cs" />
-    <Compile Include="FeedReaders\NauXmlFeedReader.cs" />
-    <Compile Include="Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Sources\IUpdateSource.cs" />
-    <Compile Include="Sources\MemorySource.cs" />
-    <Compile Include="Sources\SimpleWebSource.cs" />
-    <Compile Include="Sources\UncSource.cs" />
-    <Compile Include="Tasks\FileUpdateTask.cs" />
-    <Compile Include="Tasks\IUpdateTask.cs" />
-    <Compile Include="Tasks\RegistryTask.cs" />
-    <Compile Include="Tasks\UpdateTaskAliasAttribute.cs" />
-    <Compile Include="Tasks\UpdateTaskBase.cs" />
-    <Compile Include="UpdateManager.cs" />
-    <Compile Include="Utils\FileChecksum.cs" />
-    <Compile Include="Utils\FileDownloader.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utils\NauIpc.cs" />
-    <Compile Include="Utils\FileSystem.cs" />
-    <Compile Include="Utils\PermissionsCheck.cs" />
-    <Compile Include="Utils\ProcessStartFailedException.cs" />
-    <Compile Include="Utils\Reflection.cs" />
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="2.0.0-preview1-25914-04" />
+    <PackageReference Include="System.IO.FileSystem.AccessControl" Version="4.5.0-preview1-25914-04" />
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <None Include="NAppUpdate.snk" />
-    <None Include="Updater\updater.exe" />
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="updateicon.ico" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>if not exist "$(SolutionDir)src\NAppUpdate.Framework\Updater" (mkdir "$(SolutionDir)src\NAppUpdate.Framework\Updater")
-if not exist "$(SolutionDir)src\NAppUpdate.Framework\Updater\updater.exe" (echo This is a dummy file &gt; "$(SolutionDir)src\NAppUpdate.Framework\Updater\updater.exe")</PreBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

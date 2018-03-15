@@ -2,32 +2,32 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NAppUpdate.Framework;
 using NAppUpdate.Framework.Tasks;
 using NAppUpdate.Framework.Utils;
 
 namespace NAppUpdate.Tests.Core
 {
-	[TestClass]
+	using Xunit;
+
 	public class UpdateStarterTests
 	{
-		[TestMethod]
+		[Fact]
 		public void UpdaterDeploymentWorks()
 		{
 			var path = Path.Combine(Path.GetTempPath(), "NAppUpdate-Tests");
 
 			NauIpc.ExtractUpdaterFromResource(path, "Foo.exe");
 
-			Assert.IsTrue(Directory.Exists(path));
-			Assert.IsTrue(File.Exists(Path.Combine(path, "Foo.exe")));
-			Assert.IsTrue(File.Exists(Path.Combine(path, "NAppUpdate.Framework.dll")));
+			Assert.True(Directory.Exists(path));
+			Assert.True(File.Exists(Path.Combine(path, "Foo.exe")));
+			Assert.True(File.Exists(Path.Combine(path, "NAppUpdate.Framework.dll")));
 
 			// Cleanup test
 			NAppUpdate.Framework.Utils.FileSystem.DeleteDirectory(path);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void UpdaterDeploymentAndIPCWorks()
 		{
 			var dto = new NauIpc.NauDto
@@ -57,12 +57,12 @@ namespace NAppUpdate.Tests.Core
 			};
 
 			var p = NauIpc.LaunchProcessAndSendDto(dto, info, dto.Configs.UpdateProcessName);
-			Assert.IsNotNull(p);
+			Assert.Null(p);
 			p.WaitForExit();
 
-			Assert.IsTrue(Directory.Exists(path));
-			Assert.IsTrue(File.Exists(Path.Combine(path, "Foo.exe")));
-			Assert.IsTrue(File.Exists(Path.Combine(path, "NAppUpdate.Framework.dll")));
+			Assert.True(Directory.Exists(path));
+			Assert.True(File.Exists(Path.Combine(path, "Foo.exe")));
+			Assert.True(File.Exists(Path.Combine(path, "NAppUpdate.Framework.dll")));
 
 			// Cleanup test
 			FileSystem.DeleteDirectory(path);

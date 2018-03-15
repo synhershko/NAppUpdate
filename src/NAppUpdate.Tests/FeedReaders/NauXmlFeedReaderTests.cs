@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Text;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NAppUpdate.Framework;
 using NAppUpdate.Framework.Conditions;
 using NAppUpdate.Framework.Tasks;
 
 namespace NAppUpdate.Tests.FeedReaders
 {
+	using Xunit;
+
 	/// <summary>
 	/// Summary description for NauXmlFeedReaderTest
 	/// </summary>
-	[TestClass]
 	public class NauXmlFeedReaderTests
 	{
-		[TestMethod]
+		[Fact]
 		public void NauReaderCanReadFeed1()
 		{
 			const string NauUpdateFeed =
@@ -35,24 +35,24 @@ namespace NAppUpdate.Tests.FeedReaders
 			var reader = new NAppUpdate.Framework.FeedReaders.NauXmlFeedReader();
 			IList<IUpdateTask> updates = reader.Read(NauUpdateFeed);
 
-			Assert.IsTrue(updates.Count == 1);
+			Assert.True(updates.Count == 1);
 
 			var task = updates[0] as FileUpdateTask;
-			Assert.IsNotNull(task);
-			Assert.IsFalse(task.CanHotSwap);
-			Assert.AreEqual("test.dll", task.LocalPath);
-			Assert.AreEqual("remoteFile.dll", task.UpdateTo);
-			Assert.IsNull(task.Sha256Checksum);
-			Assert.IsNotNull(task.Description);
+			Assert.NotNull(task);
+			Assert.False(task.CanHotSwap);
+			Assert.Equal("test.dll", task.LocalPath);
+			Assert.Equal("remoteFile.dll", task.UpdateTo);
+			Assert.Null(task.Sha256Checksum);
+			Assert.NotNull(task.Description);
 
-			Assert.AreEqual(1, task.UpdateConditions.ChildConditionsCount);
+			Assert.Equal(1, task.UpdateConditions.ChildConditionsCount);
 
 			var cnd = task.UpdateConditions.Degrade() as FileExistsCondition;
-			Assert.IsNotNull(cnd);
-			Assert.AreEqual("otherFile.dll", cnd.LocalPath);
+			Assert.NotNull(cnd);
+			Assert.Equal("otherFile.dll", cnd.LocalPath);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void NauReaderCanReadFeed2()
 		{
 			const string NauUpdateFeed =
@@ -73,23 +73,23 @@ namespace NAppUpdate.Tests.FeedReaders
 			var reader = new NAppUpdate.Framework.FeedReaders.NauXmlFeedReader();
 			IList<IUpdateTask> updates = reader.Read(NauUpdateFeed);
 
-			Assert.IsTrue(updates.Count == 1);
+			Assert.True(updates.Count == 1);
 
 			var task = updates[0] as FileUpdateTask;
-			Assert.IsNotNull(task);
-			Assert.IsTrue(task.CanHotSwap);
+			Assert.NotNull(task);
+			Assert.True(task.CanHotSwap);
 
-			Assert.AreEqual(1, task.UpdateConditions.ChildConditionsCount);
+			Assert.Equal(1, task.UpdateConditions.ChildConditionsCount);
 
 			var cnd = task.UpdateConditions.Degrade() as FileVersionCondition;
-			Assert.IsNotNull(cnd);
-			Assert.IsNull(cnd.LocalPath);
+			Assert.NotNull(cnd);
+			Assert.Null(cnd.LocalPath);
 
-			Assert.AreEqual("below", cnd.ComparisonType);
-			Assert.AreEqual("1.0.176.0", cnd.Version);
+			Assert.Equal("below", cnd.ComparisonType);
+			Assert.Equal("1.0.176.0", cnd.Version);
 		}
 
-		[TestMethod]
+		[Fact]
 		public void NauReaderCanReadFeed3()
 		{
 			const string NauUpdateFeed =
@@ -110,18 +110,18 @@ namespace NAppUpdate.Tests.FeedReaders
 			var reader = new NAppUpdate.Framework.FeedReaders.NauXmlFeedReader();
 			IList<IUpdateTask> updates = reader.Read(NauUpdateFeed);
 
-			Assert.IsTrue(updates.Count == 1);
+			Assert.True(updates.Count == 1);
 
 			var task = updates[0] as FileUpdateTask;
-			Assert.IsNotNull(task);
-			Assert.IsTrue(task.CanHotSwap);
+			Assert.NotNull(task);
+			Assert.True(task.CanHotSwap);
 
-			Assert.AreEqual(1, task.UpdateConditions.ChildConditionsCount);
+			Assert.Equal(1, task.UpdateConditions.ChildConditionsCount);
 
 			var cnd = task.UpdateConditions.Degrade() as OSCondition;
-			Assert.IsNotNull(cnd);
+			Assert.NotNull(cnd);
 
-			Assert.AreEqual(64, cnd.OsBits);
+			Assert.Equal(64, cnd.OsBits);
 		}
 	}
 }

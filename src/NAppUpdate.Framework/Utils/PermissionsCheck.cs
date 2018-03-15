@@ -4,6 +4,8 @@ using System.Security.AccessControl;
 
 namespace NAppUpdate.Framework.Utils
 {
+	using System.Security.AccessControl;
+
 	public static class PermissionsCheck
 	{
 		private static readonly IdentityReferenceCollection groups = WindowsIdentity.GetCurrent().Groups;
@@ -22,9 +24,8 @@ namespace NAppUpdate.Framework.Utils
 			return HaveWritePermissionsForFileOrFolder(folder);
 		}
 
-		public static bool HaveWritePermissionsForFileOrFolder(string path)
-		{
-			var rules = Directory.GetAccessControl(path).GetAccessRules(true, true, typeof(SecurityIdentifier));
+		public static bool HaveWritePermissionsForFileOrFolder(string path) {
+			var rules = new FileSecurity(path, AccessControlSections.All).GetAccessRules(true, true, typeof(SecurityIdentifier));
 
 			bool allowwrite = false, denywrite = false;
 			foreach (FileSystemAccessRule rule in rules)

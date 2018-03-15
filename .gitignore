@@ -30,3 +30,4 @@ Thumbs.db
 *.orig
 packages/
 FeedBuilder/FeedBuilder.xml
+.vs/
