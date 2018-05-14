@@ -8,6 +8,7 @@ namespace NAppUpdate.Framework.Common
 	public class NauConfigurations
 	{
 		public string TempFolder { get; set; }
+        public string RelaunchAppArgs { get; set; }
 
 		/// <summary>
 		/// Path to the backup folder used by the update process

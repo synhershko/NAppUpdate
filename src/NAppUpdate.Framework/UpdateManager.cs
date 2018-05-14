@@ -143,13 +143,21 @@ namespace NAppUpdate.Framework
 				lock (UpdatesToApply)
 				{
 					UpdatesToApply.Clear();
-					var tasks = UpdateFeedReader.Read(UpdateSource.GetUpdatesFeed());
-					foreach (var t in tasks)
+                    float num = 0f;
+                    var tasks = UpdateFeedReader.Read(UpdateSource.GetUpdatesFeed());
+                    int count = tasks.Count;
+                    foreach (var t in tasks)
 					{
 						if (ShouldStop)
 							throw new UserAbortException();
-
-						if (t.UpdateConditions == null || t.UpdateConditions.IsMet(t)) // Only execute if all conditions are met
+                        this.ReportProgress(new UpdateProgressInfo     {
+                         Message = "Checking",
+                             Percentage = (int)((num += 1f) / (float)count * 100f),
+                             TaskDescription = t.Description,
+                             TaskId = (int)num,
+                             StillWorking = true
+                         });
+                        if (t.UpdateConditions == null || t.UpdateConditions.IsMet(t)) // Only execute if all conditions are met
 							UpdatesToApply.Add(t);
 					}
 				}
@@ -238,8 +246,9 @@ namespace NAppUpdate.Framework
 
 						var t = task;
 						task.ProgressDelegate += status => TaskProgressCallback(status, t);
-
-						try
+                        this.TaskProgressCallback(new UpdateProgressInfo{
+                                              Message = "Preparing"}, t);
+                        try
 						{
 							task.Prepare(UpdateSource);
 						}
@@ -402,8 +411,9 @@ namespace NAppUpdate.Framework
 					{
 						IUpdateTask t = task;
 						task.ProgressDelegate += status => TaskProgressCallback(status, t);
-
-						try
+                        this.TaskProgressCallback(new UpdateProgressInfo{
+                           Message = "Applying"}, t);
+                        try
 						{
 							// Execute the task
 							task.ExecutionStatus = task.Execute(false);

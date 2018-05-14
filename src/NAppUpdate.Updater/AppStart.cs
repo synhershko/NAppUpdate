@@ -137,8 +137,9 @@ namespace NAppUpdate.Updater
 			// Get some required environment variables
 			string appPath = _dto.AppPath;
 			string appDir = _dto.WorkingDirectory ?? Path.GetDirectoryName(appPath) ?? string.Empty;
+            string relaunchAppArgs = _dto.Configs.RelaunchAppArgs;
 
-			if (!string.IsNullOrEmpty(_dto.AppPath))
+            if (!string.IsNullOrEmpty(_dto.AppPath))
 			{
 				_logFilePath = Path.Combine(Path.GetDirectoryName(_dto.AppPath), @"NauUpdate.log"); // now we can log to a more accessible location
 			}
@@ -205,7 +206,7 @@ namespace NAppUpdate.Updater
 					UseShellExecute = useShellExecute,
 					WorkingDirectory = appDir,
 					FileName = appPath,
-					Arguments = "-nappupdate-afterrestart"
+					Arguments = "-nappupdate-afterrestart" + " " + relaunchAppArgs
 				};
 
 				try
