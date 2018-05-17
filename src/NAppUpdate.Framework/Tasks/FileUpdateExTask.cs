@@ -4,6 +4,7 @@ using NAppUpdate.Framework.Sources;
 
 namespace NAppUpdate.Framework.Tasks
 {
+    [Serializable]
     [UpdateTaskAlias("fileUpdateEx")]
     public class FileUpdateExTask : FileUpdateTask
     {
@@ -25,13 +26,14 @@ namespace NAppUpdate.Framework.Tasks
         }
         public override TaskExecutionStatus Execute(bool coldRun)
         {
+           var result =  base.Execute(coldRun);
             var info = new UpdateProgressInfo
             {
-                Message = "Applying",
+                Message = "Applied with result " + result.ToString(),
                 Percentage = Convert.ToInt32((this.Index + 1) / Count * 100)
             };
             OnProgress(info);
-            return base.Execute(coldRun);
+            return result;
         }
     }
 
