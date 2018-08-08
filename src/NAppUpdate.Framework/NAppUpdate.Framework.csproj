@@ -68,7 +68,11 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FluentFTP, Version=19.2.2.0, Culture=neutral, PublicKeyToken=f4af092b1d8df44f, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\FluentFTP.19.2.2\lib\net35\FluentFTP.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -97,6 +101,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Sources\FtpSource.cs" />
     <Compile Include="Sources\IUpdateSource.cs" />
     <Compile Include="Sources\MemorySource.cs" />
     <Compile Include="Sources\SimpleWebSource.cs" />
@@ -123,6 +128,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="NAppUpdate.snk" />
+    <None Include="packages.config" />
     <None Include="Updater\updater.exe" />
   </ItemGroup>
   <ItemGroup>
