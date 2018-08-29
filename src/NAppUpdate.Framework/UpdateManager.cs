@@ -77,7 +77,7 @@ namespace NAppUpdate.Framework
 
 		public NauConfigurations Config { get; set; }
 
-		internal string BaseUrl { get; set; }
+		public string BaseUrl { get; set; }
 		internal IList<IUpdateTask> UpdatesToApply { get; private set; }
 		public int UpdatesAvailable { get { return UpdatesToApply == null ? 0 : UpdatesToApply.Count; } }
 		public UpdateProcessState State { get; private set; }
