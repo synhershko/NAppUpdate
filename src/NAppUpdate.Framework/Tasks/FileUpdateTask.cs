@@ -21,6 +21,9 @@ namespace NAppUpdate.Framework.Tasks
 		[NauField("sha256-checksum", "SHA-256 checksum to validate the file after download (optional)", false)]
 		public string Sha256Checksum { get; set; }
 
+		[NauField("version", "File version to validate the file after download (optional)", false)]
+		public string Version { get; set; }
+
 		[NauField("hotswap",
 			"Default update action is a cold update; check here if a hot file swap should be attempted"
 			, false)]

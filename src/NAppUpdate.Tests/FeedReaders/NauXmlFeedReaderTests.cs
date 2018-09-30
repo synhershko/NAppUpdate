@@ -123,5 +123,40 @@ namespace NAppUpdate.Tests.FeedReaders
 
 			Assert.AreEqual(64, cnd.OsBits);
 		}
+
+		[TestMethod]
+		public void NauReaderCanReadFeed4()
+		{
+			const string NauUpdateFeed =
+				@"<?xml version=""1.0"" encoding=""utf-8""?>
+<Feed>
+  <Title>My application</Title>
+  <Link>http://myapp.com/</Link>
+  <Tasks>
+    <FileUpdateTask localPath=""test.dll"" updateTo=""remoteFile.dll"" hotswap=""true"" version=""1.0.0.0"">
+      <Description>update details</Description>
+      <Conditions>
+        <OSCondition bit=""64"" />
+      </Conditions>
+    </FileUpdateTask>
+  </Tasks>
+</Feed>";
+
+			var reader = new NAppUpdate.Framework.FeedReaders.NauXmlFeedReader();
+			IList<IUpdateTask> updates = reader.Read(NauUpdateFeed);
+
+			Assert.IsTrue(updates.Count == 1);
+
+			var task = updates[0] as FileUpdateTask;
+			Assert.IsNotNull(task);
+			Assert.IsTrue(task.CanHotSwap);
+
+			Assert.AreEqual(1, task.UpdateConditions.ChildConditionsCount);
+
+			var cnd = task.UpdateConditions.Degrade() as OSCondition;
+			Assert.IsNotNull(cnd);
+
+			Assert.AreEqual(64, cnd.OsBits);
+		}
 	}
 }
