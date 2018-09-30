@@ -93,5 +93,10 @@ namespace NAppUpdate.Framework.Conditions
 		static extern bool IsWow64Process(IntPtr hProcess, out bool wow64Process);
 
 		#endregion
+
+		public override string ToString()
+		{
+			return "OS bitness is " + OsBits;
+		}
 	}
 }

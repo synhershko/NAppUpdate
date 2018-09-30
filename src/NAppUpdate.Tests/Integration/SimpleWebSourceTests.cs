@@ -9,6 +9,7 @@ namespace NAppUpdate.Tests.Integration
 		[TestMethod]
 		public void can_download_ansi_feed()
 		{
+			Assert.Inconclusive("This url contains wrong data");
 			const string expected = "NHibernate.Profiler-Build-";
 
 			var ws = new SimpleWebSource("http://builds.hibernatingrhinos.com/latest/nhprof");

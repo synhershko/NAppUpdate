@@ -101,7 +101,7 @@ namespace NAppUpdate.Framework
 		{
 			if (ReportProgress == null) return;
 
-			currentStatus.TaskDescription = task.Description;
+			currentStatus.TaskDescription = task.ToString();
 			currentStatus.TaskId = UpdatesToApply.IndexOf(task) + 1;
 
 			//This was an assumed int, which meant we never reached 100% with an odd number of tasks
@@ -247,7 +247,7 @@ namespace NAppUpdate.Framework
 						{
 							task.ExecutionStatus = TaskExecutionStatus.FailedToPrepare;
 							Logger.Log(ex);
-							throw new UpdateProcessFailedException("Failed to prepare task: " + task.Description, ex);
+							throw new UpdateProcessFailedException("Failed to prepare task: " + task, ex);
 						}
 
 						task.ExecutionStatus = TaskExecutionStatus.Prepared;
@@ -411,7 +411,7 @@ namespace NAppUpdate.Framework
 						catch (Exception ex)
 						{
 							task.ExecutionStatus = TaskExecutionStatus.Failed; // mark the failing task before rethrowing
-							throw new UpdateProcessFailedException("Update task execution failed: " + task.Description, ex);
+							throw new UpdateProcessFailedException("Update task execution failed: " + task, ex);
 						}
 
 						if (task.ExecutionStatus == TaskExecutionStatus.RequiresAppRestart
@@ -426,7 +426,7 @@ namespace NAppUpdate.Framework
 						// We are being quite explicit here - only Successful return values are considered
 						// to be Ok (cold updates are already handled above)
 						if (task.ExecutionStatus != TaskExecutionStatus.Successful)
-							throw new UpdateProcessFailedException("Update task execution failed: " + task.Description);
+							throw new UpdateProcessFailedException("Update task execution failed: " + task);
 					}
 
 					// If an application restart is required

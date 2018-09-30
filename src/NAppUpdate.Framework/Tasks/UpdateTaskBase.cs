@@ -31,5 +31,10 @@ namespace NAppUpdate.Framework.Tasks
 		public abstract void Prepare(IUpdateSource source);
 		public abstract TaskExecutionStatus Execute(bool coldRun);
 		public abstract bool Rollback();
+
+		public override string ToString()
+		{
+			return Description;
+		}
 	}
 }

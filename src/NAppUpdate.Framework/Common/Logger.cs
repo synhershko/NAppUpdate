@@ -95,6 +95,13 @@ namespace NAppUpdate.Framework.Common
 				filePath = Path.Combine(workingDir ?? string.Empty, @"NauUpdate.log");
 			}
 
+			if (File.Exists(filePath))
+			{
+				var oldBackupFile = SelectBackupLogFileName(filePath);
+				if (oldBackupFile != null)
+					File.Move(filePath, oldBackupFile);
+			}
+
 			lock (LogItems)
 			{
 				using (StreamWriter w = File.CreateText(filePath))
@@ -103,6 +110,21 @@ namespace NAppUpdate.Framework.Common
 						w.WriteLine(logItem.ToString());
 					}
 			}
+		}
+
+		private string SelectBackupLogFileName(string filePath)
+		{
+			var directory = Path.GetDirectoryName(filePath);
+			if (directory == null)
+				directory = ".";
+			for (var i = 0; i < 10; i++)
+			{
+				filePath = Path.Combine(directory, "NauUpdate." + i + ".log");
+				if(File.Exists(filePath))
+					continue;
+				return filePath;
+			}
+			return null;
 		}
 	}
 }

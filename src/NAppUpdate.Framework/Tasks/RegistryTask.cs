@@ -78,5 +78,11 @@ namespace NAppUpdate.Framework.Tasks
 			Registry.SetValue(KeyName, KeyValueName, _originalValue);
 			return true;
 		}
+
+		public override string ToString()
+		{
+			var ret = base.ToString();
+			return string.IsNullOrWhiteSpace(ret) ? KeyName + @"\" + KeyValueName : ret;
+		}
 	}
 }

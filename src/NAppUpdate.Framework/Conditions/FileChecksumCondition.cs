@@ -45,5 +45,10 @@ namespace NAppUpdate.Framework.Conditions
 
 			return false;
 		}
+
+		public override string ToString()
+		{
+			return "Checksum [" + ChecksumType + "] equals " + Checksum;
+		}
 	}
 }

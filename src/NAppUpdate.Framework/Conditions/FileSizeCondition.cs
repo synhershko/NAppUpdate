@@ -50,5 +50,10 @@ namespace NAppUpdate.Framework.Conditions
 			}
 			return FileSize > localFileSize;
 		}
+
+		public override string ToString()
+		{
+			return "FileSize " + ComparisonType + " " + FileSize;
+		}
 	}
 }

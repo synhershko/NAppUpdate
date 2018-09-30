@@ -53,5 +53,10 @@ namespace NAppUpdate.Framework.Conditions
 					return updateVersion > localVersion;
 			}
 		}
+
+		public override string ToString()
+		{
+			return "Version " + ComparisonType + " " + Version;
+		}
 	}
 }

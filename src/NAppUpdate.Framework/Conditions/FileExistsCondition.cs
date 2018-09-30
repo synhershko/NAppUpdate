@@ -25,5 +25,10 @@ namespace NAppUpdate.Framework.Conditions
 			var fullPath = FileSystem.GetFullPath(localPath);
 			return File.Exists(fullPath);
 		}
+
+		public override string ToString()
+		{
+			return "File exists";
+		}
 	}
 }
