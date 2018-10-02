@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -154,7 +155,11 @@ namespace NAppUpdate.Updater
 
 			Log("Got {0} task objects", _dto.Tasks.Count);
 
+			var exceptions = new List<Exception>();
+			bool updateFailed = false;
+
 			// Perform the actual off-line update process
+			var completedTasks = new List<IUpdateTask>();
 			foreach (var t in _dto.Tasks)
 			{
 				Log("Task \"{0}\": {1}", t.Description, t.ExecutionStatus);
@@ -165,8 +170,6 @@ namespace NAppUpdate.Updater
 					continue;
 				}
 
-				Exception exception = null;
-
 				try
 				{
 					Log("\tExecuting...");
@@ -174,23 +177,50 @@ namespace NAppUpdate.Updater
 				}
 				catch (Exception ex)
 				{
+					Log(Logger.SeverityLevel.Error, "\tFailed: " + ex.Message);
 					t.ExecutionStatus = TaskExecutionStatus.Failed;
-					exception = ex;
+					exceptions.Add(new Exception(string.Format("Update failed, task execution failed, description: {0}, execution status: {1}", t.Description, t.ExecutionStatus), ex));
 				}
+				completedTasks.Add(t);
 
 				if (t.ExecutionStatus != TaskExecutionStatus.Successful)
 				{
-					string taskFailedMessage = string.Format("Update failed, task execution failed, description: {0}, execution status: {1}", t.Description, t.ExecutionStatus);
-					throw new Exception(taskFailedMessage, exception);
+					updateFailed = true;
+					break;
 				}
 			}
 
-			Log("Finished successfully");
-			Log("Removing backup folder");
-
-			if (Directory.Exists(_dto.Configs.BackupFolder))
+			bool rollbackFailed = false;
+			if (!updateFailed)
 			{
-				FileSystem.DeleteDirectory(_dto.Configs.BackupFolder);
+				Log("Finished successfully");
+			}
+			else
+			{
+				Log("\tRollback...");
+				foreach (var task in completedTasks)
+				{
+					try
+					{
+						task.Rollback();
+					}
+					catch (Exception ex)
+					{
+						Log(Logger.SeverityLevel.Error, "\t\tRollback failed: " + ex.Message);
+						exceptions.Add(ex);
+						rollbackFailed = true;
+					}
+				}
+			}
+
+			if (!updateFailed || !rollbackFailed)
+			{
+				Log("Removing backup folder");
+
+				if (Directory.Exists(_dto.Configs.BackupFolder))
+				{
+					FileSystem.DeleteDirectory(_dto.Configs.BackupFolder);
+				}
 			}
 
 			// Start the application only if requested to do so
@@ -215,9 +245,12 @@ namespace NAppUpdate.Updater
 				}
 				catch (Exception ex)
 				{
-					throw new UpdateProcessFailedException("Unable to relaunch application and/or send DTO", ex);
+					exceptions.Add(new UpdateProcessFailedException("Unable to relaunch application and/or send DTO", ex));
 				}
 			}
+
+			if(updateFailed)
+				throw new AggregateException("Unable to update", exceptions);
 		}
 
 		private static void Teardown()

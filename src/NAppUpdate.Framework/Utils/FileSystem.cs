@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Security.AccessControl;
 using System.Security.Principal;
 
@@ -115,6 +116,35 @@ namespace NAppUpdate.Framework.Utils
 
 			dst.SetAccessControl(fs);
 		}
+
+		public static bool AreFileContentsEqual(string fileA, string fileB)
+		{
+			const int bufferSize = sizeof(Int64) << 10;
+			using (var streamA = new FileStream(fileA, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize))
+			using (var streamB = new FileStream(fileB, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize))
+			{
+				if (streamA.Length != streamB.Length)
+					return false;
+				var seqA = streamA.AsIenumerable(bufferSize);
+				var seqB = streamB.AsIenumerable(bufferSize);
+				return seqA.Zip(seqB, (bA, bB) => bA == bB).All(b => b);
+			}
+		}
+
+		private static IEnumerable<byte> AsIenumerable(this Stream stream, int bufferSize)
+		{
+			var buffer = new byte[bufferSize];
+			while (stream.Position < stream.Length)
+			{
+				bufferSize = Math.Min((int)(stream.Length - stream.Position), bufferSize);
+				var read = stream.Read(buffer, 0, bufferSize);
+				for (int i = 0; i < read; i++)
+				{
+					yield return buffer[i];
+				}
+				if (read < bufferSize)
+					yield break;
+			}
 
 		public static string GetFullPath(string localPath)
 		{
