@@ -12,6 +12,14 @@ namespace NAppUpdate.Framework.Utils
 		private const int _bufferSize = 1024;
 		public IWebProxy Proxy { get; set; }
 
+        public Uri Uri
+        {
+            get
+            {
+                return _uri;
+            }
+        }
+
 		public FileDownloader()
 		{
 			Proxy = null;
@@ -33,46 +41,59 @@ namespace NAppUpdate.Framework.Utils
 				return client.DownloadData(_uri);
 		}
 
-		public bool DownloadToFile(string tempLocation)
+		public void DownloadToFile(string tempLocation)
+        {
+            DownloadToFile(tempLocation, null);
+        }
+
+		public void DownloadToFile(string tempLocation, Action<UpdateProgressInfo> onProgress)
 		{
-			return DownloadToFile(tempLocation, null);
-		}
+            var request = WebRequest.Create(_uri);
+            request.Proxy = Proxy;
 
-		public bool DownloadToFile(string tempLocation, Action<UpdateProgressInfo> onProgress)
-		{
-			var request = WebRequest.Create(_uri);
-			request.Proxy = Proxy;
+            try
+            {
+                using (var response = request.GetResponse())
+                using (var tempFile = File.Create(tempLocation))
+			    {
+				    using (var responseStream = response.GetResponseStream())
+				    {
+					    if (responseStream == null)
+                            throw new ApplicationException($"Unable to get response stream to file at uri '{_uri}'");
 
-			using (var response = request.GetResponse())
-			using (var tempFile = File.Create(tempLocation))
-			{
-				using (var responseStream = response.GetResponseStream())
-				{
-					if (responseStream == null)
-						return false;
+                        long downloadSize = response.ContentLength;
+					    long totalBytes = 0;
+					    var buffer = new byte[_bufferSize];
+					    const int reportInterval = 1;
+					    DateTime stamp = DateTime.Now.Subtract(new TimeSpan(0, 0, reportInterval));
+					    int bytesRead;
+					    do
+					    {
+						    bytesRead = responseStream.Read(buffer, 0, buffer.Length);
+						    totalBytes += bytesRead;
+						    tempFile.Write(buffer, 0, bytesRead);
 
-					long downloadSize = response.ContentLength;
-					long totalBytes = 0;
-					var buffer = new byte[_bufferSize];
-					const int reportInterval = 1;
-					DateTime stamp = DateTime.Now.Subtract(new TimeSpan(0, 0, reportInterval));
-					int bytesRead;
-					do
-					{
-						bytesRead = responseStream.Read(buffer, 0, buffer.Length);
-						totalBytes += bytesRead;
-						tempFile.Write(buffer, 0, bytesRead);
+						    if (onProgress == null || !(DateTime.Now.Subtract(stamp).TotalSeconds >= reportInterval)) continue;
+						    ReportProgress(onProgress, totalBytes, downloadSize);
+						    stamp = DateTime.Now;
+					    } while (bytesRead > 0 && !UpdateManager.Instance.ShouldStop);
 
-						if (onProgress == null || !(DateTime.Now.Subtract(stamp).TotalSeconds >= reportInterval)) continue;
-						ReportProgress(onProgress, totalBytes, downloadSize);
-						stamp = DateTime.Now;
-					} while (bytesRead > 0 && !UpdateManager.Instance.ShouldStop);
+					    ReportProgress(onProgress, totalBytes, downloadSize);
 
-					ReportProgress(onProgress, totalBytes, downloadSize);
-					return totalBytes == downloadSize;
-				}
-			}
-		}
+                        if (totalBytes != downloadSize)
+                            throw new ApplicationException($"File at uri '{_uri}' did not fully download");
+				    }
+			    }
+            }
+            catch (WebException ex) when ((ex.Response as HttpWebResponse)?.StatusCode == HttpStatusCode.NotFound)
+            {
+                throw new ApplicationException($"Unable to download file at '{_uri}'.  {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Unable to download file at '{_uri}'.  {ex.Message}");
+            }
+        }
 
 		private void ReportProgress(Action<UpdateProgressInfo> onProgress, long totalBytes, long downloadSize)
 		{

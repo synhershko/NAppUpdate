@@ -28,7 +28,7 @@ namespace NAppUpdate.Framework.Sources
 			return Feed;
 		}
 
-		public bool GetData(string filePath, string basePath, Action<UpdateProgressInfo> onProgress, ref string tempFile)
+		public void GetData(string filePath, string basePath, Action<UpdateProgressInfo> onProgress, ref string tempFile)
 		{
 			Uri uriKey = null;
 
@@ -37,12 +37,12 @@ namespace NAppUpdate.Framework.Sources
 			else if (Uri.IsWellFormedUriString(basePath, UriKind.Absolute))
 				uriKey = new Uri(new Uri(basePath, UriKind.Absolute), filePath);
 
-			if (uriKey == null || !tempFiles.ContainsKey(uriKey))
-				return false;
+            if (uriKey == null)
+                throw new ApplicationException($"Unable to create Uri where filePath is '{filePath}' and basePath is '{basePath}'");
+            if (!tempFiles.ContainsKey(uriKey))
+                throw new ApplicationException($"Uri '${uriKey}' not found in tempFiles");
 
-			tempFile = tempFiles[uriKey];
-
-			return true;
+            tempFile = tempFiles[uriKey];
 		}
 
 		#endregion

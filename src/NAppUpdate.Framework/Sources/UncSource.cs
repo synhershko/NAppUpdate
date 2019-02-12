@@ -50,7 +50,7 @@ namespace NAppUpdate.Framework.Sources
 			return data;
 		}
 
-		public bool GetData(string filePath, string basePath, Action<UpdateProgressInfo> onProgress, ref string tempLocation)
+		public void GetData(string filePath, string basePath, Action<UpdateProgressInfo> onProgress, ref string tempLocation)
 		{
 			if (basePath == null)
 			{
@@ -62,7 +62,6 @@ namespace NAppUpdate.Framework.Sources
 			}
 
 			File.Copy(basePath + filePath, tempLocation);
-			return true;
 		}
 	}
 }
