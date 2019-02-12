@@ -49,10 +49,16 @@ namespace NAppUpdate.Framework.Tasks
 
 			UpdateManager.Instance.Logger.Log("FileUpdateTask: Downloading {0} with BaseUrl of {1} to {2}", fileName, baseUrl, tempFileLocal);
 
-			if (!source.GetData(fileName, baseUrl, OnProgress, ref tempFileLocal))
-				throw new UpdateProcessFailedException("FileUpdateTask: Failed to get file from source");
+            try
+            {
+                source.GetData(fileName, baseUrl, OnProgress, ref tempFileLocal);
+            }
+            catch (Exception ex)
+            {
+                throw new UpdateProcessFailedException($"FileUpdateTask: Failed to get file from source.  {ex.Message}");
+            }
 
-			_tempFile = tempFileLocal;
+            _tempFile = tempFileLocal;
 			if (_tempFile == null)
 				throw new UpdateProcessFailedException("FileUpdateTask: Failed to get file from source");
 

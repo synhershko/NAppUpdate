@@ -64,7 +64,7 @@ namespace NAppUpdate.Framework.Sources
 			return data;
 		}
 
-		public bool GetData(string url, string baseUrl, Action<UpdateProgressInfo> onProgress, ref string tempLocation)
+		public void GetData(string url, string baseUrl, Action<UpdateProgressInfo> onProgress, ref string tempLocation)
 		{
 			FileDownloader fd;
 			// A baseUrl of http://testserver/somefolder with a file linklibrary.dll was resulting in a webrequest to http://testserver/linklibrary
@@ -85,8 +85,15 @@ namespace NAppUpdate.Framework.Sources
 				// files requiring pre-processing
 				tempLocation = Path.GetTempFileName();
 
-			return fd.DownloadToFile(tempLocation, onProgress);
-		}
+            try
+            {
+                fd.DownloadToFile(tempLocation, onProgress);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"An error occurred while downloading file '{(fd as FileDownloader).Uri.ToString()}'.  {ex.Message}");
+            }
+        }
 
 		#endregion
 	}

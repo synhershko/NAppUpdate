@@ -246,11 +246,11 @@ namespace NAppUpdate.Framework
 						catch (Exception ex)
 						{
 							task.ExecutionStatus = TaskExecutionStatus.FailedToPrepare;
-							Logger.Log(ex);
-							throw new UpdateProcessFailedException("Failed to prepare task: " + task.Description, ex);
+							Logger.Log(Logger.SeverityLevel.Warning, $"Error while preparing file with LocalPath '{(task as FileUpdateTask).LocalPath}'.  {ex.Message}");
 						}
+                        Logger.Dump();
 
-						task.ExecutionStatus = TaskExecutionStatus.Prepared;
+                        task.ExecutionStatus = TaskExecutionStatus.Prepared;
 					}
 
 					State = UpdateProcessState.Prepared;

@@ -6,7 +6,7 @@
     <ProductVersion />
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{734FA44E-39AC-478E-A5AA-0F3D1F1974AA}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <StartupObject>FeedBuilder.Program</StartupObject>
     <RootNamespace>FeedBuilder</RootNamespace>
     <AssemblyName>FeedBuilder</AssemblyName>
@@ -51,7 +51,8 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>component.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
